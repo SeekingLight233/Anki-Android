@@ -30,3 +30,7 @@ fun getAppWidgetManager(context: Context): AppWidgetManager? {
     // the result is assumed to be non-null in Kotlin
     return AppWidgetManager.getInstance(context)
 }
+
+/** Whether 'Material You' dynamic color should be used for widgets */
+val disableMaterialYouDynamicColor: Boolean
+    get() = true

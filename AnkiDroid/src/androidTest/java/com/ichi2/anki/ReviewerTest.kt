@@ -90,7 +90,7 @@ class ReviewerTest : InstrumentedTest() {
             """
         val note = addNoteUsingBasicNoteType("foo", "bar")
         val card = note.firstCard(col)
-        val deck = col.decks.get(note.notetype.did)!!
+        val deck = col.decks.getLegacy(note.notetype.did)!!
         card.moveToReviewQueue()
         col.backend.updateCards(
             listOf(
@@ -217,7 +217,7 @@ class ReviewerTest : InstrumentedTest() {
     }
 
     private fun disableNewReviewer() {
-        val newReviewerPrefKey = testContext.getString(R.string.new_reviewer_pref_key)
+        val newReviewerPrefKey = testContext.getString(R.string.new_reviewer_options_key)
         val prefs = testContext.sharedPrefs()
         val isUsingNewReviewer = prefs.getBoolean(newReviewerPrefKey, false)
         if (!isUsingNewReviewer) return

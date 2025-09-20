@@ -38,6 +38,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
@@ -45,6 +46,7 @@ import anki.scheduler.CustomStudyDefaultsResponse
 import anki.scheduler.CustomStudyRequest.Cram.CramKind
 import anki.scheduler.copy
 import anki.scheduler.customStudyRequest
+import anki.search.SearchNode
 import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.R
@@ -59,9 +61,9 @@ import com.ichi2.anki.dialogs.customstudy.CustomStudyDialog.ContextMenuOption.ST
 import com.ichi2.anki.dialogs.customstudy.CustomStudyDialog.ContextMenuOption.STUDY_PREVIEW
 import com.ichi2.anki.dialogs.customstudy.CustomStudyDialog.ContextMenuOption.STUDY_TAGS
 import com.ichi2.anki.dialogs.customstudy.CustomStudyDialog.CustomStudyDefaults.Companion.toDomainModel
-import com.ichi2.anki.dialogs.customstudy.TagLimitFragment.Companion.KEY_EXCLUDED_TAGS
-import com.ichi2.anki.dialogs.customstudy.TagLimitFragment.Companion.KEY_INCLUDED_TAGS
-import com.ichi2.anki.dialogs.customstudy.TagLimitFragment.Companion.REQUEST_CUSTOM_STUDY_TAGS
+import com.ichi2.anki.dialogs.tags.TagsDialog
+import com.ichi2.anki.dialogs.tags.TagsDialogListener.Companion.ON_SELECTED_TAGS_KEY
+import com.ichi2.anki.dialogs.tags.TagsDialogListener.Companion.ON_SELECTED_TAGS__SELECTED_TAGS
 import com.ichi2.anki.launchCatchingTask
 import com.ichi2.anki.libanki.Deck
 import com.ichi2.anki.libanki.DeckId
@@ -147,14 +149,13 @@ class CustomStudyDialog : AnalyticsDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentFragmentManager.setFragmentResultListener(REQUEST_CUSTOM_STUDY_TAGS, this) { _, bundle ->
-            val tagsToInclude = bundle.getStringArrayList(KEY_INCLUDED_TAGS) ?: emptyList<String>()
-            val tagsToExclude = bundle.getStringArrayList(KEY_EXCLUDED_TAGS) ?: emptyList<String>()
+        parentFragmentManager.setFragmentResultListener(ON_SELECTED_TAGS_KEY, this) { _, bundle ->
+            val tagsToInclude = bundle.getStringArrayList(ON_SELECTED_TAGS__SELECTED_TAGS) ?: emptyList<String>()
             val option = selectedSubDialog ?: return@setFragmentResultListener
             if (selectedStatePosition == AdapterView.INVALID_POSITION) return@setFragmentResultListener
             val kind = CustomStudyCardState.entries[selectedStatePosition].kind
             val cardsAmount = userInputValue ?: 100 // the default value
-            launchCustomStudy(option, cardsAmount, kind, tagsToInclude, tagsToExclude)
+            launchCustomStudy(option, cardsAmount, kind, tagsToInclude, emptyList())
         }
     }
 
@@ -248,6 +249,10 @@ class CustomStudyDialog : AnalyticsDialogFragment() {
                 }.forEach { (menuItem, isItemEnabled) ->
                     (layoutInflater.inflate(android.R.layout.simple_list_item_1, container, false) as TextView)
                         .apply {
+                            updatePadding(
+                                top = 12.dp.toPx(requireContext()),
+                                bottom = 12.dp.toPx(requireContext()),
+                            )
                             text = menuItem.getTitle(requireContext().resources)
                             isEnabled = isItemEnabled
                             setBackgroundResource(ta.resourceId)
@@ -308,7 +313,7 @@ class CustomStudyDialog : AnalyticsDialogFragment() {
                     android.R.layout.simple_spinner_item,
                     CustomStudyCardState.entries.map { it.labelProducer() },
                 ).apply {
-                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    setDropDownViewResource(R.layout.multiline_spinner_item)
                 }
         }
         val editText =
@@ -369,8 +374,24 @@ class CustomStudyDialog : AnalyticsDialogFragment() {
                     // mark allowSubmit as true because, if the user cancels TagLimitFragment, when
                     // we come back we wouldn't be able to trigger again TagLimitFragment
                     allowSubmit = true
-                    val tagsSelectionDialog = TagLimitFragment.newInstance(dialogDeckId)
-                    tagsSelectionDialog.show(parentFragmentManager, TagLimitFragment.TAG)
+                    launchCatchingTask {
+                        val nids =
+                            withCol {
+                                val currentDeckname = decks.name(dialogDeckId)
+                                val search = SearchNode.newBuilder().setDeck(currentDeckname).build()
+                                val query = buildSearchString(search)
+                                findNotes(query)
+                            }
+                        if (isAdded) {
+                            val tagsDialog =
+                                TagsDialog().withArguments(
+                                    requireContext(),
+                                    TagsDialog.DialogType.CUSTOM_STUDY,
+                                    nids,
+                                )
+                            tagsDialog.show(parentFragmentManager, "TagsDialog")
+                        }
+                    }
                     return@setOnClickListener
                 }
                 launchCustomStudy(contextMenuOption, n)

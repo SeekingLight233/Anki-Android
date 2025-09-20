@@ -20,17 +20,11 @@ import com.ichi2.anki.libanki.Deck
 import com.ichi2.anki.libanki.DeckId
 import com.ichi2.anki.libanki.Decks
 
-var Deck.description: String
-    get() = optString("desc", "")
-    set(value) {
-        put("desc", value)
-    }
-
 fun Decks.update(
     did: DeckId,
     block: Deck.() -> Unit,
 ) {
-    val deck = get(did)!!
+    val deck = getLegacy(did)!!
     block(deck)
     this.save(deck)
 }

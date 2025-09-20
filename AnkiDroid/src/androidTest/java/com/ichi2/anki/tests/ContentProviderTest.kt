@@ -30,7 +30,6 @@ import com.ichi2.anki.FlashCardsContract
 import com.ichi2.anki.common.utils.annotation.KotlinCleanup
 import com.ichi2.anki.common.utils.emptyStringArray
 import com.ichi2.anki.libanki.Card
-import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.libanki.DeckId
 import com.ichi2.anki.libanki.Decks
 import com.ichi2.anki.libanki.Note
@@ -43,7 +42,6 @@ import com.ichi2.anki.libanki.addNotetypeLegacy
 import com.ichi2.anki.libanki.backend.BackendUtils
 import com.ichi2.anki.libanki.exception.ConfirmModSchemaException
 import com.ichi2.anki.libanki.getStockNotetype
-import com.ichi2.anki.libanki.sched.Ease
 import com.ichi2.anki.libanki.sched.Scheduler
 import com.ichi2.anki.provider.pureAnswer
 import com.ichi2.anki.testutil.DatabaseUtils.cursorFillWindow
@@ -158,7 +156,7 @@ class ContentProviderTest : InstrumentedTest() {
         // Delete all notes
         val remnantNotes = col.findNotes("tag:$TEST_TAG")
         if (remnantNotes.isNotEmpty()) {
-            col.removeNotes(nids = remnantNotes)
+            col.removeNotes(noteIds = remnantNotes)
 
             assertEquals(
                 "Check that remnant notes have been deleted",
@@ -930,7 +928,7 @@ class ContentProviderTest : InstrumentedTest() {
                     it.getLong(it.getColumnIndex(FlashCardsContract.Deck.DECK_ID))
                 val deckName =
                     it.getString(it.getColumnIndex(FlashCardsContract.Deck.DECK_NAME))
-                val deck = decks.get(deckID)!!
+                val deck = decks.getLegacy(deckID)!!
                 assertNotNull("Check that the deck we received actually exists", deck)
                 assertEquals(
                     "Check that the received deck has the correct name",
@@ -960,7 +958,7 @@ class ContentProviderTest : InstrumentedTest() {
                     decksCursor.getLong(decksCursor.getColumnIndex(FlashCardsContract.Deck.DECK_ID))
                 val returnedDeckName =
                     decksCursor.getString(decksCursor.getColumnIndex(FlashCardsContract.Deck.DECK_NAME))
-                val realDeck = col.decks.get(deckId)!!
+                val realDeck = col.decks.getLegacy(deckId)!!
                 assertEquals(
                     "Check that received deck ID equals real deck ID",
                     deckId,
@@ -1112,7 +1110,9 @@ class ContentProviderTest : InstrumentedTest() {
         val reviewInfoUri = FlashCardsContract.ReviewInfo.CONTENT_URI
         val noteId = card.nid
         val cardOrd = card.ord
-        val earlyGraduatingEase = Ease.EASY
+
+        @Suppress("DEPRECATION")
+        val earlyGraduatingEase = com.ichi2.anki.libanki.sched.Ease.EASY
         val values =
             ContentValues().apply {
                 val timeTaken: Long = 5000 // 5 seconds

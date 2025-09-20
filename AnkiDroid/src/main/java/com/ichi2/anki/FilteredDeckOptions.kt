@@ -19,6 +19,8 @@
 
 package com.ichi2.anki
 
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.CheckBoxPreference
@@ -26,11 +28,16 @@ import android.preference.EditTextPreference
 import android.preference.ListPreference
 import android.preference.Preference
 import android.preference.PreferenceCategory
+import androidx.annotation.CheckResult
 import androidx.core.content.edit
+import anki.decks.Deck
+import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.analytics.UsageAnalytics
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.common.utils.ext.stringIterable
 import com.ichi2.anki.libanki.Collection
+import com.ichi2.anki.libanki.DeckId
+import com.ichi2.anki.libanki.toDisplayString
 import com.ichi2.preferences.StepsPreference.Companion.convertFromJSON
 import com.ichi2.preferences.StepsPreference.Companion.convertToJSON
 import com.ichi2.themes.Themes
@@ -39,6 +46,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+
+/** Available items for 'Cards selected by' */
+private typealias CardSelectionOrder = Deck.Filtered.SearchTerm.Order
 
 @NeedsTest("construction + onCreate - do this after converting to fragment-based preferences.")
 class FilteredDeckOptions :
@@ -210,8 +220,8 @@ class FilteredDeckOptions :
             return
         }
         val extras = intent.extras
-        deck = if (extras != null && extras.containsKey("did")) {
-            col.decks.get(extras.getLong("did"))
+        deck = if (extras != null && extras.containsKey(EXTRAS_DECK_ID)) {
+            col.decks.getLegacy(extras.getLong(EXTRAS_DECK_ID))
         } else {
             null
         } ?: col.decks.current()
@@ -223,9 +233,9 @@ class FilteredDeckOptions :
         } else {
             pref = DeckPreferenceHack()
             pref.registerOnSharedPreferenceChangeListener(this)
-            extras?.getString("search")?.let { search ->
+            extras?.getString(EXTRAS_SEARCH)?.let { search ->
                 pref.edit {
-                    putString("search", search)
+                    putString(EXTRAS_SEARCH, search)
                 }
             }
             addPreferences(col)
@@ -282,7 +292,7 @@ class FilteredDeckOptions :
         if (prefChanged) {
             // Rebuild the filtered deck if a setting has changed
             try {
-                col.sched.rebuildDyn(deck.getLong("id"))
+                col.sched.rebuildFilteredDeck(deck.getLong("id"))
             } catch (e: JSONException) {
                 Timber.e(e)
             }
@@ -329,15 +339,23 @@ class FilteredDeckOptions :
 
     @Suppress("deprecation") // Tracked as #5019 on github
     private fun buildLists() {
-        val newOrderPref = findPreference("order") as ListPreference
-        val newOrderPrefSecond = findPreference("order_2") as ListPreference
-        newOrderPref.setEntries(R.array.cram_deck_conf_order_labels)
-        newOrderPref.setEntryValues(R.array.cram_deck_conf_order_values)
-        newOrderPref.value = pref.getString("order", "0")
-        newOrderPrefSecond.setEntries(R.array.cram_deck_conf_order_labels)
-        newOrderPrefSecond.setEntryValues(R.array.cram_deck_conf_order_values)
-        if (pref.secondFilter) {
-            newOrderPrefSecond.value = pref.getString("order_2", "5")
+        val selectionOrderValues = CardSelectionOrder.entries - CardSelectionOrder.UNRECOGNIZED
+
+        val displayStrings = selectionOrderValues.map { it.toDisplayString(TR) }.toTypedArray()
+        val values = selectionOrderValues.map { it.number.toString() }.toTypedArray()
+
+        (findPreference("order") as ListPreference).apply {
+            entries = displayStrings
+            entryValues = values
+            value = pref.getString("order", CardSelectionOrder.OLDEST_REVIEWED_FIRST.number.toString())
+        }
+
+        (findPreference("order_2") as ListPreference).apply {
+            entries = displayStrings
+            entryValues = values
+            if (pref.secondFilter) {
+                value = pref.getString("order_2", CardSelectionOrder.ADDED.number.toString())
+            }
         }
     }
 
@@ -365,7 +383,7 @@ class FilteredDeckOptions :
                     val narr = JSONArray(listOf("", 20, 5))
                     deck.getJSONArray("terms").put(1, narr)
                     val newOrderPrefSecond = findPreference("order_2") as ListPreference
-                    newOrderPrefSecond.value = "5"
+                    newOrderPrefSecond.value = CardSelectionOrder.ADDED.number.toString()
                 }
                 true
             }
@@ -384,5 +402,20 @@ class FilteredDeckOptions :
                 delaysPrefCategory.isEnabled = !newValue
                 true
             }
+    }
+
+    companion object {
+        private const val EXTRAS_DECK_ID = "did"
+        private const val EXTRAS_SEARCH = "search"
+
+        @CheckResult
+        fun getIntent(
+            context: Context,
+            deckId: DeckId?,
+            searchTerms: String? = null,
+        ) = Intent(context, FilteredDeckOptions::class.java).apply {
+            deckId?.let { putExtra(EXTRAS_DECK_ID, it) }
+            searchTerms?.let { putExtra(EXTRAS_SEARCH, it) }
+        }
     }
 }

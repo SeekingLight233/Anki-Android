@@ -19,6 +19,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResultListener
@@ -284,9 +285,7 @@ class DeckOptionsDestination(
 ) : Destination {
     override fun toIntent(context: Context): Intent =
         if (isFiltered) {
-            Intent(context, FilteredDeckOptions::class.java).apply {
-                putExtra("did", deckId)
-            }
+            FilteredDeckOptions.getIntent(context, deckId = deckId)
         } else {
             DeckOptions.getIntent(context, deckId)
         }
@@ -297,6 +296,16 @@ class DeckOptionsDestination(
                 deckId = deckId,
                 isFiltered = withCol { decks.isFiltered(deckId) },
             )
+
+        @CheckResult
+        suspend fun fromCurrentDeck() =
+            withCol {
+                val deckId = decks.getCurrentId()
+                DeckOptionsDestination(
+                    deckId = deckId,
+                    isFiltered = decks.isFiltered(deckId),
+                )
+            }
     }
 }
 

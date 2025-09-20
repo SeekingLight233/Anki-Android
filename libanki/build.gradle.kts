@@ -63,7 +63,9 @@ dependencies {
 
     // Android interface dependencies
     implementation(libs.androidx.annotation)
+    implementation(libs.androidx.sqlite.framework)
     testImplementation(libs.androidx.sqlite.framework)
+    testImplementation(libs.androidx.test.rules) // @SdkSuppress
 
     // test dependencies
     testImplementation(libs.hamcrest)
@@ -73,6 +75,8 @@ dependencies {
     testImplementation(libs.junit.vintage.engine)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.json)
+
+    testImplementation(project(":libanki:testutils"))
 
     // project lint checks
     // PERF: some rules do not need to be applied... but the full run was 3s

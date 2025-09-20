@@ -35,8 +35,9 @@ import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import anki.collection.OpChanges
 import com.ichi2.anki.CollectionManager.CollectionOpenFailure
-import com.ichi2.anki.RobolectricTest.Companion.advanceRobolectricLooper
-import com.ichi2.anki.RobolectricTest.Companion.advanceRobolectricLooperWithSleep
+import com.ichi2.anki.RobolectricTest.CollectionStorageMode.IN_MEMORY_NO_FOLDERS
+import com.ichi2.anki.RobolectricTest.CollectionStorageMode.IN_MEMORY_WITH_MEDIA
+import com.ichi2.anki.RobolectricTest.CollectionStorageMode.ON_DISK
 import com.ichi2.anki.common.annotations.UseContextParameter
 import com.ichi2.anki.common.time.MockTime
 import com.ichi2.anki.common.time.TimeManager
@@ -45,32 +46,36 @@ import com.ichi2.anki.libanki.Card
 import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.libanki.Note
 import com.ichi2.anki.libanki.NotetypeJson
-import com.ichi2.anki.libanki.Storage
+import com.ichi2.anki.libanki.testutils.AnkiTest
+import com.ichi2.anki.libanki.testutils.InMemoryCollectionManager
+import com.ichi2.anki.libanki.testutils.InMemoryCollectionManagerWithMediaFolder
+import com.ichi2.anki.libanki.testutils.TestCollectionManager
 import com.ichi2.anki.observability.ChangeManager
 import com.ichi2.anki.observability.undoableOp
 import com.ichi2.anki.preferences.sharedPrefs
 import com.ichi2.compat.customtabs.CustomTabActivityHelper
 import com.ichi2.testutils.AndroidTest
-import com.ichi2.testutils.TaskSchedulerRule
-import com.ichi2.testutils.TestClass
+import com.ichi2.testutils.ProductionCollectionManager
 import com.ichi2.testutils.common.FailOnUnhandledExceptionRule
 import com.ichi2.testutils.common.IgnoreFlakyTestsInCIRule
 import com.ichi2.testutils.filter
 import com.ichi2.utils.InMemorySQLiteOpenHelperFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import net.ankiweb.rsdroid.BackendException
 import net.ankiweb.rsdroid.testing.RustBackendLoader
-import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.json.JSONException
 import org.junit.After
 import org.junit.Assert
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestName
 import org.robolectric.Robolectric
 import org.robolectric.Shadows
@@ -84,7 +89,7 @@ import timber.log.Timber
 import kotlin.test.assertNotNull
 
 open class RobolectricTest :
-    TestClass,
+    AnkiTest,
     AndroidTest {
     @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     private fun Any.wait(timeMs: Long) = (this as Object).wait(timeMs)
@@ -94,11 +99,6 @@ open class RobolectricTest :
     protected fun saveControllerForCleanup(controller: ActivityController<*>) {
         controllersForCleanup.add(controller)
     }
-
-    protected open fun useInMemoryDatabase(): Boolean = true
-
-    @get:Rule
-    val taskScheduler = TaskSchedulerRule()
 
     /** Allows [com.ichi2.testutils.Flaky] to annotate tests in subclasses */
     @get:Rule
@@ -112,6 +112,26 @@ open class RobolectricTest :
 
     @get:Rule
     val timeoutRule: TimeoutRule = TimeoutRule.seconds(60)
+
+    @get:Rule
+    val tempFolder = TemporaryFolder()
+
+    override val collectionManager: TestCollectionManager by lazy {
+        when (getCollectionStorageMode()) {
+            ON_DISK -> ProductionCollectionManager as TestCollectionManager
+            // tempFolder.newFolder() requires `lazy { }`
+            IN_MEMORY_WITH_MEDIA -> InMemoryCollectionManagerWithMediaFolder(tempFolder.newFolder())
+            IN_MEMORY_NO_FOLDERS -> InMemoryCollectionManager()
+        }
+    }
+
+    protected open fun getCollectionStorageMode(): CollectionStorageMode = IN_MEMORY_NO_FOLDERS
+
+    protected enum class CollectionStorageMode {
+        IN_MEMORY_NO_FOLDERS,
+        IN_MEMORY_WITH_MEDIA,
+        ON_DISK,
+    }
 
     @Before
     @CallSuper
@@ -145,8 +165,6 @@ open class RobolectricTest :
 
         maybeSetupBackend()
 
-        Storage.setUseInMemory(useInMemoryDatabase())
-
         // Reset static variable for custom tabs failure.
         CustomTabActivityHelper.resetFailed()
 
@@ -160,7 +178,7 @@ open class RobolectricTest :
     protected open fun useLegacyHelper(): Boolean = false
 
     protected fun getHelperFactory(): SupportSQLiteOpenHelper.Factory =
-        if (useInMemoryDatabase()) {
+        if (getCollectionStorageMode() != ON_DISK) {
             Timber.w("Using in-memory database for test. Collection should not be re-opened")
             InMemorySQLiteOpenHelperFactory()
         } else {
@@ -182,6 +200,11 @@ open class RobolectricTest :
             }
         }
         controllersForCleanup.clear()
+
+        if (AnkiDroidApp.sharedPreferencesTestingOverride != null) {
+            Timber.w("AnkiDroidApp SharedPrefs test override was not reset to null! Setting it to null.")
+            AnkiDroidApp.sharedPreferencesTestingOverride = null
+        }
 
         try {
             if (CollectionManager.isOpenUnsafe()) {
@@ -251,53 +274,10 @@ open class RobolectricTest :
         return messageViewWithinDialog?.text?.toString()
     }
 
-    // Robolectric needs a manual advance with the new PAUSED looper mode
     companion object {
-        private var mBackground = true
-
-        // Robolectric needs a manual advance with the new PAUSED looper mode
+        // Robolectric needs a manual advance in PAUSED looper mode
         fun advanceRobolectricLooper() {
-            if (!mBackground) {
-                return
-            }
             Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
-            Shadows.shadowOf(Looper.getMainLooper()).idle()
-            Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
-        }
-
-        /**
-         * * Causes all of the [Runnable]s that have been scheduled to run while advancing the clock to the start time of the last scheduled Runnable.
-         * * Executes all posted tasks scheduled before or at the current time
-         *
-         * Supersedes and will eventually replace [advanceRobolectricLooper] and [advanceRobolectricLooperWithSleep]
-         */
-        fun advanceRobolectricUiLooper() {
-            Shadows.shadowOf(Looper.getMainLooper()).apply {
-                runToEndOfTasks()
-                idle()
-                // CardBrowserTest:browserIsInMultiSelectModeWhenSelectingAll failed on Windows CI
-                // This line was added and may or may not make a difference
-                runToEndOfTasks()
-            }
-        }
-
-        // Robolectric needs some help sometimes in form of a manual kick, then a wait, to stabilize UI activity
-        fun advanceRobolectricLooperWithSleep() {
-            if (!mBackground) {
-                return
-            }
-            advanceRobolectricLooper()
-            try {
-                Thread.sleep(500)
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-            advanceRobolectricLooper()
-        }
-
-        /** This can probably be implemented in a better manner  */
-        internal fun waitForAsyncTasksToComplete() {
-            advanceRobolectricLooperWithSleep()
         }
 
         @JvmStatic // Using protected members which are not @JvmStatic in the superclass companion is unsupported yet
@@ -320,7 +300,7 @@ open class RobolectricTest :
                     .start()
                     .resume()
                     .visible()
-            advanceRobolectricLooperWithSleep()
+            advanceRobolectricLooper()
             testClass.saveControllerForCleanup(controller)
             return controller.get()
         }
@@ -346,10 +326,11 @@ open class RobolectricTest :
     /** A collection. Created one second ago, not near cutoff time.
      * Each time time is checked, it advance by 10 ms. Not enough to create any change visible to user, but ensure
      * we don't get two equal time. */
+
     override val col: Collection
         get() =
             try {
-                CollectionManager.getColUnsafe()
+                collectionManager.getColUnsafe()
             } catch (e: UnsatisfiedLinkError) {
                 throw RuntimeException("Failed to load collection. Did you call super.setUp()?", e)
             }
@@ -384,69 +365,6 @@ open class RobolectricTest :
 
     internal inline fun <reified T : AnkiActivity?> startRegularActivity(i: Intent? = null): T =
         startActivityNormallyOpenCollectionWithIntent(T::class.java, i)
-
-    /**
-     * Call to assume that <code>actual</code> satisfies the condition specified by <code>matcher</code>.
-     * If not, the test halts and is ignored.
-     * Example:
-     * ```kotlin
-     *   assumeThat(1, is(1));  // passes
-     *   foo();                 // will execute
-     *   assumeThat(0, is(1));  // assumption failure! test halts
-     *   int x = 1 / 0;         // will never execute
-     * ```
-     *
-     * @param <T> the static type accepted by the matcher (this can flag obvious compile-time problems such as `assumeThat(1, equalTo("a"))`)
-     * @param actual the computed value being compared
-     * @param matcher an expression, built from [Matchers][Matcher], specifying allowed values
-     * @see org.hamcrest.CoreMatchers
-     * @see org.junit.matchers.JUnitMatchers
-     */
-    fun <T> assumeThat(
-        actual: T,
-        matcher: Matcher<T>?,
-    ) {
-        Assume.assumeThat(actual, matcher)
-    }
-
-    /**
-     * Call to assume that `actual` satisfies the condition specified by <code>matcher</code>.
-     * If not, the test halts and is ignored.
-     * Example:
-     * ```kotlin
-     *   assumeThat("alwaysPasses", 1, equalTo(1)); // passes
-     *   foo();                                     // will execute
-     *   assumeThat("alwaysFails", 0, equalTo(1));  // assumption failure! test halts
-     *   int x = 1 / 0;                             // will never execute
-     * ```
-     *
-     * @param <T> the static type accepted by the matcher (this can flag obvious compile-time problems such as `assumeThat(1, equalTo("a"))`
-     * @param actual the computed value being compared
-     * @param matcher an expression, built from [Matchers][Matcher], specifying allowed values
-     * @see org.hamcrest.CoreMatchers
-     * @see org.junit.matchers.JUnitMatchers
-     */
-    fun <T> assumeThat(
-        message: String?,
-        actual: T,
-        matcher: Matcher<T>?,
-    ) {
-        Assume.assumeThat(message, actual, matcher)
-    }
-
-    /**
-     * If called with an expression evaluating to `false`, the test will halt and be ignored.
-     *
-     * @param b If `false`, the method will attempt to stop the test and ignore it by
-     * throwing [AssumptionViolatedException]
-     * @param message A message to pass to [AssumptionViolatedException]
-     */
-    fun assumeTrue(
-        message: String?,
-        b: Boolean,
-    ) {
-        Assume.assumeTrue(message, b)
-    }
 
     fun equalFirstField(
         expected: Card,
@@ -520,6 +438,17 @@ open class RobolectricTest :
             }
             throw e
         }
+    }
+
+    override fun setupTestDispatcher(dispatcher: TestDispatcher) {
+        super.setupTestDispatcher(dispatcher)
+        ioDispatcher = dispatcher
+    }
+
+    override suspend fun TestScope.runTestInner(testBody: suspend TestScope.() -> Unit) {
+        (collectionManager as? ProductionCollectionManager)
+            ?.setTestDispatcher(UnconfinedTestDispatcher(testScheduler))
+        testBody()
     }
 }
 

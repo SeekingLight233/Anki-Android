@@ -28,16 +28,17 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.ichi2.anki.AnkiActivity
 import com.ichi2.anki.AnkiDroidApp
 import com.ichi2.anki.R
 import com.ichi2.anki.analytics.UsageAnalytics
 import com.ichi2.anki.analytics.UsageAnalytics.Actions
 import com.ichi2.anki.analytics.UsageAnalytics.Category
+import com.ichi2.anki.ankiActivity
 import com.ichi2.anki.dialogs.help.HelpItem.Action.OpenUrl
 import com.ichi2.anki.dialogs.help.HelpItem.Action.OpenUrlResource
 import com.ichi2.anki.dialogs.help.HelpItem.Action.Rate
 import com.ichi2.anki.dialogs.help.HelpItem.Action.SendReport
+import com.ichi2.anki.utils.ext.setCompoundDrawablesRelativeWithIntrinsicBoundsKt
 import com.ichi2.utils.createAndApply
 import com.ichi2.utils.customView
 import com.ichi2.utils.dp
@@ -52,8 +53,7 @@ class HelpDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val customView = requireActivity().layoutInflater.inflate(R.layout.dialog_help, null)
-        val ankiActivity = requireActivity() as? AnkiActivity
-        if (ankiActivity != null) {
+        ankiActivity?.let { ankiActivity ->
             actionsDispatcher = AnkiActivityHelpActionsDispatcher(ankiActivity)
         }
         childFragmentManager.setFragmentResultListener(
@@ -200,12 +200,7 @@ class HelpPageFragment : Fragment(R.layout.fragment_help_page) {
                 ) as TextView
             contentRow.apply {
                 setText(menuItem.titleResId)
-                setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    menuItem.iconResId,
-                    0,
-                    0,
-                    0,
-                )
+                setCompoundDrawablesRelativeWithIntrinsicBoundsKt(start = menuItem.iconResId)
                 compoundDrawablePadding = 16.dp.toPx(requireContext())
                 setOnClickListener {
                     UsageAnalytics.sendAnalyticsEvent(Category.LINK_CLICKED, menuItem.analyticsId)

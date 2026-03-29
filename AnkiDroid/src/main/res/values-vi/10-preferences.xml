@@ -232,20 +232,14 @@
     <string name="misc" maxLength="41">Hỗn hợp</string>
     <!-- Review reminders -->
     <string name="add_reminder" comment="Label for the add reminder button in the screen for adding and editing review reminders">Thêm lời nhắc</string>
+    <string name="add_review_reminder" comment="Title of the screen for creating a new review reminder">Add review reminder</string>
+    <string name="edit_review_reminder" comment="Title of the screen for editing an existing review reminder">Edit review reminder</string>
+    <string name="you_have_no_review_reminders" comment="Text that appears in the review reminder editing screen when there are no reminders set">You have no review reminders</string>
     <!-- studyoptions -->
     <string name="studyoptions_limit_select_tags">Chọn thẻ</string>
     <!-- Deck configurations -->
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Chung</string>
-    <string name="deck_conf_cram_filter" maxLength="41">Bộ lọc</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Tìm</string>
-    <string name="deck_conf_cram_limit" maxLength="41">Giới hạn</string>
-    <string name="deck_conf_cram_order" maxLength="41">Thẻ được lựa chọn bởi</string>
-    <string name="deck_conf_cram_reschedule" maxLength="41" comment="Title of the box labelled by deck_conf_cram_reschedule_summ">Lên lịch lại</string>
-    <string name="deck_conf_cram_reschedule_summ">Lên lịch lại thẻ dựa trên câu trả lời của tôi trong chủ đề này</string>
-    <string name="deck_conf_cram_filter_2_check">Enable second filter</string>
-    <string name="deck_conf_cram_steps_summ" maxLength="41">Xác định các bước tùy chỉnh</string>
-    <string name="deck_conf_cram_preview_delays" maxLength="41">Trì hoãn xem trước</string>
-    <string name="deck_conf_cram_preview_delays_summ">Delays are in seconds. 0 returns card to original deck.</string>
     <!-- analytics options -->
     <string name="analytics_dialog_title">Giúp cải thiện AnkiDroid!</string>
     <string name="analytics_title" maxLength="41">Chia sẻ việc sử dụng tính năng</string>
@@ -382,6 +376,8 @@
     <string name="new_study_screen_summ"><![CDATA[Màn hình học tập đã được cải tiến sẽ thay thế màn hình hiện tại. Một số tính năng của màn hình cũ đã được thay đổi hoặc loại bỏ. Vui lòng gửi <a href="%1$s">phản hồi</a> hoặc <a href="%2$s">báo lỗi</a> nếu có.]]></string>
     <string name="show_answer_feedback" maxLength="41">Show answer feedback</string>
     <string name="screen" maxLength="41">Screen</string>
+    <string name="only_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to only answer the card">Only answer</string>
+    <string name="flip_and_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to answer the card if on the answer side, and flip it if on the question side">Flip and answer</string>
     <!--Keyboard shortcuts dialog-->
     <string name="open_settings" comment="Description of the shortcut that opens the app settings">Mở cài đặt</string>
 </resources>

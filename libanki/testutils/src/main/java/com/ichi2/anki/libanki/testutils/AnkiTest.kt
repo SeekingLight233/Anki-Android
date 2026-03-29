@@ -17,17 +17,24 @@
 package com.ichi2.anki.libanki.testutils
 
 import android.annotation.SuppressLint
+import anki.notetypes.Notetype
+import anki.notetypes.copy
 import com.ichi2.anki.libanki.Card
 import com.ichi2.anki.libanki.CardType
 import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.libanki.Consts
+import com.ichi2.anki.libanki.Deck
 import com.ichi2.anki.libanki.DeckConfig
 import com.ichi2.anki.libanki.DeckId
+import com.ichi2.anki.libanki.Decks
 import com.ichi2.anki.libanki.Note
+import com.ichi2.anki.libanki.NoteTypeId
 import com.ichi2.anki.libanki.NotetypeJson
 import com.ichi2.anki.libanki.Notetypes
 import com.ichi2.anki.libanki.QueueType
+import com.ichi2.anki.libanki.addNotetype
 import com.ichi2.anki.libanki.exception.ConfirmModSchemaException
+import com.ichi2.anki.libanki.getNotetype
 import com.ichi2.anki.libanki.testutils.ext.addNote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -39,7 +46,8 @@ import net.ankiweb.rsdroid.exceptions.BackendDeckIsFilteredException
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * marker interface for classes which contain tests and access the Anki collection
@@ -118,20 +126,32 @@ interface AnkiTest {
         fields: Array<String>,
         qfmt: String,
         afmt: String,
+        templateCount: Int = 1,
     ): String {
         val noteType = col.notetypes.new(name)
         for (field in fields) {
             col.notetypes.addFieldLegacy(noteType, col.notetypes.newField(field))
         }
-        val t =
-            Notetypes.newTemplate("Card 1").also { tmpl ->
-                tmpl.qfmt = qfmt
-                tmpl.afmt = afmt
-            }
-        col.notetypes.addTemplate(noteType, t)
+        repeat(templateCount) { idx ->
+            val t =
+                Notetypes.newTemplate("Card ${idx + 1}").also { tmpl ->
+                    tmpl.qfmt = qfmt
+                    tmpl.afmt = afmt
+                }
+            col.notetypes.addTemplate(noteType, t)
+        }
         col.notetypes.add(noteType)
         return name
     }
+
+    fun addClozeNoteType(name: String = "Cloze2"): NoteTypeId =
+        col
+            .addNotetype(
+                col.notetypes.cloze.proto().copy {
+                    id = 0
+                    this.name = name
+                },
+            ).id
 
     /** Adds a note with Text to Speech functionality */
     fun addTextToSpeechNote(
@@ -197,8 +217,18 @@ interface AnkiTest {
         col.decks.select(Consts.DEFAULT_DECK_ID)
     }
 
+    /**
+     * Returns the 'Custom Study Session' deck if present, null otherwise.
+     * TODO this matches directly on 'Custom Study Session' and doesn't handle i18n!
+     */
+    val Decks.customStudySession: Deck?
+        get() = byName("Custom Study Session")
+
     /** Adds [count] notes in the same deck with the same front & back */
-    fun addNotes(count: Int): List<Note> = List(count) { addBasicNote() }
+    fun addNotes(
+        count: Int,
+        front: String = "Front",
+    ): List<Note> = List(count) { addBasicNote(front = front) }
 
     fun Note.moveToDeck(
         deckName: String,
@@ -243,6 +273,12 @@ interface AnkiTest {
     fun Card.update(update: Card.() -> Unit): Card {
         update(this)
         this@AnkiTest.col.updateCard(this, skipUndoEntry = true)
+        return this
+    }
+
+    /** Helper method to suspend all cards of a note */
+    fun Note.suspendAll(): Note {
+        col.sched.suspendCards(cardIds(col))
         return this
     }
 
@@ -313,10 +349,13 @@ interface AnkiTest {
      * A fix for this might require either wrapping all tests in runTest(),
      * or finding some other way to isolate the coroutine and non-coroutine tests
      * on separate threads/processes.
+     *
+     * @param dispatchTimeout The test fails with an AssertionError if not completed within this
+     * time
      * */
     fun runTest(
         context: CoroutineContext = EmptyCoroutineContext,
-        dispatchTimeoutMs: Long = 60_000L,
+        dispatchTimeout: Duration = DEFAULT_TEST_TIMEOUT,
         times: Int = 1,
         testBody: suspend TestScope.() -> Unit,
     ) {
@@ -325,7 +364,7 @@ interface AnkiTest {
         setupTestDispatcher(dispatcher)
         repeat(times) {
             if (times != 1) Timber.d("------ Executing test $it/$times ------")
-            kotlinx.coroutines.test.runTest(context, dispatchTimeoutMs.milliseconds) {
+            kotlinx.coroutines.test.runTest(context, dispatchTimeout) {
                 runTestInner(testBody)
             }
         }
@@ -335,4 +374,26 @@ interface AnkiTest {
     suspend fun TestScope.runTestInner(testBody: suspend TestScope.() -> Unit) {
         testBody()
     }
+
+    val Notetypes.basic
+        get() = byName("Basic")!!
+
+    val Notetypes.basicAndReversed
+        get() = byName("Basic (and reversed card)")!!
+
+    val Notetypes.cloze
+        get() = byName("Cloze")!!
+
+    /**
+     * Returns the backend protobuf of the note type
+     */
+    fun NotetypeJson.proto(): Notetype = col.getNotetype(this.id)
 }
+
+/**
+ * The default timeout for tests. An [AssertionError] is thrown if execution takes longer than this
+ * time.
+ *
+ * Do not change this, instead determine why a test is taking longer than a minute.
+ */
+val DEFAULT_TEST_TIMEOUT: Duration = 60.seconds

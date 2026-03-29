@@ -43,7 +43,6 @@
     </plurals>
     <!--Browser-->
     <string name="model_browser_delete">削除</string>
-    <string name="model_browser_rename" comment="Rename a note type">名前を変更</string>
     <string name="model_browser_template">カードを編集</string>
     <!--Rename-->
     <string name="rename_model">ノートタイプの名前を変更</string>
@@ -51,7 +50,6 @@
     <!--Language Hint-->
     <string name="model_field_editor_language_hint_dialog_success_result">%s をキーボード言語に設定しました</string>
     <!--Field Editing-->
-    <string name="model_field_editor_title">フィールドを編集</string>
     <string name="model_field_editor_add" maxLength="28">フィールドを追加</string>
     <string name="model_field_editor_delete">削除</string>
     <string name="model_field_editor_rename">名前を変更</string>
@@ -61,6 +59,12 @@
     <string name="model_field_editor_sort_field">ブラウザでのソートフィールド（見出し・並べ替え用項目）に指定</string>
     <!--Warnings-->
     <string name="model_delete_warning">このノートタイプを削除します。本当によろしいですか？</string>
+    <!--
+        Example output:
+        Delete the note types below?
+        Basic, Basic (and reversed card), Cloze
+     -->
+    <string name="model_delete_multiple_warning">下記のノートタイプを削除してもよろしいですか？\n%s</string>
     <string name="field_delete_warning">このフィールドを削除します。本当によろしいですか？</string>
     <!--Model Add Suffixes-->
     <string name="model_browser_add_add">追加: %1$s</string>
@@ -68,9 +72,9 @@
     <string name="model_browser_add_clone">複製: %1$s</string>
     <!--Browser Appearance-->
     <string name="card_template_browser_appearance_summary">カードブラウザでカードをリスト表示する際に使用するテンプレートを設定できます。これを利用すると、内容をより簡潔に表示することができます。\n\n例えば、\n「 {{Country}} の首都はどこですか？」\nという内容の表面テンプレートについて、\n「 {{Country}} の首都」\nという、リストの質問欄用のテンプレートを設定することによって、「フランス の首都」「ドイツ の首都」のように、カード表面の内容をコンパクトに示すことができます。</string>
-    <string name="card_template_browser_appearance_question_format">質問欄テンプレート</string>
-    <string name="card_template_browser_appearance_answer_format">解答欄テンプレート</string>
-    <string name="card_template_browser_appearance_restore_default_dialog">既定値を復元しますか？</string>
+    <string name="card_template_browser_appearance_question_format">Question format</string>
+    <string name="card_template_browser_appearance_answer_format">Answer format</string>
+    <string name="card_template_browser_appearance_restore_default_dialog">Are you sure you want to restore the browser appearance to default?</string>
     <string name="card_template_browser_appearance_saving_note">この画面での変更は、一つ手前の画面でカードテンプレートを保存した後にカードブラウザに適用されます。</string>
     <!-- Deck Override -->
     <string name="card_template_editor_deck_override_on">デッキ選択を上書き (指定済み)</string>

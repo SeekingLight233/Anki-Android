@@ -253,7 +253,8 @@ class DeckPickerWidget : AnalyticsWidgetProvider() {
             Timber.d("Updating widget with ID: $widgetId")
             val selectedDeckIds = widgetPreferences.getSelectedDeckIdsFromPreferences(widgetId)
 
-            /**Explanation of behavior when selectedDeckIds is empty
+            /*
+             * Explanation of behavior when selectedDeckIds is empty
              * If selectedDeckIds is empty, the widget will retain the previous deck list.
              * This behavior ensures that the widget does not display an empty view, which could be
              * confusing to the user. Instead, it maintains the last known state until a new valid
@@ -302,9 +303,27 @@ class DeckPickerWidget : AnalyticsWidgetProvider() {
             // It is triggered by the setRecurringAlarm method to refresh the widget's data periodically.
             ACTION_UPDATE_WIDGET -> {
                 val appWidgetId = intent.getAppWidgetId()
-                if (appWidgetId != INVALID_APPWIDGET_ID) {
-                    Timber.d("Received ACTION_UPDATE_WIDGET for widget ID: $appWidgetId")
+                if (appWidgetId == INVALID_APPWIDGET_ID) {
+                    return
                 }
+
+                val selectedDeckIds = widgetPreferences.getSelectedDeckIdsFromPreferences(appWidgetId)
+                if (selectedDeckIds.isEmpty()) {
+                    /*
+                     * Rationale: see `performUpdate`
+                     */
+                    Timber.d(
+                        "Ignoring ACTION_UPDATE_WIDGET for widget ID: $appWidgetId because selectedDeckIds is empty",
+                    )
+                    return
+                }
+
+                Timber.d(
+                    "Updating widget with ID: $appWidgetId on ACTION_UPDATE_WIDGET. selectedDeckIds: ${
+                        selectedDeckIds.joinToString(", ")
+                    }",
+                )
+                updateWidget(context, AppWidgetManager.getInstance(context), appWidgetId, selectedDeckIds)
             }
             AppWidgetManager.ACTION_APPWIDGET_DELETED -> {
                 Timber.d("ACTION_APPWIDGET_DELETED received")
@@ -331,7 +350,6 @@ class DeckPickerWidget : AnalyticsWidgetProvider() {
                 CrashReportService.sendExceptionReport(
                     Exception("Unexpected action received: ${intent.action}"),
                     "DeckPickerWidget - onReceive",
-                    null,
                     onlyIfSilent = true,
                 )
             }

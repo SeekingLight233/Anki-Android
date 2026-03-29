@@ -30,6 +30,7 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
+            android:background="@android:color/transparent"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,14 +38,12 @@
             app:tabGravity="fill" >
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/set_single_day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/calendar_single_day"
                 />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/set_date_range"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/calendar_date_range"

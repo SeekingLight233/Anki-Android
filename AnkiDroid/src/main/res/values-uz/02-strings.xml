@@ -47,14 +47,15 @@
     <!-- Navigation drawer strings -->
     <string name="drawer_open">Tortmani ochish</string>
     <string name="drawer_close">Tortmani yopish</string>
-    <string name="note_message">Note saved</string>
+    <string name="note_message">Qayt saqlandi</string>
+    <!-- Note editor screen -->
     <string name="CardEditorCardDeck">Karta dastai:</string>
     <string name="CardEditorNoteDeck">dasta</string>
     <string name="CardEditorModel">Turi:</string>
     <string name="CardEditorTags">Teglar: %1$s</string>
     <string name="CardEditorCards">Kartalar: %1$s</string>
     <string name="edit_occlusions">Rasm toʻsiqlarini tahrirlash</string>
-    <string name="tag_name">Teg nomi</string>
+    <string name="paste_from_clipboard" maxLength="28">Buferdan qoʻyish</string>
     <string name="add_new_filter_tags">Teglar qoʻshish/filtrlash</string>
     <string name="add_tag" maxLength="28">Teg qoʻshish</string>
     <string name="check_all_tags" maxLength="28">Barcha teglarni belgila/ma</string>
@@ -65,18 +66,17 @@
     <string name="save_whiteboard" maxLength="28">Yozuv taxtasini saqlash</string>
     <string name="enable_stylus" maxLength="28">Qalam rejimini yoqish</string>
     <string name="disable_stylus">Qalam rejimini oʻchirish</string>
-    <string name="eraser" maxLength="28">Eraser</string>
-    <string name="add_brush" maxLength="28">Add brush</string>
-    <string name="whiteboard_align_left" comment="Option to align the whiteboard toolbar on the left" maxLength="28">Left</string>
-    <string name="whiteboard_align_bottom" comment="Option to align the whiteboard toolbar on the bottom" maxLength="28">Bottom</string>
-    <string name="whiteboard_align_right" comment="Option to align the whiteboard toolbar on the right" maxLength="28">Right</string>
-    <string name="whiteboard_clear" comment="Button text to clear the whiteboard" maxLength="28">Clear</string>
-    <string name="whiteboard_more_options" comment="Tooltip of the whiteboard \'More\' button" maxLength="28">More options</string>
-    <string name="whiteboard_remove_brush_message">Are you sure you want to remove this brush from your palette?</string>
-    <string name="whiteboard_ink_eraser" comment="Title of the whiteboard Ink eraser">Ink</string>
-    <string name="whiteboard_stroke_eraser" comment="Title of the whiteboard Stroke eraser">Stroke</string>
-    <string name="stylus_mode" comment="Title of the menu item that toggles the whiteboard stylus mode" maxLength="28">Stylus mode</string>
-    <string name="cannot_remove_last_brush_message">The last brush may not be removed</string>
+    <string name="eraser" maxLength="28">Oʻchirgich</string>
+    <string name="add_brush" maxLength="28">Choʻtka qoʻshish</string>
+    <string name="whiteboard_align_left" comment="Option to align the whiteboard toolbar on the left" maxLength="28">Chap</string>
+    <string name="whiteboard_align_bottom" comment="Option to align the whiteboard toolbar on the bottom" maxLength="28">Past</string>
+    <string name="whiteboard_align_right" comment="Option to align the whiteboard toolbar on the right" maxLength="28">Oʻng</string>
+    <string name="whiteboard_more_options" comment="Tooltip of the whiteboard \'More\' button" maxLength="28">Boshqa parametrlar</string>
+    <string name="whiteboard_remove_brush_message">Rostdan ham bu choʻtkani palitradan olib tashlamoqchimisiz?</string>
+    <string name="whiteboard_ink_eraser" comment="Title of the whiteboard Ink eraser">Siyoh</string>
+    <string name="whiteboard_stroke_eraser" comment="Title of the whiteboard Stroke eraser">Chiziq</string>
+    <string name="stylus_mode" comment="Title of the menu item that toggles the whiteboard stylus mode" maxLength="28">Stilus rejimi</string>
+    <string name="cannot_remove_last_brush_message">Oxirigi choʻtkani olib tashlab boʻlmaydi</string>
     <string name="enable_whiteboard" maxLength="28">Yozuv taxtasini yoqish</string>
     <string name="disable_whiteboard">Yozuv taxtasini oʻchirish</string>
     <string name="show_whiteboard">Yozuv taxtasini koʻrsatish</string>
@@ -84,6 +84,7 @@
     <string name="disable_eraser" maxLength="28">Oʻchirgʻichni oʻchirish</string>
     <string name="hide_whiteboard" maxLength="28">Yozuv taxtasini yashirish</string>
     <string name="clear_whiteboard" maxLength="28">Yozuv taxtasini tozalash</string>
+    <string name="hide_toolbar" maxLength="28">Asboblar panelini yashirish</string>
     <string name="replay_media" maxLength="28">Mediani qayta ijro etish</string>
     <string name="leech_suspend_notification">Karta yopishqoq deb belgilandi va toʻxtatildi</string>
     <string name="leech_notification">Karta yopishqoq deb belgilandi</string>
@@ -95,8 +96,12 @@
     <string name="webview_crash_fatal">Fatal xatolik: WebView ishdan chiqdi. Sababi: %s</string>
     <string name="webview_crash_loop_dialog_title">Tizim WebView renderlashda xatolik</string>
     <string name="webview_crash_loop_dialog_content">Tizim WebView “%1$s” kartasini koʻrsata olmadi.\n %2$s</string>
-    <string name="slide_to_cancel" comment="Message shown when pressing the record button">Slide to cancel</string>
+    <string name="slide_to_cancel" comment="Message shown when pressing the record button">Bekor qilish uchun suring</string>
     <string name="filter_by_flags" maxLength="41">Bayroqlar</string>
+    <!-- filtered deck options -->
+    <string name="filtered_option_delay_again">“Qaytadan” uchun kechikish</string>
+    <string name="filtered_option_delay_hard">“Qiyin” uchun kechikish</string>
+    <string name="filtered_option_delay_good">“Yaxshi” uchun kechikish</string>
     <!-- Custom study options -->
     <string name="custom_study_loading_tags">Teglar roʻyxati qurilmoqda</string>
     <!-- Study options -->
@@ -118,14 +123,13 @@
     <string name="close">Yopish</string>
     <string name="select">Tanlash</string>
     <string name="field_remapping">%1$s (“%2$s” dan)</string>
-    <string name="confirm_map_cards_to_nothing">Hech narsaga mos kelmaydigan kartalar oʻchiriladi. Agar qaydda boshqa kartalar qolmasa, u yoʻqoladi. Rostdan ham davom ettirmoqchimisiz?</string>
     <string name="missing_note_type">Qayd turi topilmadi</string>
     <string name="card_previewer_empty_front_indicator" comment="Extra text appended onto a tab title in the card previewer so that the user can see at a glance whether a card has no front.">%1$s (boʻsh)</string>
     <!-- Image cropper -->
-    <string name="image_cropper_action_rotate" maxLength="28" comment="Action in image cropper screen">Rotate</string>
-    <string name="image_cropper_action_flip" maxLength="28" comment="Action in image cropper screen">Flip</string>
-    <string name="image_cropper_action_flip_horizontally" maxLength="28" comment="Submenu action in image cropper screen">Flip horizontally</string>
-    <string name="image_cropper_action_flip_vertically" maxLength="28" comment="Submenu action in image cropper screen">Flip vertically</string>
+    <string name="image_cropper_action_rotate" maxLength="28" comment="Action in image cropper screen">Aylantirish</string>
+    <string name="image_cropper_action_flip" maxLength="28" comment="Action in image cropper screen">Oʻgirish</string>
+    <string name="image_cropper_action_flip_horizontally" maxLength="28" comment="Submenu action in image cropper screen">Gorizontal oʻgirish</string>
+    <string name="image_cropper_action_flip_vertically" maxLength="28" comment="Submenu action in image cropper screen">Vertikal oʻgirish</string>
     <!-- Timebox -->
     <string name="timebox_reached_title">Oʻrganish muddati tugadi</string>
     <plurals name="timebox_reached">
@@ -156,15 +160,16 @@
     <string name="import_title">Import qilish</string>
     <string name="import_preparing_file">Fayl import uchun tayyorlanmoqda&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Qoʻshish</string>
-    <string name="import_message_replace_confirm">Bu sizda mavjud boʻlgan toʻplamingizni oʻchiradi va uni %s fayl maʼlumotlari bilan almashtiradi</string>
-    <string name="import_dialog_message_add">“%s” toʻplamga qoʻshilsinmi? Bu koʻp vaqt olishi mumkin</string>
+    <string name="import_message_replace_confirm">Bu sizda mavjud boʻlgan kolleksiyangizni oʻchiradi va uni %s fayl maʼlumotlari bilan almashtiradi</string>
+    <string name="import_dialog_message_add">“%s” kolleksiyaga qoʻshilsinmi? Bu koʻp vaqt olishi mumkin</string>
     <string name="import_log_no_apkg">Bu yaroqli Anki paket fayli emas</string>
     <string name="import_title_error" comment="Title of error dialog">Xatolik</string>
     <string name="import_error_handle_exception">Faylni import qilib boʻlmadi\n\n%s</string>
     <string name="import_error_not_apkg_extension">“%s” fayl nomida .apkg yoki .colpkg kengaytmasi yoʻq</string>
     <string name="import_error_load_imported_database">Anki maʼlumotlar bazasini (.anki2) almashtirish hali qoʻllab-quvvatlanmaydi. Iltimos, almashtirish boʻyicha koʻrsatmalar uchun qoʻllanmaga murojaat qiling.</string>
     <string name="import_error_content_provider">Tanlangan faylni AnkiDroid tomonidan avtomatik import qilib boʻlmadi. Anki fayllarni qoʻlda import qilish uchun foydalanuvchi qoʻllanmasiga murojaat qiling: \n%s</string>
-    <string name="import_error_copy_to_cache">Faylni keshlash amalga oshmadi (xotirada joy qolmagan boʻlishi mumkin)</string>
+    <string name="import_error_copy_to_cache_title">Faylni keshlash amalga oshmadi</string>
+    <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Bu koʻpincha faylni tanlash uchun foydalangan ilovadagi xato tufayli yuzaga keladi. Quyidagi yechimlarni sinab koʻring:\n\n%s</string>
     <string name="import_interrupted">Import uzuldi: AnkiDroid yopilgan</string>
     <string name="export_ready_title">Eksportga tayyor</string>
     <string name="export_send_no_handlers">apkg bilan ishlash uchun ilova mavjud emas. Saqlanmoqda&#8230;</string>
@@ -188,10 +193,9 @@
     <string name="select_tts" maxLength="28">TTS tilini sozlash</string>
     <string name="custom_study" maxLength="28">Maxsus oʻrganish</string>
     <string name="dyn_deck_desc">Bu odatiy kun tartibidan tashqarida oʻqish uchun maxsus dasta. Koʻrib chiqilganidan soʻng kartalar avtomatik ravishda oʻzining asl dastalariga qaytariladi. Ushbu dastani dastalar roʻyxatidan oʻchirib tashlasangiz, qolgan barcha kartalar oʻzining asl dastalariga qaytariladi.</string>
-    <string name="steps_error">Bosqichlar soni 0 dan katta boʻlishi kerak</string>
-    <string name="steps_min_error">Kamida bitta bosqich talab qilinadi</string>
     <string name="tag_editor_add_feedback">“%1$s” qoʻshishni tasdiqlash uchun “%2$s” tugmasini bosing</string>
     <string name="tag_editor_add_feedback_existing">Mavjud boʻlgan “%1$s” tegi tanlandi</string>
+    <string name="tag_already_exists">Teg allaqachon mavjud</string>
     <!-- Time spans -->
     <!-- Currently only used if exporting APKG fails -->
     <string name="apk_share_error">apkg faylni ulashishda xatolik yuz berdi</string>
@@ -205,7 +209,7 @@
     <string name="background_image_title" maxLength="41">Orqa fon</string>
     <string name="choose_an_image" maxLength="41">Rasm tanlash</string>
     <string name="remove_wallpaper_image" maxLength="41">Orqa fonni olib tashlash</string>
-    <string name="remove_background_image">Orqa fonni olib tashlamoqchimisiz?</string>
+    <string name="remove_background_image">Are you sure you wish to remove the background?</string>
     <!-- Card Template Browser Appearance -->
     <string name="restore_default" maxLength="28">Birlamchiga qaytarish</string>
     <string name="reviewer_tts_cloze_spoken_replacement">Boʻshliq</string>
@@ -233,6 +237,7 @@
     <string name="search_decks" maxLength="28">Dastalarni qidirish</string>
     <string name="ankidroid_init_failed_webview_title">Fatal xatolik</string>
     <string name="ankidroid_init_failed_webview">AnkiDroid hozirda mavjud boʻlmagan tizim WebViewʼga tayanadi. Bu tizim yangilanishlarni oʻrnatayotganda sodir boʻlishi mumkin. Bir necha daqiqadan soʻng qayta urinib koʻring.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Android xatoligi sababli AnkiDroid diskka ruxsati yoʻq.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Shrift oʻlchami</string>
     <string name="menu_show_toolbar" comment="Checkable item stating whether the note editor toolbar should be shown" maxLength="28">Asboblar panelini koʻrsatish</string>
@@ -244,8 +249,8 @@
     <string name="format_font_size">Shrift oʻlchamini oʻzgartirish</string>
     <string name="insert_mathjax">MathJax tenglamasini kiritish</string>
     <string name="note_editor_toolbar_icon">Tugma matni</string>
-    <string name="before_text">Tanlashdan oldingi HTML</string>
-    <string name="after_text">Tanlashdan keyingi HTML</string>
+    <string name="before_text">Tanlashdan oldin HTML</string>
+    <string name="after_text">Tanlashdan keyin HTML</string>
     <string name="add_toolbar_item">Asboblar paneli elementini yaratish</string>
     <string name="edit_toolbar_item">Asboblar paneli elementini tahrirlash</string>
     <string name="toolbar_item_explain_edit_or_remove">Tanlangan matndan oldin va keyin kiritiladigan HTMLʼni kiriting\n\nUni tahrirlash yoki olib tashlash uchun asboblar paneli elementini uzoq vaqt bosib turing.</string>
@@ -259,9 +264,12 @@
     <string name="create_shortcut_error">Yorliq qoʻshishda xatolik: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Jumlalar bosh harf bilan</string>
     <string name="menu_scroll_toolbar" comment="Checkbox stating whether note editor toolbar is scrollable or stacked. Checked: Scroll" maxLength="28">Asboblar panelini aylantirish</string>
-    <!-- Symbols used as Button text in IncrementNumberRangePreference -->
+    <!-- IncrementNumberRangePreference -->
     <string name="plus_sign" comment="Label for increment button in IncrementerNumberRangePreference">+</string>
     <string name="minus_sign" comment="Label for decrement button in IncrementerNumberRangePreference">-</string>
+    <string name="invalid_value" comment="Error message in IncrementerNumberRangePreference when input is not a valid number">Yaroqsiz qiymat</string>
+    <string name="maximum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the maximum allowed value">Maksimal qiymat %d</string>
+    <string name="minimum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the minimum allowed value">Minimal qiymat %d</string>
     <!-- Used for credential empty warning message -->
     <string name="invalid_email">Yaroqli e-pochta manzilini kiriting</string>
     <string name="password_empty">Parol talab etiladi</string>
@@ -279,7 +287,6 @@
     <string name="download_failed">Yuklab olib boʻlmadi</string>
     <string name="deck_download_progress_message">Yuklab olish jarayonida boshqa ilovalardan foydalanishingiz mumkin</string>
     <string name="check_network">Iltimos, tarmoqqa ulanganingizni tekshiring</string>
-    <string name="search_using_deck_name">Dasta nomi boʻyicha qidirish</string>
     <string name="external_storage_unavailable">Yuklab olish toʻxtatildi, tashqi xotira mavjud emas</string>
     <string name="home" maxLength="28">Bosh sahifa</string>
     <!-- Study Screen actions
@@ -302,8 +309,12 @@
     <!--  Hierarchical Tags  -->
     <string name="expand_tag">\'%s\' tegini yoyish</string>
     <!-- Manage note types -->
-    <string name="field_editor_model_not_available">Toʻplamni ochib boʻlmadi. Iltimos, qayta urinib koʻring!</string>
+    <string name="field_editor_model_not_available">Kolleksiyani ochib boʻlmadi. Iltimos, qayta urinib koʻring!</string>
     <string name="cd_manage_notetypes_add">Yangi qayd turini qoʻshish</string>
+    <plurals name="note_types_selected">
+        <item quantity="one">%d ta qayd turi tanlandi</item>
+        <item quantity="other">%d ta qayd turi tanlandi</item>
+    </plurals>
     <!-- App Intro -->
     <string name="intro_ankidroid_tagline_one">Kamroq oʻqi</string>
     <string name="intro_ankidroid_tagline_two">Koʻproq eslab qol</string>
@@ -312,7 +323,6 @@
     <string name="intro_sync_from_ankiweb">AnkiWebʼdan sinxronlash</string>
     <!-- IntentHandler -->
     <string name="app_not_initialized_new">AnkiDroid hali ishga tushirilmagan. AnkiDroidʼni oching va qayta urinib koʻring</string>
-    <string name="already_logged_in">Allaqachon tizimga kirilgan</string>
     <!-- Deck Creation -->
     <string name="deck_created">Dasta yaratildi</string>
     <string name="deck_renamed">Dasta nomi oʻzgartirildi</string>
@@ -321,7 +331,7 @@
     <!-- Browser Options Dialog -->
     <string name="show_cards" comment="Label for toggle cards button in BrowserOptionsDialog">Kartalar</string>
     <string name="show_notes" comment="Label for toggle notes button in BrowserOptionsDialog">Qaydlar</string>
-    <string name="toggle_cards_notes">Kartalar/qaydlar almashtirish</string>
+    <string name="toggle_cards_notes">Karta/qaydlar almashtirish</string>
     <string name="truncate_content_help">Karta brauzerini har bir qator balandligini faqat dastlabki 3 ta tarkib qatorini koʻrsatish uchun qisqartirish</string>
     <string name="browser_options_dialog_heading">Karta brauzeri parametrlari</string>
     <string name="audio_saved">Ovoz yozuvi saqlandi</string>
@@ -336,11 +346,10 @@
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Nutq sintezatori sozlamalarini ochib boʻlmadi</string>
     <string name="shared_decks_login_required">Koʻproq dasta yuklab olish uchun, iltimos, tizimga kiring</string>
     <string name="deck_description_field_hint">Tavsif</string>
-    <string name="deck_description_saved">Description updated</string>
-    <string name="format_deck_description_as_markdown">Format as Markdown</string>
-    <string name="help_button_content_description">Open help for ‘%s’</string>
+    <string name="deck_description_saved">Tavsif yangilandi</string>
+    <string name="format_deck_description_as_markdown">Markdown sifatida formatlash</string>
+    <string name="help_button_content_description">‘%s’ uchun yordamni ochish</string>
     <string name="failed_to_copy">Nusxa olib boʻlmadi</string>
-    <string name="card_browser_unavailable_when_notes_mode">‘Qaydlar’ rejimida ishlatib boʻlmaydi</string>
     <plurals name="unbury_cards_feedback">
         <item quantity="one">%d ta koʻmilgan karta chiqarildi</item>
         <item quantity="other">%d ta koʻmilgan karta chiqarildi</item>
@@ -353,7 +362,7 @@
     <string name="play_recording">Ijro etish</string>
     <string name="next_recording" comment="Description of a button to go to the next recording">Keyingi</string>
     <!--  AlertDialog in the deleteCardTemplate  -->
-    <string name="orphan_note_title">Karta turini oʻchirib boʻlmadi</string>
+    <string name="orphan_note_title">Karta turini oʻchirib boʻlmaydi</string>
     <string name="orphan_note_message">Ushbu karta turini oʻchirib tashlash baʼzi qaydlar kartasiz qolishiga olib keladi.</string>
     <string name="voice_not_supported">Ovoz qoʻllab-quvvatlanmaydi. Boshqasini sinab koʻring yoki ovoz dvijogini oʻrnating.</string>
     <!--Keyboard shortcuts dialog-->
@@ -370,7 +379,13 @@
     <string name="copy_the_template" comment="Description of the shortcut that copy the template as markdown">Shablonni markdown sifatida nusxa olish</string>
     <string name="edit_browser_appearance" comment="Description of the shortcut that edits the browser appearance of card template">Karta brauzer koʻrinishini oʻzgartirish</string>
     <string name="missing_user_action_dialog_message" comment="%s is the user action number">%s foydalanuvchi amali bu qayd turida sozlanmagan. Iltimos, uni sozlang</string>
-    <string name="directory_inaccessible_info">Bu yerda %s ruxsatni tiklash haqida koʻproq bilib oling yoki toʻplam jildini yangilash uchun sozlamalarga oʻting.</string>
+    <string name="feature_not_supported_by_study_screen">Ushbu kartada yangi oʻrganish ekrani tomonidan hali qoʻllab-quvvatlanmaydigan funksiyalar mavjud.</string>
+    <string name="directory_inaccessible_info">Bu yerda %s ruxsatni tiklash haqida koʻproq bilib oling yoki kolleksiya jildini yangilash uchun sozlamalarga oʻting.</string>
     <!-- Scheduler Upgrade Required Dialog title-->
-    <string name="scheduler_upgrade_required_dialog_title" comment="Shown in a dialog when user has imported a collection using a very old version of the Anki spaced repetition scheduler">Rejalashtiruvchini yuksaltirish kerak</string>
+    <string name="scheduler_upgrade_required_dialog_title" comment="Shown in a dialog when user has imported a collection using a very old version of the Anki spaced repetition scheduler">Rejalashtiruvchini yangilash kerak</string>
+    <!-- Whitespace is OK -->
+    <string name="list_separator" comment="The character and spacing to display between elements of a list, for example \', \' in \'Apple, Banana, Cherry" tools:ignore="TranslationTypo">, </string>
+    <!-- Other errors -->
+    <!-- Similar to TR.qtMiscNameExists(): "Name exists." -->
+    <string name="error_name_exists">Name already exists</string>
 </resources>

@@ -43,7 +43,6 @@
     </plurals>
     <!--Browser-->
     <string name="model_browser_delete">노트 유형 삭제하기</string>
-    <string name="model_browser_rename" comment="Rename a note type">이름 변경하기</string>
     <string name="model_browser_template">카드 편집하기</string>
     <!--Rename-->
     <string name="rename_model">노트 유형 이름 바꾸기</string>
@@ -51,7 +50,6 @@
     <!--Language Hint-->
     <string name="model_field_editor_language_hint_dialog_success_result">키보드 언어 힌트를 %s로 설정하기</string>
     <!--Field Editing-->
-    <string name="model_field_editor_title">필드 편집하기</string>
     <string name="model_field_editor_add" maxLength="28">필드 추가하기</string>
     <string name="model_field_editor_delete">필드 삭제하기</string>
     <string name="model_field_editor_rename">필드 이름 변경하기</string>
@@ -61,6 +59,12 @@
     <string name="model_field_editor_sort_field">이 필드로 정렬하기</string>
     <!--Warnings-->
     <string name="model_delete_warning">이 노트 유형을 삭제하시겠습니까?</string>
+    <!--
+        Example output:
+        Delete the note types below?
+        Basic, Basic (and reversed card), Cloze
+     -->
+    <string name="model_delete_multiple_warning">Delete the note types below?\n %s</string>
     <string name="field_delete_warning">이 필드를 삭제하시겠습니까?</string>
     <!--Model Add Suffixes-->
     <string name="model_browser_add_add">추가: %1$s</string>
@@ -68,9 +72,9 @@
     <string name="model_browser_add_clone">복제: %1$s</string>
     <!--Browser Appearance-->
     <string name="card_template_browser_appearance_summary">카드 브라우저에서 카드에 표시할 템플릿을 입력하세요.\n\n예를 들어, 앞면 템플릿이 다음과 같다면,\n\"The capital of {{Country}}\"\n카드 브라우저에는 다음과 같이 간략히 표시할 수 있습니다.\n\"Capital: {{Country}}\"</string>
-    <string name="card_template_browser_appearance_question_format">문제 형식</string>
-    <string name="card_template_browser_appearance_answer_format">답 형식</string>
-    <string name="card_template_browser_appearance_restore_default_dialog">기본값을 복원하시겠습니까?</string>
+    <string name="card_template_browser_appearance_question_format">Question format</string>
+    <string name="card_template_browser_appearance_answer_format">Answer format</string>
+    <string name="card_template_browser_appearance_restore_default_dialog">Are you sure you want to restore the browser appearance to default?</string>
     <string name="card_template_browser_appearance_saving_note">이 변경사항은 카드 템플릿이 저장될 때 적용됩니다</string>
     <!-- Deck Override -->
     <string name="card_template_editor_deck_override_on">덱 덮어쓰기 on</string>

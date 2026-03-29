@@ -3,7 +3,6 @@
 
 package com.ichi2.anki
 
-import android.app.Activity
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.ActivityNotFoundException
@@ -25,7 +24,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.view.animation.Animation
 import android.widget.ProgressBar
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -51,7 +49,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewbinding.ViewBinding
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import com.ichi2.anim.ActivityTransitionAnimation
@@ -63,7 +61,6 @@ import com.ichi2.anki.android.input.ShortcutGroup
 import com.ichi2.anki.android.input.ShortcutGroupProvider
 import com.ichi2.anki.android.input.shortcut
 import com.ichi2.anki.common.annotations.LegacyNotifications
-import com.ichi2.anki.common.utils.android.isRobolectric
 import com.ichi2.anki.common.utils.annotation.KotlinCleanup
 import com.ichi2.anki.dialogs.AsyncDialogFragment
 import com.ichi2.anki.dialogs.DatabaseErrorDialog
@@ -74,6 +71,7 @@ import com.ichi2.anki.dialogs.ExportReadyDialog.Companion.KEY_EXPORT_PATH
 import com.ichi2.anki.dialogs.ExportReadyDialog.Companion.REQUEST_EXPORT_SAVE
 import com.ichi2.anki.dialogs.ExportReadyDialog.Companion.REQUEST_EXPORT_SHARE
 import com.ichi2.anki.dialogs.SimpleMessageDialog
+import com.ichi2.anki.exception.SystemStorageException
 import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.preferences.sharedPrefs
 import com.ichi2.anki.receiver.SdCardReceiver
@@ -81,7 +79,6 @@ import com.ichi2.anki.settings.Prefs
 import com.ichi2.anki.snackbar.showSnackbar
 import com.ichi2.anki.utils.ext.showDialogFragment
 import com.ichi2.anki.workarounds.AppLoadedFromBackupWorkaround.showedActivityFailedScreen
-import com.ichi2.async.CollectionLoader
 import com.ichi2.compat.CompatHelper
 import com.ichi2.compat.CompatHelper.Companion.registerReceiverCompat
 import com.ichi2.compat.customtabs.CustomTabActivityHelper
@@ -89,12 +86,8 @@ import com.ichi2.compat.customtabs.CustomTabsFallback
 import com.ichi2.compat.customtabs.CustomTabsHelper
 import com.ichi2.themes.Themes
 import com.ichi2.utils.AdaptionUtil
-import com.ichi2.utils.HandlerUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
@@ -102,9 +95,9 @@ import java.io.FileOutputStream
 import androidx.browser.customtabs.CustomTabsIntent.Builder as CustomTabsIntentBuilder
 
 @UiThread
-@KotlinCleanup("set activityName")
-open class AnkiActivity :
-    AppCompatActivity,
+open class AnkiActivity(
+    @LayoutRes contentLayoutId: Int? = null,
+) : AppCompatActivity(contentLayoutId ?: 0),
     ShortcutGroupProvider,
     AnkiActivityProvider {
     /**
@@ -117,8 +110,6 @@ open class AnkiActivity :
 
     var importColpkgListener: ImportColpkgListener? = null
 
-    /** The name of the parent class (example: 'Reviewer')  */
-    private val activityName: String
     val dialogHandler = DialogHandler(this)
     override val ankiActivity = this
 
@@ -127,22 +118,12 @@ open class AnkiActivity :
     private lateinit var fileExportPath: String
     private val saveFileLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 saveFileCallback(result)
             } else {
                 Timber.i("The file selection for the exported collection was cancelled")
             }
         }
-
-    constructor() : super() {
-        activityName = javaClass.simpleName
-    }
-
-    constructor(
-        @LayoutRes contentLayoutId: Int,
-    ) : super(contentLayoutId) {
-        activityName = javaClass.simpleName
-    }
 
     @Suppress("deprecation") // #9332: UI Visibility -> Insets
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -201,6 +182,10 @@ open class AnkiActivity :
         )
         // Show any pending dialogs which were stored persistently
         dialogHandler.executeMessage()
+    }
+
+    open fun setViewBinding(binding: ViewBinding) {
+        setContentView(binding.root)
     }
 
     /**
@@ -338,12 +323,6 @@ open class AnkiActivity :
         startActivityWithAnimation(intent, DEFAULT)
     }
 
-    fun startActivityWithoutAnimation(intent: Intent) {
-        disableIntentAnimation(intent)
-        super.startActivity(intent)
-        disableActivityAnimation()
-    }
-
     fun startActivityWithAnimation(
         intent: Intent,
         animation: Direction,
@@ -351,22 +330,6 @@ open class AnkiActivity :
         enableIntentAnimation(intent)
         super.startActivity(intent)
         enableActivityAnimation(animation)
-    }
-
-    private fun launchActivityForResult(
-        intent: Intent?,
-        launcher: ActivityResultLauncher<Intent?>,
-        animation: Direction?,
-    ) {
-        try {
-            launcher.launch(
-                intent,
-                ActivityTransitionAnimation.getAnimationOptions(this, animation),
-            )
-        } catch (e: ActivityNotFoundException) {
-            Timber.w(e)
-            this.showSnackbar(R.string.activity_start_failed)
-        }
     }
 
     override fun finish() {
@@ -377,22 +340,6 @@ open class AnkiActivity :
         Timber.i("finishWithAnimation %s", animation)
         super.finish()
         enableActivityAnimation(animation)
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun disableViewAnimation(view: View) {
-        view.clearAnimation()
-    }
-
-    protected fun enableViewAnimation(
-        view: View,
-        animation: Animation?,
-    ) {
-        if (animationDisabled()) {
-            disableViewAnimation(view)
-        } else {
-            view.animation = animation
-        }
     }
 
     private fun disableIntentAnimation(intent: Intent) {
@@ -428,14 +375,28 @@ open class AnkiActivity :
         }
         // Open collection asynchronously if it hasn't already been opened
         showProgressBar()
-        CollectionLoader.load(
-            this,
-        ) { col: Collection? ->
-            if (col != null) {
-                Timber.d("Asynchronously calling onCollectionLoaded")
-                onCollectionLoaded(col)
-            } else {
-                onCollectionLoadError()
+        lifecycleScope.launch {
+            val col =
+                withContext(Dispatchers.IO) {
+                    // load collection
+                    try {
+                        Timber.d("CollectionLoader accessing collection")
+                        val col = CollectionManager.getColUnsafe()
+                        Timber.i("CollectionLoader obtained collection")
+                        col
+                    } catch (e: RuntimeException) {
+                        Timber.e(e, "loadInBackground - RuntimeException on opening collection")
+                        CrashReportService.sendExceptionReport(e, "CollectionLoader.load")
+                        null
+                    }
+                }
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                if (col != null) {
+                    Timber.d("Asynchronously calling onCollectionLoaded")
+                    onCollectionLoaded(col)
+                } else {
+                    onCollectionLoadError()
+                }
             }
         }
     }
@@ -526,7 +487,7 @@ open class AnkiActivity :
         get() =
             if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
                 COLOR_SCHEME_SYSTEM
-            } else if (Themes.currentTheme.isNightMode) {
+            } else if (Themes.isNightTheme) {
                 COLOR_SCHEME_DARK
             } else {
                 COLOR_SCHEME_LIGHT
@@ -557,7 +518,7 @@ open class AnkiActivity :
         try {
             showDialogFragment(newFragment)
         } catch (e: IllegalStateException) {
-            Timber.w("failed to show fragment, activity is likely paused. Sending notification")
+            Timber.w(e, "failed to show fragment, activity is likely paused. Sending notification")
             // Store a persistent message to SharedPreferences instructing AnkiDroid to show dialog
             DialogHandler.storeMessage(newFragment.dialogHandlerMessage?.toMessage())
             // Show a basic notification to the user in the notification bar in the meantime
@@ -666,21 +627,6 @@ open class AnkiActivity :
         return supportActionBar!!
     }
 
-    /**
-     * sets [.getSupportActionBar] and returns the action bar
-     * @param view the view which contains a toolbar element:
-     * @return The action bar which was created
-     * @throws IllegalStateException if the bar could not be enabled
-     */
-    protected fun enableToolbar(view: View): ActionBar {
-        val toolbar =
-            view.findViewById<Toolbar>(R.id.toolbar)
-                ?: // likely missing "<include layout="@layout/toolbar" />"
-                throw IllegalStateException("Unable to find toolbar: $view")
-        setSupportActionBar(toolbar)
-        return supportActionBar!!
-    }
-
     protected fun showedActivityFailedScreen(savedInstanceState: Bundle?) =
         showedActivityFailedScreen(
             savedInstanceState = savedInstanceState,
@@ -734,6 +680,8 @@ open class AnkiActivity :
      *
      * @return `true`: activity may continue to start, `false`: [onCreate] should stop executing
      * as storage permissions are mot granted
+     *
+     * @throws SystemStorageException if `getExternalFilesDir` returns null
      */
     fun ensureStoragePermissions(): Boolean {
         if (IntentHandler.grantedStoragePermissions(this, showToast = true)) {
@@ -742,43 +690,6 @@ open class AnkiActivity :
         Timber.w("finishing activity. No storage permission")
         finish()
         return false
-    }
-
-    // TODO: Move this to an extension method once we have context parameters
-    protected fun <T> Flow<T>.launchCollectionInLifecycleScope(block: suspend (T) -> Unit) {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                this@launchCollectionInLifecycleScope.collect {
-                    if (isRobolectric) {
-                        // hack: lifecycleScope/runOnUiThread do not handle our
-                        // test dispatcher overriding both IO and Main
-                        // in tests, waitForAsyncTasksToComplete may be required.
-                        HandlerUtils.postOnNewHandler { runBlocking { block(it) } }
-                    } else {
-                        block(it)
-                    }
-                }
-            }
-        }
-    }
-
-    // see above:
-    protected fun <T> StateFlow<T>.launchCollectionInLifecycleScope(block: suspend (T) -> Unit) {
-        lifecycleScope.launch {
-            var lastValue: T? = null
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                this@launchCollectionInLifecycleScope.collect {
-                    // on re-resume, an unchanged value will be emitted for a StateFlow
-                    if (lastValue == value) return@collect
-                    lastValue = value
-                    if (isRobolectric) {
-                        HandlerUtils.postOnNewHandler { runBlocking { block(it) } }
-                    } else {
-                        block(it)
-                    }
-                }
-            }
-        }
     }
 
     override val shortcuts
@@ -806,7 +717,7 @@ open class AnkiActivity :
             try {
                 FileProvider.getUriForFile(this, authority, attachment)
             } catch (e: IllegalArgumentException) {
-                Timber.e("Could not generate a valid URI for the apkg file")
+                Timber.e(e, "Could not generate a valid URI for the apkg file")
                 showThemedToast(this, resources.getString(R.string.apk_share_error), false)
                 return
             }
@@ -865,7 +776,7 @@ open class AnkiActivity :
         try {
             saveFileLauncher.launch(saveIntent)
         } catch (ex: ActivityNotFoundException) {
-            Timber.w("No activity found to handle saveExportFile request")
+            Timber.w(ex, "No activity found to handle saveExportFile request")
             showSnackbar(R.string.activity_start_failed)
         }
     }

@@ -45,7 +45,6 @@
     </plurals>
     <!--Browser-->
     <string name="model_browser_delete">შენიშვნის ტიპის წაშლა</string>
-    <string name="model_browser_rename" comment="Rename a note type">გადარქმევა</string>
     <string name="model_browser_template">ბარათების რედაქტირება</string>
     <!--Rename-->
     <string name="rename_model">შენიშვნის ტიპის სახელის შეცვლა</string>
@@ -53,7 +52,6 @@
     <!--Language Hint-->
     <string name="model_field_editor_language_hint_dialog_success_result">%s-თან ენის მინიშნების დაყენება</string>
     <!--Field Editing-->
-    <string name="model_field_editor_title">ველის რედაქტირება</string>
     <string name="model_field_editor_add" maxLength="28">ველის დამატება</string>
     <string name="model_field_editor_delete">ველის წაშლა</string>
     <string name="model_field_editor_rename">ველის სახელის შეცვლა</string>
@@ -63,6 +61,12 @@
     <string name="model_field_editor_sort_field">ამ ველის მიხედვით დახარისხება</string>
     <!--Warnings-->
     <string name="model_delete_warning">ნამდვილად გსურთ ამ შენიშვნის ტიპის წაშლა?</string>
+    <!--
+        Example output:
+        Delete the note types below?
+        Basic, Basic (and reversed card), Cloze
+     -->
+    <string name="model_delete_multiple_warning">Delete the note types below?\n %s</string>
     <string name="field_delete_warning">ნამდვილად გსურთ ამ ველის წაშლა?</string>
     <!--Model Add Suffixes-->
     <string name="model_browser_add_add">Add: %1$s</string>
@@ -70,9 +74,9 @@
     <string name="model_browser_add_clone">Clone: %1$s</string>
     <!--Browser Appearance-->
     <string name="card_template_browser_appearance_summary">შეიყვანეთ შაბლონი, რომელსაც ბარათების საძიებო პასუხების შემოკლებული ვერსიების საჩვენებლად გამოიყენებს.\n\n\"{{ქვეყანა}}-ს დედაქალაქი არის:\"\nრომ ავიღოთ მაგალითად, მისი შიგთავსი შეიძლება წინა შაბლონით შემოკლდეს როგორც\n\"დედაქალაქი: {{ქვეყანა}}\"</string>
-    <string name="card_template_browser_appearance_question_format">კითხვის ფორმატი</string>
-    <string name="card_template_browser_appearance_answer_format">პასუხის ფორმატი</string>
-    <string name="card_template_browser_appearance_restore_default_dialog">აღდგეს ნაგულისხმევი მონაცემები?</string>
+    <string name="card_template_browser_appearance_question_format">Question format</string>
+    <string name="card_template_browser_appearance_answer_format">Answer format</string>
+    <string name="card_template_browser_appearance_restore_default_dialog">Are you sure you want to restore the browser appearance to default?</string>
     <string name="card_template_browser_appearance_saving_note">ცვლილებების მისადაგება ბარათის შაბლონის შენახვისთანავე ხდება</string>
     <!-- Deck Override -->
     <string name="card_template_editor_deck_override_on">დასტაზე გადაწერა (ჩართული)</string>

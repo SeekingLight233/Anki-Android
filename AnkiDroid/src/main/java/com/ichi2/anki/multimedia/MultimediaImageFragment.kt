@@ -29,7 +29,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.webkit.WebView
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
@@ -40,11 +39,11 @@ import androidx.core.content.IntentCompat
 import androidx.core.os.BundleCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.button.MaterialButton
 import com.ichi2.anki.CollectionManager.TR
-import com.ichi2.anki.DrawingActivity
+import com.ichi2.anki.DrawingFragment
 import com.ichi2.anki.R
 import com.ichi2.anki.common.annotations.NeedsTest
+import com.ichi2.anki.databinding.FragmentMultimediaImageBinding
 import com.ichi2.anki.multimedia.MultimediaActivity.Companion.EXTRA_MEDIA_OPTIONS
 import com.ichi2.anki.multimedia.MultimediaActivity.Companion.MULTIMEDIA_RESULT
 import com.ichi2.anki.multimedia.MultimediaActivity.Companion.MULTIMEDIA_RESULT_FIELD_INDEX
@@ -64,8 +63,10 @@ import com.ichi2.utils.ExifUtil
 import com.ichi2.utils.FileUtil
 import com.ichi2.utils.message
 import com.ichi2.utils.negativeButton
+import com.ichi2.utils.openInputStreamSafe
 import com.ichi2.utils.positiveButton
 import com.ichi2.utils.show
+import dev.androidbroadcast.vbpd.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -79,10 +80,10 @@ private const val SVG_IMAGE = "image/svg+xml"
 
 @NeedsTest("Ensure correct option is executed i.e. gallery or camera")
 class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_image) {
+    private val binding by viewBinding(FragmentMultimediaImageBinding::bind)
+
     override val title: String
         get() = resources.getString(R.string.multimedia_editor_popup_image)
-
-    private lateinit var imageFileSize: TextView
 
     private lateinit var selectedImageOptions: ImageOptions
 
@@ -123,7 +124,7 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
         }
 
     /**
-     * Launches the [DrawingActivity] and handles the result by adding the drawing as image.
+     * Launches the [DrawingFragment] and handles the result by adding the drawing as image.
      */
     private val drawingActivityLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -281,7 +282,6 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
     ) {
         super.onViewCreated(view, savedInstanceState)
         setupMenu(multimediaMenu)
-        imageFileSize = view.findViewById(R.id.image_size_textview)
 
         handleImageUri()
         setupDoneButton()
@@ -328,7 +328,7 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
     }
 
     private fun setupDoneButton() {
-        view?.findViewById<MaterialButton>(R.id.action_done)?.setOnClickListener {
+        binding.actionDone.setOnClickListener {
             Timber.d("MultimediaImageFragment:: Done button pressed")
             if (viewModel.selectedMediaFileSize == 0L) {
                 Timber.d("Image length is not valid")
@@ -366,7 +366,8 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
     }
 
     private fun openDrawingCanvas() {
-        drawingActivityLauncher.launch(Intent(requireContext(), DrawingActivity::class.java))
+        val intent = DrawingFragment.getIntent(requireContext())
+        drawingActivityLauncher.launch(intent)
     }
 
     private fun dispatchCamera() {
@@ -400,7 +401,7 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
         val imageUri =
             BundleCompat.getParcelable(
                 intent.extras!!,
-                DrawingActivity.EXTRA_RESULT_WHITEBOARD,
+                DrawingFragment.IMAGE_PATH_KEY,
                 Uri::class.java,
             )
 
@@ -451,7 +452,7 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
 
     private fun updateAndDisplayImageSize(file: File) {
         viewModel.selectedMediaFileSize = file.length()
-        imageFileSize.text = file.toHumanReadableSize()
+        binding.imageFileSize.text = file.toHumanReadableSize()
     }
 
     private fun showLargeFileCropDialog(length: Long) {
@@ -562,7 +563,7 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
         val mimeType = context?.contentResolver?.getType(imageUri)
 
         // Get the WebView and set it visible
-        view?.findViewById<WebView>(R.id.multimedia_webview)?.apply {
+        binding.multimediaWebView.apply {
             visibility = View.VISIBLE
 
             // Load image based on its MIME type
@@ -653,7 +654,7 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
             </html>
             """.trimIndent()
 
-        view?.findViewById<WebView>(R.id.multimedia_webview)?.loadDataWithBaseURL(null, errorHtml, "text/html", "UTF-8", null)
+        binding.multimediaWebView.loadDataWithBaseURL(null, errorHtml, "text/html", "UTF-8", null)
     }
 
     private fun requestCrop() {
@@ -675,7 +676,7 @@ class MultimediaImageFragment : MultimediaFragment(R.layout.fragment_multimedia_
      */
     private fun loadSvgFromUri(uri: Uri): String? =
         try {
-            context?.contentResolver?.openInputStream(uri)?.use { inputStream ->
+            context?.contentResolver?.openInputStreamSafe(uri)?.use { inputStream ->
                 inputStream.convertToString()
             }
         } catch (e: Exception) {

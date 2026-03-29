@@ -239,20 +239,14 @@
     <string name="misc" maxLength="41">Různé</string>
     <!-- Review reminders -->
     <string name="add_reminder" comment="Label for the add reminder button in the screen for adding and editing review reminders">Přidat upomínku</string>
+    <string name="add_review_reminder" comment="Title of the screen for creating a new review reminder">Přidat upomínku opakování</string>
+    <string name="edit_review_reminder" comment="Title of the screen for editing an existing review reminder">Upravit upomínku opakování</string>
+    <string name="you_have_no_review_reminders" comment="Text that appears in the review reminder editing screen when there are no reminders set">Nemáte žádné upomínky opakování</string>
     <!-- studyoptions -->
     <string name="studyoptions_limit_select_tags">Výběr štítků</string>
     <!-- Deck configurations -->
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Obecné</string>
-    <string name="deck_conf_cram_filter" maxLength="41">Filtr</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Hledat</string>
-    <string name="deck_conf_cram_limit" maxLength="41">Omezit na</string>
-    <string name="deck_conf_cram_order" maxLength="41">Karty vybrány podle</string>
-    <string name="deck_conf_cram_reschedule" maxLength="41" comment="Title of the box labelled by deck_conf_cram_reschedule_summ">Přeplánovat</string>
-    <string name="deck_conf_cram_reschedule_summ">Přeplánovat karty podle mých odpovědí v tomto balíčku</string>
-    <string name="deck_conf_cram_filter_2_check">Povolit druhý filtr</string>
-    <string name="deck_conf_cram_steps_summ" maxLength="41">Definovat vlastní kroky</string>
-    <string name="deck_conf_cram_preview_delays" maxLength="41">Prodlevy náhledu</string>
-    <string name="deck_conf_cram_preview_delays_summ">Prodlevy jsou v sekundách. 0 vrátí kartu do původního balíčku.</string>
     <!-- analytics options -->
     <string name="analytics_dialog_title">Pomozte udělat AnkiDroid lepší!</string>
     <string name="analytics_title" maxLength="41">Sdílet používání funkcí</string>
@@ -391,6 +385,8 @@
     <string name="new_study_screen_summ"><![CDATA[Vylepšená obrazovka učení, která nahradí tu stávající. Některé funkce staré obrazovky byly změněny nebo odstraněny. Prosím nahlaste jakoukoli <a href="%1$s">zpětnou vazbu</a> nebo <a href="%2$s">chybu</a>.]]></string>
     <string name="show_answer_feedback" maxLength="41">Zobrazit zpětnou vazbu odpovědi</string>
     <string name="screen" maxLength="41">Obrazovka</string>
+    <string name="only_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to only answer the card">Only answer</string>
+    <string name="flip_and_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to answer the card if on the answer side, and flip it if on the question side">Flip and answer</string>
     <!--Keyboard shortcuts dialog-->
     <string name="open_settings" comment="Description of the shortcut that opens the app settings">Otevřít nastavení</string>
 </resources>

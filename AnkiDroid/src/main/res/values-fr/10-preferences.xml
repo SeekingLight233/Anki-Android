@@ -235,20 +235,14 @@
     <string name="misc" maxLength="41">Divers</string>
     <!-- Review reminders -->
     <string name="add_reminder" comment="Label for the add reminder button in the screen for adding and editing review reminders">Ajouter un rappel</string>
+    <string name="add_review_reminder" comment="Title of the screen for creating a new review reminder">Ajouter un rappel de révision</string>
+    <string name="edit_review_reminder" comment="Title of the screen for editing an existing review reminder">Modifier le rappel de révision</string>
+    <string name="you_have_no_review_reminders" comment="Text that appears in the review reminder editing screen when there are no reminders set">Vous n\'avez aucun rappel de révision</string>
     <!-- studyoptions -->
     <string name="studyoptions_limit_select_tags">Sélectionner les étiquettes</string>
     <!-- Deck configurations -->
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Général</string>
-    <string name="deck_conf_cram_filter" maxLength="41">Filtre</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Recherche</string>
-    <string name="deck_conf_cram_limit" maxLength="41">Limiter à</string>
-    <string name="deck_conf_cram_order" maxLength="41">Cartes sélectionnées par</string>
-    <string name="deck_conf_cram_reschedule" maxLength="41" comment="Title of the box labelled by deck_conf_cram_reschedule_summ">Replanifier</string>
-    <string name="deck_conf_cram_reschedule_summ">Replanifier les cartes selon mes réponses dans ce paquet</string>
-    <string name="deck_conf_cram_filter_2_check">Activer le second filtrage</string>
-    <string name="deck_conf_cram_steps_summ" maxLength="41">Définir le pas personnalisé</string>
-    <string name="deck_conf_cram_preview_delays" maxLength="41">Retards dans la prévisualisation</string>
-    <string name="deck_conf_cram_preview_delays_summ">Les délais sont exprimés en secondes. 0 remet la carte dans le paquet d\'origine.</string>
     <!-- analytics options -->
     <string name="analytics_dialog_title">Aidez à améliorer AnkiDroid !</string>
     <string name="analytics_title" maxLength="41">Partager l\'utilisation de la fonctionnalité</string>
@@ -387,6 +381,8 @@ Elles ne sont pas destinées à la plupart des utilisateurs et restent en anglai
     <string name="new_study_screen_summ"><![CDATA[L\'écran de révision amélioré qui succédera à l\'actuel. Quelques caractéristiques de l\'ancien écran ont été modifiées ou retirées. Merci de nous signaler tout <a href="%1$s">feedback</a> ou <a href="%2$s">bugs</a>.]]></string>
     <string name="show_answer_feedback" maxLength="41">Montrer la réaction de réponse</string>
     <string name="screen" maxLength="41">Écran</string>
+    <string name="only_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to only answer the card">Répondre uniquement</string>
+    <string name="flip_and_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to answer the card if on the answer side, and flip it if on the question side">Retourner et répondre</string>
     <!--Keyboard shortcuts dialog-->
     <string name="open_settings" comment="Description of the shortcut that opens the app settings">Aller aux paramètres</string>
 </resources>

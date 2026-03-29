@@ -132,6 +132,7 @@ import com.ichi2.anki.observability.undoableOp
 import com.ichi2.anki.pages.AnkiServer
 import com.ichi2.anki.pages.CongratsPage
 import com.ichi2.anki.pages.PostRequestHandler
+import com.ichi2.anki.pages.PostRequestUri
 import com.ichi2.anki.preferences.AccessibilitySettingsFragment
 import com.ichi2.anki.preferences.PreferencesActivity
 import com.ichi2.anki.preferences.sharedPrefs
@@ -163,7 +164,6 @@ import com.ichi2.ui.FixedEditText
 import com.ichi2.utils.HandlerUtils.newHandler
 import com.ichi2.utils.HashUtil.hashSetInit
 import com.ichi2.utils.Stopwatch
-import com.ichi2.utils.WebViewDebugging.initializeDebugging
 import com.ichi2.utils.message
 import com.ichi2.utils.negativeButton
 import com.ichi2.utils.positiveButton
@@ -562,7 +562,7 @@ abstract class AbstractFlashcardViewer :
 
         setContentView(getContentViewAttr(fullscreenMode))
 
-        val port = StudyScreenRepository.getServerPort()
+        val port = StudyScreenRepository().getServerPort()
         server = AnkiServer(this, port).also { it.start() }
         // Make ACTION_PROCESS_TEXT for in-app searching possible on > Android 4.0
         delegate.isHandleNativeActionModesEnabled = true
@@ -580,7 +580,7 @@ abstract class AbstractFlashcardViewer :
         super.setupBackPressedCallbacks()
     }
 
-    protected open fun getContentViewAttr(fullscreenMode: FullScreenMode): Int = R.layout.reviewer
+    protected open fun getContentViewAttr(fullscreenMode: FullScreenMode): Int = R.layout.activity_reviewer
 
     @get:VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     val isFullscreen: Boolean
@@ -799,7 +799,7 @@ abstract class AbstractFlashcardViewer :
         }
         val animation = fromGesture.toAnimationTransition().invert()
         Timber.i("Launching 'edit card'")
-        val editCardIntent = NoteEditorLauncher.EditCard(currentCard!!.id, animation).toIntent(this)
+        val editCardIntent = NoteEditorLauncher.EditSelection(currentCard!!.id, animation).toIntent(this)
         editCurrentCardLauncher.launch(editCardIntent)
     }
 
@@ -1078,6 +1078,7 @@ abstract class AbstractFlashcardViewer :
 
     // #5780 - Users could OOM the WebView Renderer. This triggers the same symptoms
     @VisibleForTesting
+    @Suppress("unused")
     fun crashWebViewRenderer() {
         loadUrlInViewer("chrome://crash")
     }
@@ -1269,7 +1270,6 @@ abstract class AbstractFlashcardViewer :
     protected open fun recreateWebView() {
         if (webView == null) {
             webView = createWebView()
-            initializeDebugging(this.sharedPrefs())
             cardFrame!!.addView(webView)
             gestureDetectorImpl.onWebViewCreated(webView!!)
         }
@@ -1444,7 +1444,7 @@ abstract class AbstractFlashcardViewer :
     }
 
     internal val isInNightMode: Boolean
-        get() = Themes.currentTheme.isNightMode
+        get() = Themes.isNightTheme
 
     private fun updateCard(content: RenderedCard) {
         Timber.d("updateCard()")
@@ -1470,7 +1470,7 @@ abstract class AbstractFlashcardViewer :
             Timber.w("media is not played as the activity is inactive")
             return
         }
-        if (!cardMediaPlayer.config.autoplay && !doMediaReplay) return
+        if (cardMediaPlayer.config?.autoplay != true && !doMediaReplay) return
         // Use TTS if TTS preference enabled and no other media source
         val useTTS = tts.enabled && !cardMediaPlayer.hasMedia(displayAnswer)
         // We need to play the media from the proper side of the card
@@ -1485,11 +1485,11 @@ abstract class AbstractFlashcardViewer :
             return
         }
 
-        val replayQuestion = cardMediaPlayer.config.replayQuestion
+        val replayQuestion = cardMediaPlayer.config?.replayQuestion == true
         // Text to speech is in effect here
         // If the question is displayed or if the question should be replayed, read the question
         if (ttsInitialized) {
-            if (!displayAnswer || doMediaReplay && replayQuestion) {
+            if (!displayAnswer || (doMediaReplay && replayQuestion)) {
                 readCardTts(SingleCardSide.FRONT)
             }
             if (displayAnswer) {
@@ -1554,7 +1554,7 @@ abstract class AbstractFlashcardViewer :
         content: String,
     ) {
         if (card != null) {
-            card.settings.mediaPlaybackRequiresUserGesture = !cardMediaPlayer.config.autoplay
+            card.settings.mediaPlaybackRequiresUserGesture = cardMediaPlayer.config?.autoplay != true
             card.loadDataWithBaseURL(
                 server.baseUrl(),
                 content,
@@ -1657,22 +1657,22 @@ abstract class AbstractFlashcardViewer :
                 true
             }
 
-            ViewerCommand.FLIP_OR_ANSWER_EASE1 -> {
+            ViewerCommand.ANSWER_AGAIN -> {
                 flipOrAnswerCard(Rating.AGAIN)
                 true
             }
 
-            ViewerCommand.FLIP_OR_ANSWER_EASE2 -> {
+            ViewerCommand.ANSWER_HARD -> {
                 flipOrAnswerCard(Rating.HARD)
                 true
             }
 
-            ViewerCommand.FLIP_OR_ANSWER_EASE3 -> {
+            ViewerCommand.ANSWER_GOOD -> {
                 flipOrAnswerCard(Rating.GOOD)
                 true
             }
 
-            ViewerCommand.FLIP_OR_ANSWER_EASE4 -> {
+            ViewerCommand.ANSWER_EASY -> {
                 flipOrAnswerCard(Rating.EASY)
                 true
             }
@@ -1776,6 +1776,7 @@ abstract class AbstractFlashcardViewer :
             ViewerCommand.TOGGLE_FLAG_PURPLE,
             ViewerCommand.UNSET_FLAG,
             ViewerCommand.CARD_INFO,
+            ViewerCommand.PREVIOUS_CARD_INFO,
             ViewerCommand.ADD_NOTE,
             ViewerCommand.RESCHEDULE_NOTE,
             ViewerCommand.TOGGLE_AUTO_ADVANCE,
@@ -2587,7 +2588,7 @@ abstract class AbstractFlashcardViewer :
             }
             try {
                 startActivity(intent)
-            } catch (e: ActivityNotFoundException) {
+            } catch (_: ActivityNotFoundException) {
                 Timber.w("No app found to handle open external url from AbstractFlashcardViewer")
                 showSnackbar(R.string.activity_start_failed)
             }
@@ -2718,18 +2719,16 @@ abstract class AbstractFlashcardViewer :
     open fun getCardDataForJsApi(): AnkiDroidJsAPI.CardDataForJsApi = AnkiDroidJsAPI.CardDataForJsApi()
 
     override suspend fun handlePostRequest(
-        uri: String,
+        uri: PostRequestUri,
         bytes: ByteArray,
     ): ByteArray =
-        if (uri.startsWith(AnkiServer.ANKIDROID_JS_PREFIX)) {
+        uri.jsApiMethodName?.let { methodName ->
             jsApi.handleJsApiRequest(
-                uri.substring(AnkiServer.ANKIDROID_JS_PREFIX.length),
+                methodName,
                 bytes,
                 returnDefaultValues = true,
             )
-        } else {
-            throw IllegalArgumentException("unhandled request: $uri")
-        }
+        } ?: throw IllegalArgumentException("unhandled request: $uri")
 
     companion object {
         /**
@@ -2816,7 +2815,7 @@ abstract class AbstractFlashcardViewer :
                     error: TtsPlayer.TtsError,
                     isAutomaticPlayback: Boolean,
                 ) {
-                    AbstractFlashcardViewer.mediaErrorHandler.processTtsFailure(error, isAutomaticPlayback) {
+                    mediaErrorHandler.processTtsFailure(error, isAutomaticPlayback) {
                         when (error) {
                             is AndroidTtsError.MissingVoiceError ->
                                 TtsPlaybackErrorDialog.ttsPlaybackErrorDialog(activity, supportFragmentManager, error.tag)
@@ -2838,7 +2837,7 @@ abstract class AbstractFlashcardViewer :
                         // Retrying fixes most of these
                         if (file.exists()) return RETRY_MEDIA
                         // just doesn't exist - process the error
-                        AbstractFlashcardViewer.mediaErrorHandler.processMissingMedia(
+                        mediaErrorHandler.processMissingMedia(
                             file,
                         ) { filename: String? -> displayCouldNotFindMediaSnackbar(filename) }
                         return CONTINUE_MEDIA

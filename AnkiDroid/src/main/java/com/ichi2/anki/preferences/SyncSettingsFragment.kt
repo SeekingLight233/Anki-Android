@@ -16,15 +16,19 @@
 package com.ichi2.anki.preferences
 
 import androidx.appcompat.app.AlertDialog
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.R
+import com.ichi2.anki.account.AccountActivity
 import com.ichi2.anki.launchCatchingTask
+import com.ichi2.anki.runCatchingWithReport
 import com.ichi2.anki.settings.Prefs
 import com.ichi2.anki.snackbar.showSnackbar
 import com.ichi2.anki.utils.ext.ifNullOrEmpty
+import com.ichi2.preferences.NumberRangePreferenceCompat
 import com.ichi2.utils.show
 
 /**
@@ -43,6 +47,18 @@ class SyncSettingsFragment : SettingsFragment() {
         // Enable/disable one-way sync if the user is logged in
         updateOneWaySyncEnabledState()
 
+        // Configure 'Network timeout'
+        // TODO: add 'reset to default' functionality
+        requirePreference<NumberRangePreferenceCompat>(R.string.sync_io_timeout_secs_key).apply {
+            title = TR.preferencesNetworkTimeout()
+            summaryProvider =
+                Preference.SummaryProvider<EditTextPreference> {
+                    runCatchingWithReport("network_timeout") {
+                        TR.qtMiscSecond(this.getValue())
+                    }.getOrNull() ?: getString(R.string.pref__etc__summary__error)
+                }
+        }
+
         // Configure one-way sync option
         requirePreference<Preference>(R.string.one_way_sync_key).apply {
             setSummary(TR.preferencesOnNextSyncForceChangesIn())
@@ -52,7 +68,7 @@ class SyncSettingsFragment : SettingsFragment() {
                     setMessage(TR.preferencesOnNextSyncForceChangesIn())
                     setPositiveButton(R.string.dialog_ok) { _, _ ->
                         launchCatchingTask {
-                            withCol { modSchemaNoCheck() }
+                            withCol { modSchema(check = false) }
                             showSnackbar(R.string.one_way_sync_confirmation, Snackbar.LENGTH_SHORT)
                         }
                     }
@@ -61,6 +77,15 @@ class SyncSettingsFragment : SettingsFragment() {
                 false
             }
         }
+
+        requirePreference<Preference>(R.string.sync_account_key).apply {
+            setOnPreferenceClickListener {
+                val accountActivityIntent = AccountActivity.getIntent(requireContext())
+                startActivity(accountActivityIntent)
+                true
+            }
+        }
+
         // Custom sync server
         requirePreference<Preference>(R.string.custom_sync_server_key).setSummaryProvider {
             customSyncBase() ?: getString(R.string.custom_sync_server_summary_none_of_the_two_servers_used)

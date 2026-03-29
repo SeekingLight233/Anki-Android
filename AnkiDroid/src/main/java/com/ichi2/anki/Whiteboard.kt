@@ -45,10 +45,11 @@ import com.ichi2.anki.common.time.Time
 import com.ichi2.anki.common.time.getTimestamp
 import com.ichi2.anki.dialogs.WhiteBoardWidthDialog
 import com.ichi2.anki.preferences.sharedPrefs
+import com.ichi2.anki.settings.enums.NightTheme
+import com.ichi2.anki.ui.windows.reviewer.whiteboard.showColorPickerDialog
 import com.ichi2.compat.CompatHelper
 import com.ichi2.themes.Themes.currentTheme
 import com.ichi2.utils.DisplayUtils.getDisplayDimensions
-import com.mrudultora.colorpicker.ColorPickerPopUp
 import timber.log.Timber
 import java.io.FileNotFoundException
 import kotlin.math.abs
@@ -395,22 +396,7 @@ class Whiteboard(
                 penColor = yellowPenColor
             }
             R.id.pen_color_custom -> {
-                ColorPickerPopUp(context).run {
-                    setShowAlpha(true)
-                    setDefaultColor(penColor)
-                    setOnPickColorListener(
-                        object : ColorPickerPopUp.OnPickColorListener {
-                            override fun onColorPicked(color: Int) {
-                                penColor = color
-                            }
-
-                            override fun onCancel() {
-                                // unused
-                            }
-                        },
-                    )
-                    show()
-                }
+                context.showColorPickerDialog(penColor) { penColor = it }
             }
             R.id.stroke_width -> {
                 handleWidthChangeDialog()
@@ -470,7 +456,6 @@ class Whiteboard(
             invalidate()
         }
 
-        @Suppress("deprecation", "API35 computeBounds - maybe compat, but...new API is Flagged?")
         fun erase(
             x: Int,
             y: Int,
@@ -585,7 +570,7 @@ class Whiteboard(
             handleMultiTouch: Boolean,
             whiteboardMultiTouchMethods: WhiteboardMultiTouchMethods?,
         ): Whiteboard {
-            val whiteboard = Whiteboard(context, handleMultiTouch, currentTheme.isNightMode)
+            val whiteboard = Whiteboard(context, handleMultiTouch, currentTheme is NightTheme)
             Companion.whiteboardMultiTouchMethods = whiteboardMultiTouchMethods
             val lp2 =
                 FrameLayout.LayoutParams(

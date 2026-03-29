@@ -1,18 +1,18 @@
-/****************************************************************************************
- * Copyright (c) 2015 Timothy Rae <perceptualchaos2@gmail.com>                          *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2015 Timothy Rae <perceptualchaos2@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.ichi2.anki.dialogs
 
@@ -36,6 +36,8 @@ import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.ConflictResolution
 import com.ichi2.anki.DatabaseRestorationListener
 import com.ichi2.anki.DeckPicker
+import com.ichi2.anki.FatalInitializationError.StorageError
+import com.ichi2.anki.InitialActivity.StartupFailure.InitializationError
 import com.ichi2.anki.LocalizedUnambiguousBackupTimeFormatter
 import com.ichi2.anki.R
 import com.ichi2.anki.ankiActivity
@@ -55,6 +57,7 @@ import com.ichi2.anki.dialogs.DatabaseErrorDialog.DatabaseErrorDialogType.DIALOG
 import com.ichi2.anki.dialogs.DatabaseErrorDialog.DatabaseErrorDialogType.INCOMPATIBLE_DB_VERSION
 import com.ichi2.anki.dialogs.DatabaseErrorDialog.UninstallListItem.Companion.createList
 import com.ichi2.anki.dialogs.ImportFileSelectionFragment.ImportOptions
+import com.ichi2.anki.exception.SystemStorageException
 import com.ichi2.anki.isLoggedIn
 import com.ichi2.anki.launchCatchingTask
 import com.ichi2.anki.libanki.Consts
@@ -443,7 +446,7 @@ class DatabaseErrorDialog : AsyncDialogFragment() {
             R.string.restore_data_from_ankiweb,
             dismissesDialog = true,
             {
-                this.displayResetToNewDirectoryDialog(it)
+                this.displayCreateNewCollectionDialog(it)
             },
         ),
         INSTALL_NON_PLAY_APP_RECOMMENDED(
@@ -494,14 +497,22 @@ class DatabaseErrorDialog : AsyncDialogFragment() {
             R.string.create_new_collection,
             dismissesDialog = false,
             {
-                this.displayResetToNewDirectoryDialog(it)
+                this.displayCreateNewCollectionDialog(it)
             },
         ),
         ;
 
         companion object {
             /** A dialog which creates a new collection in an unsafe location */
-            fun displayResetToNewDirectoryDialog(context: AnkiActivity) {
+            fun displayCreateNewCollectionDialog(context: AnkiActivity) {
+                val directory =
+                    try {
+                        CollectionHelper.getDefaultAnkiDroidDirectory(context)
+                    } catch (e: SystemStorageException) {
+                        Timber.w(e, "failed to show 'Create new collection' dialog")
+                        FatalErrorDialog.build(context, InitializationError(StorageError(e))).show()
+                        return
+                    }
                 AlertDialog.Builder(context).show {
                     title(R.string.backup_new_collection)
                     setIcon(R.drawable.ic_warning)
@@ -513,7 +524,7 @@ class DatabaseErrorDialog : AsyncDialogFragment() {
                             "DatabaseErrorDialog: Before Create New Collection",
                         )
                         CollectionManager.closeCollectionBlocking()
-                        CollectionHelper.resetAnkiDroidDirectory(context)
+                        CollectionHelper.resetAnkiDroidDirectory(context, directory)
                         context.closeCollectionAndFinish()
                     }
                     negativeButton(R.string.dialog_cancel)

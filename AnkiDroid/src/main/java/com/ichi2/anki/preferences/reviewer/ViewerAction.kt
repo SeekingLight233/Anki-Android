@@ -69,6 +69,7 @@ enum class ViewerAction(
     STATISTICS(R.id.action_statistics, R.drawable.ic_bar_chart_black, R.string.empty_string, DISABLED),
     DECK_OPTIONS(R.id.action_deck_options, R.drawable.ic_tune_white, R.string.menu__deck_options, DISABLED),
     CARD_INFO(R.id.action_card_info, R.drawable.ic_dialog_info, R.string.card_info_title, DISABLED),
+    PREVIOUS_CARD_INFO(R.id.action_previous_card_info, R.drawable.ic_outline_info_24, R.string.empty_string, DISABLED),
     ADD_NOTE(R.id.action_add_note, R.drawable.ic_add, R.string.menu_add_note, DISABLED),
     TAG(R.id.action_edit_tags, R.drawable.ic_tag, R.string.menu_edit_tags, DISABLED),
     RESCHEDULE_NOTE(R.id.action_set_due_date, R.drawable.ic_reschedule, titleRes = R.string.empty_string, DISABLED),
@@ -93,18 +94,18 @@ enum class ViewerAction(
     UNSET_FLAG(Flag.NONE.id, Flag.NONE.drawableRes, parentMenu = FLAG_MENU),
     FLAG_RED(Flag.RED.id, Flag.RED.drawableRes, parentMenu = FLAG_MENU),
     FLAG_ORANGE(Flag.ORANGE.id, Flag.ORANGE.drawableRes, parentMenu = FLAG_MENU),
-    FLAG_BLUE(Flag.BLUE.id, Flag.BLUE.drawableRes, parentMenu = FLAG_MENU),
     FLAG_GREEN(Flag.GREEN.id, Flag.GREEN.drawableRes, parentMenu = FLAG_MENU),
+    FLAG_BLUE(Flag.BLUE.id, Flag.BLUE.drawableRes, parentMenu = FLAG_MENU),
     FLAG_PINK(Flag.PINK.id, Flag.PINK.drawableRes, parentMenu = FLAG_MENU),
     FLAG_TURQUOISE(Flag.TURQUOISE.id, Flag.TURQUOISE.drawableRes, parentMenu = FLAG_MENU),
     FLAG_PURPLE(Flag.PURPLE.id, Flag.PURPLE.drawableRes, parentMenu = FLAG_MENU),
 
     // Command only
     SHOW_ANSWER,
-    FLIP_OR_ANSWER_EASE1,
-    FLIP_OR_ANSWER_EASE2,
-    FLIP_OR_ANSWER_EASE3,
-    FLIP_OR_ANSWER_EASE4,
+    ANSWER_AGAIN,
+    ANSWER_HARD,
+    ANSWER_GOOD,
+    ANSWER_EASY,
     TOGGLE_FLAG_RED,
     TOGGLE_FLAG_ORANGE,
     TOGGLE_FLAG_GREEN,
@@ -115,6 +116,8 @@ enum class ViewerAction(
     SHOW_HINT,
     SHOW_ALL_HINTS,
     REPLAY_VOICE,
+    PAGE_UP,
+    PAGE_DOWN,
     EXIT,
     ;
 
@@ -144,6 +147,7 @@ enum class ViewerAction(
             BROWSE -> listOf(keycode(KeyEvent.KEYCODE_B))
             STATISTICS -> listOf(keycode(KeyEvent.KEYCODE_T))
             PLAY_MEDIA -> listOf(keycode(KeyEvent.KEYCODE_R))
+            PREVIOUS_CARD_INFO -> listOf(keycode(KeyEvent.KEYCODE_I, ModifierKeys(shift = false, ctrl = true, alt = true)))
             TOGGLE_FLAG_RED ->
                 listOf(
                     keycode(KeyEvent.KEYCODE_1, ctrl()),
@@ -179,42 +183,50 @@ enum class ViewerAction(
                     keycode(KeyEvent.KEYCODE_7, ctrl()),
                     keycode(KeyEvent.KEYCODE_NUMPAD_7, ctrl()),
                 )
-            FLIP_OR_ANSWER_EASE1 ->
+            ANSWER_AGAIN ->
                 listOf(
-                    keycode(KeyEvent.KEYCODE_BUTTON_Y),
+                    keycode(KeyEvent.KEYCODE_BUTTON_Y, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_1, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_NUMPAD_1, side = CardSide.ANSWER),
                 )
-            FLIP_OR_ANSWER_EASE2 ->
+            ANSWER_HARD ->
                 listOf(
-                    keycode(KeyEvent.KEYCODE_BUTTON_X),
+                    keycode(KeyEvent.KEYCODE_BUTTON_X, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_2, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_NUMPAD_2, side = CardSide.ANSWER),
                 )
-            FLIP_OR_ANSWER_EASE3 ->
+            ANSWER_GOOD ->
                 listOf(
-                    keycode(KeyEvent.KEYCODE_BUTTON_B),
+                    keycode(KeyEvent.KEYCODE_BUTTON_B, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_3, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_NUMPAD_3, side = CardSide.ANSWER),
-                    keycode(KeyEvent.KEYCODE_DPAD_CENTER),
-                    keycode(KeyEvent.KEYCODE_SPACE, side = CardSide.BOTH),
+                    keycode(KeyEvent.KEYCODE_DPAD_CENTER, side = CardSide.ANSWER),
+                    keycode(KeyEvent.KEYCODE_SPACE, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_ENTER, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_NUMPAD_ENTER, side = CardSide.ANSWER),
                 )
-            FLIP_OR_ANSWER_EASE4 ->
+            ANSWER_EASY ->
                 listOf(
-                    keycode(KeyEvent.KEYCODE_BUTTON_A),
+                    keycode(KeyEvent.KEYCODE_BUTTON_A, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_4, side = CardSide.ANSWER),
                     keycode(KeyEvent.KEYCODE_NUMPAD_4, side = CardSide.ANSWER),
                 )
+            SHOW_ANSWER -> {
+                listOf(
+                    keycode(KeyEvent.KEYCODE_SPACE, side = CardSide.QUESTION),
+                    keycode(KeyEvent.KEYCODE_ENTER, side = CardSide.QUESTION),
+                    keycode(KeyEvent.KEYCODE_NUMPAD_ENTER, side = CardSide.QUESTION),
+                )
+            }
             // No default gestures
-            SHOW_ANSWER,
             DELETE,
             CARD_INFO,
             TAG,
             EXIT,
             RESCHEDULE_NOTE,
             TOGGLE_WHITEBOARD,
+            PAGE_UP,
+            PAGE_DOWN,
             USER_ACTION_1,
             USER_ACTION_2,
             USER_ACTION_3,
@@ -248,6 +260,7 @@ enum class ViewerAction(
             BROWSE -> TR.qtMiscBrowse()
             STATISTICS -> TR.statisticsTitle()
             RESCHEDULE_NOTE -> TR.actionsSetDueDate().toSentenceCase(context, R.string.sentence_set_due_date)
+            PREVIOUS_CARD_INFO -> TR.actionsPreviousCardInfo().toSentenceCase(context, R.string.sentence_actions_previous_card_info)
             else -> context.getString(titleRes)
         }
 

@@ -1,18 +1,18 @@
-/***************************************************************************************
- * Copyright (c) 2022 Ankitects Pty Ltd <http://apps.ankiweb.net>                       *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2022 Ankitects Pty Ltd <http://apps.ankiweb.net>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.ichi2.anki
 
@@ -70,6 +70,7 @@ fun syncAuth(): SyncAuth? {
             if (resolvedEndpoint != null) {
                 this.endpoint = resolvedEndpoint
             }
+            this.ioTimeoutSecs = Prefs.networkTimeoutSecs
         }
     }
 }
@@ -102,22 +103,27 @@ fun DeckPicker.handleNewSync(
     val deckPicker = this
     launchCatchingTask {
         try {
-            when (conflict) {
-                ConflictResolution.FULL_DOWNLOAD -> handleDownload(deckPicker, auth, deckPicker.mediaUsnOnConflict)
-                ConflictResolution.FULL_UPLOAD -> handleUpload(deckPicker, auth, deckPicker.mediaUsnOnConflict)
-                null -> {
-                    handleNormalSync(deckPicker, auth, syncMedia)
+            try {
+                when (conflict) {
+                    ConflictResolution.FULL_DOWNLOAD -> handleDownload(deckPicker, auth, deckPicker.mediaUsnOnConflict)
+                    ConflictResolution.FULL_UPLOAD -> handleUpload(deckPicker, auth, deckPicker.mediaUsnOnConflict)
+                    null -> {
+                        handleNormalSync(deckPicker, auth, syncMedia)
+                    }
                 }
+            } catch (exc: BackendSyncException.BackendSyncAuthFailedException) {
+                // auth failed; log out
+                updateLogin("", "")
+                throw exc
             }
-        } catch (exc: BackendSyncException.BackendSyncAuthFailedException) {
-            // auth failed; log out
-            updateLogin("", "")
-            throw exc
+            withCol { notetypes.clearCache() }
+            notifySubscribersAllValuesChanged(deckPicker)
+            refreshState()
+        } finally {
+            // Always update last sync time to prevent infinite retry loops
+            // when sync fails (e.g., collection too large). See issue #19776
+            setLastSyncTimeToNow()
         }
-        withCol { notetypes.clearCache() }
-        notifySubscribersAllValuesChanged(deckPicker)
-        setLastSyncTimeToNow()
-        refreshState()
     }
 }
 
@@ -225,6 +231,7 @@ private suspend fun handleDownload(
     deckPicker.withProgress(
         extractProgress = fullDownloadProgress(TR.syncDownloadingFromAnkiweb()),
         onCancel = ::cancelSync,
+        manualCancelButton = R.string.dialog_cancel,
     ) {
         withCol {
             try {
@@ -258,6 +265,7 @@ private suspend fun handleUpload(
     deckPicker.withProgress(
         extractProgress = fullDownloadProgress(TR.syncUploadingToAnkiweb()),
         onCancel = ::cancelSync,
+        manualCancelButton = R.string.dialog_cancel,
     ) {
         withCol {
             close(downgrade = false, forFullSync = true)

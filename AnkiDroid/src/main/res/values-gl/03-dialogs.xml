@@ -83,11 +83,14 @@
     <string name="restore_backup_choose_another">Escoller outro</string>
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_ok">Aceptar</string>
+    <string name="dialog_add" comment="Positive dialog action button label to add \'something\'">Add</string>
+    <string name="restore">Restore</string>
     <string name="dialog_confirm" tools:ignore="UnusedResources">Confirmar</string>
     <string name="dialog_no">Non</string>
     <string name="dialog_yes">Si</string>
     <string name="dialog_keep">Manter</string>
     <string name="dialog_remove">Retirar</string>
+    <string name="dialog_exit" comment="Label for a button which will exit/finish the current screen">Saír</string>
     <string name="dialog_continue">Continuar</string>
     <string name="dialog_processing">Procesando&#8230;</string>
     <string name="dialog_positive_create" comment="Create a new collection, probably erasing the previous one, may be necessary in case of error.">Crear</string>
@@ -213,8 +216,6 @@
     <string name="dismiss_backup_warning_title">Aviso de perda de datos</string>
     <string name="dismiss_backup_warning_new_user">Debido aos cambios de privacidade do Android, eliminaranse do teu teléfono os teus datos e as copias de seguranza automáticas se desinstalas a aplicación</string>
     <string name="dismiss_backup_warning_upgrade">Debido aos cambios de privacidade do Android, perderás o acceso aos teus datos e as copias de seguranza automáticas se desinstalas a aplicación</string>
-    <string name="deck_already_exists">A baralla xa existe</string>
-    <string name="empty_deck_name">O nome da baralla non pode estar baleiro</string>
     <string name="create_deck_numeric_hint">Se tes problemas ao arranxar a baralla (por exemplo, \'10\' aparece antes que \'2\'), substitúe \'2\' por \'02\'</string>
     <!-- Set Due Date -->
     <string name="set_due_date_match_interval" comment="when setting a card\'s due date, this checkbox also changes the interval of the card">Establecer intervalo ao mesmo valor</string>
@@ -254,4 +255,32 @@
     <string name="tts_error_dialog_reason_text">O motor de texto a voz <b>%1$s</b> non é compatíbel co seguinte idioma: <b>%2$s</b></string>
     <string name="tts_error_dialog_change_button_text">Mudar motor</string>
     <string name="tts_error_dialog_supported_voices_button_text">Opcións de voz</string>
+    <!-- import_cache_error_resolutions -->
+    <string name="import_error_resolution_try_again">Volver a importar o ficheiro</string>
+    <string name="import_error_resolution_free_up_space">Comproba que hai espazo dabondo no dispositivo</string>
+    <string name="import_error_resolution_check_internet">Comproba que hai conexión á internet</string>
+    <string name="import_error_resolution_copy_to_device">Copia o ficheiro ao teu dispositivo e téntao de novo co ficheiro local</string>
+    <string name="import_error_resolution_select_file">Abre o ficheiro co explorador de ficheiros do teu dispositivo</string>
+    <!-- Post-login dialog -->
+    <string name="login_successful">Inicio de sesión realizado con éxito</string>
+    <string name="sync_now">Queres sincronizar agora?</string>
+    <!--Change Note Type Dialog Fragment-->
+    <string name="card_numbers_unchanged">Os números das tarxetas permanecerán inalterados</string>
+    <!-- Subset of TR.changeNotetypeToFromCloze -->
+    <string name="extra_cloze_deletions_removed">Se cambias a un tipo de nota básica, e hai máis ocos que modelos de tarxetas dispoñíbeis, as tarxetas a maiores serán eliminadas.</string>
+    <string name="different_note_types_selected">Selecciona notas pertencentes a un só tipo de nota</string>
+    <string name="error_no_changes_to_save">Non hai cambios a gardar</string>
+    <string name="choose_color">Escoller cor</string>
+    <!-- Special Fields -->
+    <string name="standard_fields_tab_header" comment="Tab header for inserting non-special fields: {{Front}}">Campos</string>
+    <string name="special_fields_tab_header" comment="Tab header for inserting special fields: {{Deck}}">Especial</string>
+    <string name="special_field_example_suffix"><![CDATA[ : «<b>%1$s</b>»]]></string>
+    <string name="special_field_front_side_help">O contido do anverso do modelo. O son non se reproducirá automaticamente</string>
+    <string name="special_field_deck_help" comment="%s: either blank or \' %s\'">A baralla da tarxeta, incluíndo barallas principais%s</string>
+    <string name="special_field_subdeck_help" comment="%s: either blank or \' %s\'">A baralla da tarxeta, excluíndo barallas principais%s</string>
+    <string name="special_field_flag_help">Amosa «%1$s», onde %2$s é o código da etiqueta (%3$s\–%4$s\)</string>
+    <string name="special_field_tags_help" comment="%s: either blank or \' %s\'">A etiqueda da nota%s</string>
+    <string name="special_field_card_id_help" comment="%s: either blank or \' %s\'">O ID da tarxeta%s</string>
+    <string name="special_field_card_help" comment="%s: either blank or \' %s\'">O nome do modelo de tarxeta%s</string>
+    <string name="special_field_type_help" comment="%s: either blank or \' %s\'">O nome do tipo de nota%s</string>
 </resources>

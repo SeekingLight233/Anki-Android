@@ -85,11 +85,14 @@
     <string name="restore_backup_choose_another">Izvēlēties citu</string>
     <string name="dialog_cancel">Atcelt</string>
     <string name="dialog_ok">Labi</string>
+    <string name="dialog_add" comment="Positive dialog action button label to add \'something\'">Add</string>
+    <string name="restore">Restore</string>
     <string name="dialog_confirm" tools:ignore="UnusedResources">Apstiprināt</string>
     <string name="dialog_no">Nē</string>
     <string name="dialog_yes">Jā</string>
     <string name="dialog_keep">Paturēt</string>
     <string name="dialog_remove">Noņemt</string>
+    <string name="dialog_exit" comment="Label for a button which will exit/finish the current screen">Exit</string>
     <string name="dialog_continue">Turpināt</string>
     <string name="dialog_processing">Apstrādā&#8230;</string>
     <string name="dialog_positive_create" comment="Create a new collection, probably erasing the previous one, may be necessary in case of error.">Izveidot</string>
@@ -217,8 +220,6 @@
     <string name="dismiss_backup_warning_title">Datu zuduma brīdinājums</string>
     <string name="dismiss_backup_warning_new_user">Android privātuma izmaiņu dēļ dati un automātiskās rezerves kopijas tiks izdzēstas no tālruņa, ja lietotne tiks noņemta.</string>
     <string name="dismiss_backup_warning_upgrade">Android privātuma izmaiņu dēļ nevarēs piekļūt datiem un automātiskajām rezerves kopijām, ja lietotne tiks noņemta.</string>
-    <string name="deck_already_exists">Kava jau pastāv</string>
-    <string name="empty_deck_name">Kavas nosaukums nevar būt tukšs</string>
     <string name="create_deck_numeric_hint">Ja tiek piedzīvotas nebūšanas ar kavas kārtošanu (piemēram, \"10\" parādās pirms \"2\"), \"2\" jāaizstāj ar \"02\".</string>
     <!-- Set Due Date -->
     <string name="set_due_date_match_interval" comment="when setting a card\'s due date, this checkbox also changes the interval of the card">Istatīt starplaiku ar tādu pašu vērtību</string>
@@ -262,4 +263,32 @@
     <string name="tts_error_dialog_reason_text">Teksta pārvēršanas runā dzinējs <b>%1$s</b> nenodrošina šo valodu: <b>%2$s</b></string>
     <string name="tts_error_dialog_change_button_text">Mainīt dzinēju</string>
     <string name="tts_error_dialog_supported_voices_button_text">Balss iespējas</string>
+    <!-- import_cache_error_resolutions -->
+    <string name="import_error_resolution_try_again">Re-import the file</string>
+    <string name="import_error_resolution_free_up_space">Ensure there is sufficient free space on your device</string>
+    <string name="import_error_resolution_check_internet">Ensure you are connected to the internet</string>
+    <string name="import_error_resolution_copy_to_device">Copy the file to your device and try again with the local file</string>
+    <string name="import_error_resolution_select_file">Open the file using your device’s file browser app</string>
+    <!-- Post-login dialog -->
+    <string name="login_successful">Login successful</string>
+    <string name="sync_now">Sync now?</string>
+    <!--Change Note Type Dialog Fragment-->
+    <string name="card_numbers_unchanged">Card numbers will remain unchanged</string>
+    <!-- Subset of TR.changeNotetypeToFromCloze -->
+    <string name="extra_cloze_deletions_removed">If changing to a regular note type, and there are more cloze deletions than available card templates, any extra cards will be removed.</string>
+    <string name="different_note_types_selected">Please select notes from only one notetype.</string>
+    <string name="error_no_changes_to_save">No changes to save</string>
+    <string name="choose_color">Choose color</string>
+    <!-- Special Fields -->
+    <string name="standard_fields_tab_header" comment="Tab header for inserting non-special fields: {{Front}}">Fields</string>
+    <string name="special_fields_tab_header" comment="Tab header for inserting special fields: {{Deck}}">Special</string>
+    <string name="special_field_example_suffix"><![CDATA[: ‘<b>%1$s</b>’]]></string>
+    <string name="special_field_front_side_help">The front template content. Audio is not automatically played</string>
+    <string name="special_field_deck_help" comment="%s: either blank or \' %s\'">The full deck of the card, including parent decks%s</string>
+    <string name="special_field_subdeck_help" comment="%s: either blank or \' %s\'">The current deck of the card, excluding parent decks%s</string>
+    <string name="special_field_flag_help">Outputs ‘%1$s’, where %2$s is the flag code (%3$s\–%4$s\)</string>
+    <string name="special_field_tags_help" comment="%s: either blank or \' %s\'">The tags of the note%s</string>
+    <string name="special_field_card_id_help" comment="%s: either blank or \' %s\'">The ID of the card%s</string>
+    <string name="special_field_card_help" comment="%s: either blank or \' %s\'">The name of the card template%s</string>
+    <string name="special_field_type_help" comment="%s: either blank or \' %s\'">The name of the note type%s</string>
 </resources>

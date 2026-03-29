@@ -16,16 +16,21 @@
 
 package com.ichi2.anki.deckpicker
 
+import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.CheckResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import anki.card_rendering.EmptyCardsReport
 import anki.collection.OpChanges
+import anki.decks.SetDeckCollapsedRequest
 import anki.i18n.GeneratedTranslations
+import anki.sync.SyncStatusResponse
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.CollectionManager.withOpenColOrNull
 import com.ichi2.anki.DeckPicker
 import com.ichi2.anki.InitialActivity
 import com.ichi2.anki.OnErrorListener
@@ -37,7 +42,10 @@ import com.ichi2.anki.libanki.CardId
 import com.ichi2.anki.libanki.Consts
 import com.ichi2.anki.libanki.Consts.DEFAULT_DECK_ID
 import com.ichi2.anki.libanki.DeckId
+import com.ichi2.anki.libanki.Decks
 import com.ichi2.anki.libanki.sched.DeckNode
+import com.ichi2.anki.libanki.undoAvailable
+import com.ichi2.anki.libanki.undoLabel
 import com.ichi2.anki.libanki.utils.extend
 import com.ichi2.anki.noteeditor.NoteEditorLauncher
 import com.ichi2.anki.notetype.ManageNoteTypesDestination
@@ -45,7 +53,10 @@ import com.ichi2.anki.observability.undoableOp
 import com.ichi2.anki.pages.DeckOptionsDestination
 import com.ichi2.anki.performBackupInBackground
 import com.ichi2.anki.reviewreminders.ScheduleRemindersDestination
+import com.ichi2.anki.settings.Prefs
+import com.ichi2.anki.syncAuth
 import com.ichi2.anki.utils.Destination
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +65,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.ankiweb.rsdroid.RustCleanup
+import net.ankiweb.rsdroid.exceptions.BackendNetworkException
 import timber.log.Timber
 
 /**
@@ -93,7 +106,7 @@ class DeckPickerViewModel :
     /**
      * Used if the Deck Due Tree is mutated
      */
-    private val flowOfRefreshDeckList = MutableSharedFlow<Unit>()
+    private val flowOfRefreshDeckList = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     val flowOfDeckList =
         combine(
@@ -112,22 +125,25 @@ class DeckPickerViewModel :
                 data = tree.filterAndFlattenDisplay(filter, currentDeckId),
                 hasSubDecks = tree.children.any { it.children.any() },
             )
-        }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = FlattenedDeckList.empty)
 
     /**
      * @see deleteDeck
      * @see DeckDeletionResult
      */
-    val deckDeletedNotification = MutableSharedFlow<DeckDeletionResult>()
-    val emptyCardsNotification = MutableSharedFlow<EmptyCardsResult>()
-    val flowOfDestination = MutableSharedFlow<Destination>()
-    override val onError = MutableSharedFlow<String>()
+    val deckDeletedNotification = MutableSharedFlow<DeckDeletionResult>(extraBufferCapacity = 1)
+    val emptyCardsNotification = MutableSharedFlow<EmptyCardsResult>(extraBufferCapacity = 1)
+    val flowOfDestination = MutableSharedFlow<Destination>(extraBufferCapacity = 1)
+    override val onError = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val flowOfExportDeck = MutableSharedFlow<DeckId>()
+    val flowOfCreateShortcut = MutableSharedFlow<ShortcutData>()
+    val flowOfDisableShortcuts = MutableSharedFlow<List<String>>()
 
     /**
      * A notification that the study counts have changed
      */
     // TODO: most of the recalculation should be moved inside the ViewModel
-    val flowOfDeckCountsChanged = MutableSharedFlow<Unit>()
+    val flowOfDeckCountsChanged = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     var loadDeckCounts: Job? = null
         private set
@@ -138,9 +154,9 @@ class DeckPickerViewModel :
      */
     private var schedulerUpgradeDialogShownForVersion: Long? = null
 
-    val flowOfPromptUserToUpdateScheduler = MutableSharedFlow<Unit>()
+    val flowOfPromptUserToUpdateScheduler = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    val flowOfUndoUpdated = MutableSharedFlow<Unit>()
+    val flowOfUndoUpdated = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     val flowOfCollectionHasNoCards = MutableStateFlow(true)
 
@@ -168,7 +184,14 @@ class DeckPickerViewModel :
 
     // HACK: dismiss a legacy progress bar
     // TODO: Replace with better progress handling for first load/corrupt collections
-    val flowOfDecksReloaded = MutableSharedFlow<Unit>()
+    // This MutableSharedFlow has replay=1 due to a race condition between its collector being started
+    // and a possible early emission that occurs when the user is on a metered network and a dialog has to show up
+    // to ask the user if they want to trigger a sync. Normally, the spinning progress indicator is
+    // dismissed via an emission to this flow after the sync is completed, but if the metered network
+    // warning dialog appears, we should immediately refresh the UI in case the user decides not to sync.
+    // Otherwise, the progress indicator remains indefinitely. This replay=1 ensures that the collector will
+    // receive the dismissal event even if it starts after the emission.
+    val flowOfDecksReloaded = MutableSharedFlow<Unit>(extraBufferCapacity = 1, replay = 1)
 
     /**
      * Deletes the provided deck, child decks. and all cards inside.
@@ -238,10 +261,24 @@ class DeckPickerViewModel :
             flowOfDeckCountsChanged.emit(Unit)
         }
 
+    /**
+     * Rebuilds a filtered deck with its current filter settings
+     */
+    @CheckResult
+    fun rebuildFilteredDeck(deckId: DeckId): Job =
+        viewModelScope.launch {
+            Timber.i("rebuilding filtered deck %s", deckId)
+            withCol {
+                decks.select(deckId)
+                sched.rebuildFilteredDeck(decks.selected())
+            }
+            flowOfDeckCountsChanged.emit(Unit)
+        }
+
     fun browseCards(deckId: DeckId) =
         launchCatchingIO {
             withCol { decks.select(deckId) }
-            flowOfDestination.emit(BrowserDestination(deckId))
+            flowOfDestination.emit(BrowserDestination.ToDeck(deckId))
         }
 
     fun addNote(
@@ -291,24 +328,28 @@ class DeckPickerViewModel :
      *
      * This method also triggers an update for the widget to reflect the newly calculated counts.
      */
+    // TODO: this should not be executed if syncing - called after sync is completed
     @RustCleanup("backup with 5 minute timer, instead of deck list refresh")
-    fun updateDeckList(): Job? {
-        if (!CollectionManager.isOpenUnsafe()) {
-            return null
+    fun updateDeckList(): Job =
+        viewModelScope.launch(Dispatchers.IO) {
+            // WARN: On a regular sync, this blocks until the sync completes
+            // On a full sync, the collection is closed
+            if (!CollectionManager.isOpenUnsafe()) {
+                return@launch
+            }
+            if (Build.FINGERPRINT != "robolectric") {
+                // uses user's desktop settings to determine whether a backup
+                // actually happens
+                launchCatchingIO { performBackupInBackground() }
+            }
+            Timber.d("updateDeckList")
+            reloadDeckCounts().join()
         }
-        if (Build.FINGERPRINT != "robolectric") {
-            // uses user's desktop settings to determine whether a backup
-            // actually happens
-            launchCatchingIO { performBackupInBackground() }
-        }
-        Timber.d("updateDeckList")
-        return reloadDeckCounts()
-    }
 
-    fun reloadDeckCounts(): Job? {
+    fun reloadDeckCounts(): Job {
         loadDeckCounts?.cancel()
         val loadDeckCounts =
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 Timber.d("Refreshing deck list")
                 val (deckDueTree, collectionHasNoCards) =
                     withCol {
@@ -353,13 +394,75 @@ class DeckPickerViewModel :
 
     fun toggleDeckExpand(deckId: DeckId) =
         viewModelScope.launch {
-            // update DB
-            withCol { decks.collapse(deckId) }
             // update stored state
             dueTree?.find(deckId)?.run {
                 collapsed = !collapsed
+                // Anki uses scope as Reviewer in deck browser
+                withCol {
+                    decks.setCollapsed(
+                        did,
+                        collapsed = collapsed,
+                        SetDeckCollapsedRequest.Scope.REVIEWER,
+                    )
+                }
             }
             flowOfRefreshDeckList.emit(Unit)
+        }
+
+    /**
+     * Requests export for the specified deck
+     */
+    fun exportDeck(deckId: DeckId) =
+        launchCatchingIO {
+            flowOfExportDeck.emit(deckId)
+        }
+
+    /**
+     * Find the position of a deck in the flattened deck list.
+     * If the deck is a child of a collapsed deck, returns the position of the parent deck.
+     * Returns 0 if the deck is not found.
+     */
+    fun findDeckPosition(deckId: DeckId): Int {
+        val currentDeckList = flowOfDeckList.value.data
+        currentDeckList.forEachIndexed { index, treeNode ->
+            if (treeNode.did == deckId) {
+                return index
+            }
+        }
+
+        // If the deck is not in our list, search using the immediate parent
+        val collapsedDeck = dueTree?.find(deckId) ?: return 0
+        val parent = collapsedDeck.parent?.get() ?: return 0
+        return findDeckPosition(parent.did)
+    }
+
+    /**
+     * Prepares data for creating a deck shortcut
+     */
+    fun createIcon(deckId: DeckId) =
+        launchCatchingIO {
+            val (shortLabel, longLabel) =
+                withCol {
+                    val fullName = decks.name(deckId)
+                    Pair(
+                        Decks.basename(fullName),
+                        fullName,
+                    )
+                }
+            flowOfCreateShortcut.emit(
+                ShortcutData(
+                    deckId = deckId,
+                    shortLabel = shortLabel,
+                    longLabel = longLabel,
+                ),
+            )
+        }
+
+    /** Disables the shortcut of the deck and the children belonging to it.*/
+    fun disableDeckAndChildrenShortcuts(deckId: DeckId) =
+        launchCatchingIO {
+            val deckTreeDids = dueTree?.find(deckId)?.map { it.did.toString() } ?: emptyList()
+            flowOfDisableShortcuts.emit(deckTreeDids)
         }
 
     sealed class StartupResponse {
@@ -423,6 +526,88 @@ class DeckPickerViewModel :
             val empty = FlattenedDeckList(emptyList(), hasSubDecks = false)
         }
     }
+
+    /**
+     * Fetches the current sync icon state for the menu
+     */
+    suspend fun fetchSyncIconState(): SyncIconState {
+        if (!Prefs.displaySyncStatus) return SyncIconState.Normal
+        val auth = syncAuth() ?: return SyncIconState.NotLoggedIn
+        return try {
+            // Use CollectionManager to ensure that this doesn't block 'deck count' tasks
+            // throws if a .colpkg import or similar occurs just before this call
+            val output = withContext(Dispatchers.IO) { CollectionManager.getBackend().syncStatus(auth) }
+            if (output.hasNewEndpoint() && output.newEndpoint.isNotEmpty()) {
+                Prefs.currentSyncUri = output.newEndpoint
+            }
+            when (output.required) {
+                SyncStatusResponse.Required.NO_CHANGES -> SyncIconState.Normal
+                SyncStatusResponse.Required.NORMAL_SYNC -> SyncIconState.PendingChanges
+                SyncStatusResponse.Required.FULL_SYNC -> SyncIconState.OneWay
+                SyncStatusResponse.Required.UNRECOGNIZED, null -> TODO("unexpected required response")
+            }
+        } catch (_: BackendNetworkException) {
+            SyncIconState.Normal
+        } catch (e: Exception) {
+            Timber.d(e, "error obtaining sync status: collection likely closed")
+            SyncIconState.Normal
+        }
+    }
+
+    /**
+     * Updates the menu state with current collection information
+     */
+    suspend fun updateMenuState(): OptionsMenuState? =
+        withOpenColOrNull {
+            val searchIcon = decks.count() >= 10
+            val undoLabel = undoLabel()
+            val undoAvailable = undoAvailable()
+            // besides checking for cards being available also consider if we have empty decks
+            val isColEmpty = isEmpty && decks.count() == 1
+            // the correct sync status is fetched in the next call so "Normal" is used as a placeholder
+            OptionsMenuState(searchIcon, undoLabel, SyncIconState.Normal, undoAvailable, isColEmpty)
+        }?.let { (searchIcon, undoLabel, _, undoAvailable, isColEmpty) ->
+            val syncIcon = fetchSyncIconState()
+            OptionsMenuState(searchIcon, undoLabel, syncIcon, undoAvailable, isColEmpty)
+        }
+
+    @SuppressLint("UseKtx")
+    fun getPreviousVersion(
+        preferences: SharedPreferences,
+        current: Long,
+    ): Long {
+        var previous: Long
+        try {
+            previous = preferences.getLong(UPGRADE_VERSION_KEY, current)
+        } catch (e: ClassCastException) {
+            Timber.w(e)
+            previous =
+                try {
+                    // set 20900203 to default value, as it's the latest version that stores integer in shared prefs
+                    preferences.getInt(UPGRADE_VERSION_KEY, 20900203).toLong()
+                } catch (cce: ClassCastException) {
+                    Timber.w(cce)
+                    // Previous versions stored this as a string.
+                    val s = preferences.getString(UPGRADE_VERSION_KEY, "")
+                    // The last version of AnkiDroid that stored this as a string was 2.0.2.
+                    // We manually set the version here, but anything older will force a DB check.
+                    if ("2.0.2" == s) {
+                        40
+                    } else {
+                        0
+                    }
+                }
+            Timber.d("Updating shared preferences stored key %s type to long", UPGRADE_VERSION_KEY)
+            // Expected Editor.putLong to be called later to update the value in shared prefs
+            preferences.edit().remove(UPGRADE_VERSION_KEY).apply()
+        }
+        Timber.i("Previous AnkiDroid version: %s", previous)
+        return previous
+    }
+
+    companion object {
+        const val UPGRADE_VERSION_KEY = "lastUpgradeVersion"
+    }
 }
 
 /** Result of [DeckPickerViewModel.deleteDeck] */
@@ -453,3 +638,31 @@ data class EmptyCardsResult(
 }
 
 fun DeckNode.onlyHasDefaultDeck() = children.singleOrNull()?.did == DEFAULT_DECK_ID
+
+/**
+ * Data for creating a deck shortcut
+ * @param shortLabel the basename of the deck (e.g., "Verbs" for "Language::English::Verbs")
+ * @param longLabel the full deck name (e.g., "Language::English::Verbs")
+ */
+data class ShortcutData(
+    val deckId: DeckId,
+    val shortLabel: String,
+    val longLabel: String,
+)
+
+enum class SyncIconState {
+    Normal,
+    PendingChanges,
+    OneWay,
+    NotLoggedIn,
+}
+
+/** Menu state data for the options menu */
+data class OptionsMenuState(
+    val searchIcon: Boolean,
+    /** If undo is available, a string describing the action. */
+    val undoLabel: String?,
+    val syncIcon: SyncIconState,
+    val undoAvailable: Boolean,
+    val isColEmpty: Boolean,
+)

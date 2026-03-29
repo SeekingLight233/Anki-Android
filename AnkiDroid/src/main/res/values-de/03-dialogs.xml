@@ -83,11 +83,14 @@
     <string name="restore_backup_choose_another">Eine andere auswählen</string>
     <string name="dialog_cancel">Abbrechen</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_add" comment="Positive dialog action button label to add \'something\'">Add</string>
+    <string name="restore">Restore</string>
     <string name="dialog_confirm" tools:ignore="UnusedResources">Bestätigen</string>
     <string name="dialog_no">Nein</string>
     <string name="dialog_yes">Ja</string>
     <string name="dialog_keep">Behalten</string>
     <string name="dialog_remove">Entfernen</string>
+    <string name="dialog_exit" comment="Label for a button which will exit/finish the current screen">Exit</string>
     <string name="dialog_continue">Weiter</string>
     <string name="dialog_processing">Wird verarbeitet &#8230;</string>
     <string name="dialog_positive_create" comment="Create a new collection, probably erasing the previous one, may be necessary in case of error.">Erstellen</string>
@@ -213,8 +216,6 @@
     <string name="dismiss_backup_warning_title">Warnung wegen Datenverlust</string>
     <string name="dismiss_backup_warning_new_user">Aufgrund von Änderungen in den Datenschutzeinstellungen von Android werden deine Daten und automatische Backups gelöscht, sobald du die App deinstallierst.</string>
     <string name="dismiss_backup_warning_upgrade">Aufgrund von Android-Datenschutzänderungen sind Ihre Daten und automatischen Backups nicht mehr zugänglich, wenn die App deinstalliert wird</string>
-    <string name="deck_already_exists">Stapel bereits vorhanden</string>
-    <string name="empty_deck_name">Stapelname darf nicht leer sein</string>
     <string name="create_deck_numeric_hint">Wenn Sie Probleme mit der Reihenfolge der Stapel haben (z.B. \'10\' erscheint vor \'2\'), ersetzen Sie \'2\' durch \'02\'</string>
     <!-- Set Due Date -->
     <string name="set_due_date_match_interval" comment="when setting a card\'s due date, this checkbox also changes the interval of the card">Intervall auf denselben Wert setzen</string>
@@ -254,4 +255,32 @@
     <string name="tts_error_dialog_reason_text">Die Text-Zu-Sprache-Engine <b>%1$s</b> unterstützt die folgende sprache nicht: <b>%2$s</b></string>
     <string name="tts_error_dialog_change_button_text">Engine ändern</string>
     <string name="tts_error_dialog_supported_voices_button_text">Spracheinstellungen</string>
+    <!-- import_cache_error_resolutions -->
+    <string name="import_error_resolution_try_again">Datei neu importieren</string>
+    <string name="import_error_resolution_free_up_space">Stelle sicher, dass genügend freier Speicherplatz auf deinem Gerät vorhanden ist</string>
+    <string name="import_error_resolution_check_internet">Stelle sicher, dass du mit dem Internet verbunden bist</string>
+    <string name="import_error_resolution_copy_to_device">Kopiere die Datei auf dein Gerät und versuche es erneut mit der lokalen Datei</string>
+    <string name="import_error_resolution_select_file">Öffne die Datei mit der Dateibrowser-App deines Geräts</string>
+    <!-- Post-login dialog -->
+    <string name="login_successful">Anmeldung erfolgreich</string>
+    <string name="sync_now">Jetzt synchronisieren?</string>
+    <!--Change Note Type Dialog Fragment-->
+    <string name="card_numbers_unchanged">Kartennummern bleiben unverändert</string>
+    <!-- Subset of TR.changeNotetypeToFromCloze -->
+    <string name="extra_cloze_deletions_removed">Wenn Sie zu einem regulären Notiztyp wechseln und es mehr Cloze-Löschungen als verfügbare Kartenvorlagen gibt, werden alle zusätzlichen Karten entfernt.</string>
+    <string name="different_note_types_selected">Bitte wählen Sie Notizen aus nur einem Notiztyp aus.</string>
+    <string name="error_no_changes_to_save">Keine Änderungen zum Speichern</string>
+    <string name="choose_color">Farbe wählen</string>
+    <!-- Special Fields -->
+    <string name="standard_fields_tab_header" comment="Tab header for inserting non-special fields: {{Front}}">Fields</string>
+    <string name="special_fields_tab_header" comment="Tab header for inserting special fields: {{Deck}}">Special</string>
+    <string name="special_field_example_suffix"><![CDATA[: ‘<b>%1$s</b>’]]></string>
+    <string name="special_field_front_side_help">The front template content. Audio is not automatically played</string>
+    <string name="special_field_deck_help" comment="%s: either blank or \' %s\'">The full deck of the card, including parent decks%s</string>
+    <string name="special_field_subdeck_help" comment="%s: either blank or \' %s\'">The current deck of the card, excluding parent decks%s</string>
+    <string name="special_field_flag_help">Outputs ‘%1$s’, where %2$s is the flag code (%3$s\–%4$s\)</string>
+    <string name="special_field_tags_help" comment="%s: either blank or \' %s\'">The tags of the note%s</string>
+    <string name="special_field_card_id_help" comment="%s: either blank or \' %s\'">The ID of the card%s</string>
+    <string name="special_field_card_help" comment="%s: either blank or \' %s\'">The name of the card template%s</string>
+    <string name="special_field_type_help" comment="%s: either blank or \' %s\'">The name of the note type%s</string>
 </resources>

@@ -243,7 +243,7 @@ class CardAnalysisWidget : AnalyticsWidgetProvider() {
             // Get the selected deck ID internally
             val selectedDeckId = getDeckIdForWidget(context, widgetId)
 
-            /**
+            /*
              * Explanation of behavior when selectedDeckId is empty
              * If selectedDeckId is empty, the widget will retain the previous deck.
              * This behavior ensures that the widget does not display an empty view, which could be
@@ -324,7 +324,6 @@ class CardAnalysisWidget : AnalyticsWidgetProvider() {
                 CrashReportService.sendExceptionReport(
                     Exception("Unexpected action received: ${intent.action}"),
                     "CardAnalysisWidget - onReceive",
-                    null,
                     onlyIfSilent = true,
                 )
             }

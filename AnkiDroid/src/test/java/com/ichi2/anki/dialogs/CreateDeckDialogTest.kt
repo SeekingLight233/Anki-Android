@@ -1,19 +1,19 @@
-/****************************************************************************************
- * Copyright (c) 2021 Akshay Jadhav <jadhavakshay0701@gmail.com>                        *
- * Copyright (c) 2024 David Allison <davidallisongithub@gmail.com>                      *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2021 Akshay Jadhav <jadhavakshay0701@gmail.com>
+ * Copyright (c) 2024 David Allison <davidallisongithub@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.ichi2.anki.dialogs
 
@@ -36,7 +36,6 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.hasItem
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -64,19 +63,6 @@ class CreateDeckDialogTest : RobolectricTest() {
     override fun tearDown() {
         super.tearDown()
         activityScenario.closeQuietly()
-    }
-
-    @Test
-    fun testCreateFilteredDeckFunction() {
-        val deckName = "filteredDeck"
-        ensureExecutionOfScenario(DeckDialogType.FILTERED_DECK) { createDeckDialog, assertionCalled ->
-            createDeckDialog.onNewDeckCreated = { id: DeckId ->
-                // a deck was created
-                assertThat(id, equalTo(col.decks.id(deckName)))
-                assertionCalled()
-            }
-            createDeckDialog.createFilteredDeck(deckName)
-        }
     }
 
     @Test
@@ -272,37 +258,6 @@ class CreateDeckDialogTest : RobolectricTest() {
             input = previousDeckName
             assertThat("no error is displayed", getInputTextLayout().error, nullValue())
         }
-    }
-
-    @Test
-    fun `filtered decks - duplicate creation`() {
-        fun allDeckNames() = col.decks.allNamesAndIds().map { it.name }
-
-        fun createDeck(
-            deckName: String,
-            expectedReturnValue: Boolean = true,
-        ) {
-            withCreateDeckDialog(DeckDialogType.FILTERED_DECK) {
-                onNewDeckCreated = { }
-                assertThat("createFilteredDeck", createFilteredDeck(deckName), equalTo(expectedReturnValue))
-            }
-        }
-
-        val duplicatedName = col.sched.getOrCreateFilteredDeck(did = 0).name
-
-        createDeck(duplicatedName)
-        assertThat("initial filtered deck created", allDeckNames(), hasItem(duplicatedName))
-
-        createDeck(duplicatedName)
-        assertThat("initial filtered deck", allDeckNames(), hasItem(duplicatedName))
-        assertThat("duplicate deck is created", allDeckNames(), hasItem("$duplicatedName+"))
-
-        repeat(9) {
-            createDeck(duplicatedName)
-        }
-
-        assertThat("final duplicate deck is created", allDeckNames(), hasItem("$duplicatedName${"+".repeat(10)}"))
-        createDeck(duplicatedName, expectedReturnValue = false)
     }
 
     /**

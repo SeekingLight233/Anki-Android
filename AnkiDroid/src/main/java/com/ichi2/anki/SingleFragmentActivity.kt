@@ -22,9 +22,12 @@ import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
+import com.ichi2.anki.SingleFragmentActivity.Companion.getIntent
 import com.ichi2.anki.android.input.ShortcutGroup
 import com.ichi2.anki.android.input.ShortcutGroupProvider
 import com.ichi2.anki.dialogs.customstudy.CustomStudyDialog.CustomStudyAction
+import com.ichi2.anki.snackbar.BaseSnackbarBuilderProvider
+import com.ichi2.anki.snackbar.SnackbarBuilder
 import com.ichi2.anki.ui.windows.managespace.ManageSpaceActivity
 import com.ichi2.anki.utils.ext.setFragmentResultListener
 import com.ichi2.themes.setTransparentStatusBar
@@ -35,14 +38,20 @@ import kotlin.reflect.jvm.jvmName
 
 /**
  * Activity aimed to host a fragment on the entire screen.
- * For that, it uses [R.layout.single_fragment_activity], which has only a [FragmentContainerView]
+ * For that, it uses [R.layout.activity_single_fragment], which has only a [FragmentContainerView]
  *
  * Useful to avoid creating a Activity for every new screen
  * while being able to reuse the fragment on other places.
  *
  * [getIntent] can be used as an easy way to build a [SingleFragmentActivity]
  */
-open class SingleFragmentActivity : AnkiActivity() {
+open class SingleFragmentActivity :
+    AnkiActivity(R.layout.activity_single_fragment),
+    BaseSnackbarBuilderProvider {
+    // delegate to the fragment in all cases
+    override val baseSnackbarBuilder: SnackbarBuilder
+        get() = (fragment as? BaseSnackbarBuilderProvider)?.baseSnackbarBuilder ?: { }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if (showedActivityFailedScreen(savedInstanceState)) {
             return
@@ -52,7 +61,6 @@ open class SingleFragmentActivity : AnkiActivity() {
         if (!ensureStoragePermissions()) {
             return
         }
-        setContentView(R.layout.single_fragment_activity)
         setTransparentStatusBar()
 
         // avoid recreating the fragment on configuration changes

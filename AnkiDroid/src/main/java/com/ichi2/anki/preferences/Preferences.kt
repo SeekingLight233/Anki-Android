@@ -1,22 +1,22 @@
-/***************************************************************************************
- * Copyright (c) 2009 Nicolas Raoul <nicolas.raoul@gmail.com>                           *
- * Copyright (c) 2009 Edu Zamora <edu.zasu@gmail.com>                                   *
- * Copyright (c) 2010 Norbert Nagold <norbert.nagold@gmail.com>                         *
- * Copyright (c) 2012 Kostas Spyropoulos <inigo.aldana@gmail.com>                       *
- * Copyright (c) 2015 Timothy Rae <perceptualchaos2@gmail.com>                          *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2009 Nicolas Raoul <nicolas.raoul@gmail.com>
+ * Copyright (c) 2009 Edu Zamora <edu.zasu@gmail.com>
+ * Copyright (c) 2010 Norbert Nagold <norbert.nagold@gmail.com>
+ * Copyright (c) 2012 Kostas Spyropoulos <inigo.aldana@gmail.com>
+ * Copyright (c) 2015 Timothy Rae <perceptualchaos2@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.ichi2.anki.preferences
 
 import android.content.Context
@@ -42,6 +42,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.ichi2.anki.R
 import com.ichi2.anki.SingleFragmentActivity
+import com.ichi2.anki.common.annotations.LegacyNotifications
 import com.ichi2.anki.preferences.HeaderFragment.Companion.getHeaderKeyForFragment
 import com.ichi2.anki.reviewreminders.ReviewReminderScope
 import com.ichi2.anki.reviewreminders.ScheduleReminders
@@ -54,7 +55,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
 class PreferencesFragment :
-    Fragment(R.layout.preferences),
+    Fragment(R.layout.fragment_preferences),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
     SearchPreferenceResultListener {
     /**
@@ -136,8 +137,11 @@ class PreferencesFragment :
             addToBackStack(fragment.javaClass.name)
         }
 
-        Timber.i("Highlighting key '%s' on %s", result.key, fragment)
-        result.highlight(fragment as PreferenceFragmentCompat)
+        if (fragment is ControlsSettingsFragment) {
+            fragment.highlightPreference(result)
+        } else {
+            result.highlight(fragment as PreferenceFragmentCompat)
+        }
     }
 
     private fun setupBackCallbacks() {
@@ -260,6 +264,7 @@ class PreferencesActivity :
 }
 
 // Only enable AnkiDroid notifications unrelated to due reminders
+@LegacyNotifications("Magic number which is no longer needed")
 const val PENDING_NOTIFICATIONS_ONLY = 1000000
 
 const val INITIAL_FRAGMENT_EXTRA = "initial_fragment"
@@ -280,9 +285,11 @@ fun getFragmentFromXmlRes(
         R.xml.preferences_notifications -> NotificationsSettingsFragment()
         R.xml.preferences_appearance -> AppearanceSettingsFragment()
         R.xml.preferences_controls -> ControlsSettingsFragment()
+        R.xml.preferences_reviewer_controls -> ControlsSettingsFragment()
+        R.xml.preferences_previewer_controls -> ControlsSettingsFragment()
         R.xml.preferences_advanced -> AdvancedSettingsFragment()
         R.xml.preferences_accessibility -> AccessibilitySettingsFragment()
-        R.xml.preferences_dev_options -> DevOptionsFragment()
+        R.xml.preferences_developer_options -> DeveloperOptionsFragment()
         R.xml.preferences_reviewer -> ReviewerOptionsFragment()
         R.xml.preferences_custom_buttons -> CustomButtonsSettingsFragment()
         else -> null

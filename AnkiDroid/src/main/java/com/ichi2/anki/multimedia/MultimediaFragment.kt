@@ -34,6 +34,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.CrashReportService
 import com.ichi2.anki.R
 import com.ichi2.anki.common.annotations.NeedsTest
@@ -84,6 +85,7 @@ abstract class MultimediaFragment(
 
         if (arguments != null) {
             Timber.d("Getting MultimediaActivityExtra values from arguments")
+            @Suppress("USELESS_CAST")
             val multimediaActivityExtra =
                 arguments?.getSerializableCompat(
                     MultimediaActivity.MULTIMEDIA_ARGS_EXTRA,
@@ -104,7 +106,7 @@ abstract class MultimediaFragment(
                 enabled = viewModel.currentMultimediaPath.value != null,
             ) {
                 override fun handleOnBackPressed() {
-                    DiscardChangesDialog.showDialog(requireContext()) {
+                    DiscardChangesDialog.showDialog(requireContext(), message = TR.addingDiscardCurrentInput()) {
                         Timber.i("MultimediaFragment:: OK button pressed to confirm discard changes")
                         isEnabled = false
                         requireActivity().onBackPressedDispatcher.onBackPressed()

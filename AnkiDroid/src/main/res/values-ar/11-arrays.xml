@@ -51,6 +51,8 @@
     <string name="add_to_deck_decide_by_note_type">قرر حسب نوع الملحوظة</string>
     <!-- theme labels -->
     <string name="theme_follow_system">حسب النظام</string>
+    <string name="theme_day" comment="Day/Light theme color scheme">نهار</string>
+    <string name="theme_night" comment="Night/Dark theme color scheme">ليل</string>
     <!-- day_theme_labels -->
     <string name="day_theme_light">ساطع</string>
     <string name="day_theme_plain">سادة</string>
@@ -78,7 +80,7 @@
     <string name="gesture_flag_pink" maxLength="41">تبديل بالعلم الوردي</string>
     <string name="gesture_flag_turquoise" maxLength="41">تبديل بالعلم الفيروزي</string>
     <string name="gesture_flag_purple" maxLength="41">تبديل بالعلم البنفسجي</string>
-    <string name="gesture_flag_remove" maxLength="41">أزل العلم</string>
+    <string name="gesture_flag_remove" maxLength="41">إزالة العلم</string>
     <string name="gesture_page_up" maxLength="41">مر صفحة إلى الأعلى</string>
     <string name="gesture_page_down" maxLength="41">مر صفحة إلى الأسفل</string>
     <string name="gesture_toggle_whiteboard" maxLength="41">تفعيل أو تعطيل السَّبُّورَة</string>

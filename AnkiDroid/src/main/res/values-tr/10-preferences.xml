@@ -235,20 +235,14 @@
     <string name="misc" maxLength="41">Diğer</string>
     <!-- Review reminders -->
     <string name="add_reminder" comment="Label for the add reminder button in the screen for adding and editing review reminders">Hatırlatıcı ekle</string>
+    <string name="add_review_reminder" comment="Title of the screen for creating a new review reminder">Çalışma hatırlatıcısı ekle</string>
+    <string name="edit_review_reminder" comment="Title of the screen for editing an existing review reminder">Çalışma hatırlatıcısını değiştir</string>
+    <string name="you_have_no_review_reminders" comment="Text that appears in the review reminder editing screen when there are no reminders set">Çalışma hatırlatıcınız yok</string>
     <!-- studyoptions -->
     <string name="studyoptions_limit_select_tags">Etiketleri Seçin</string>
     <!-- Deck configurations -->
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Genel</string>
-    <string name="deck_conf_cram_filter" maxLength="41">Filtre</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Arama</string>
-    <string name="deck_conf_cram_limit" maxLength="41">Sınırla</string>
-    <string name="deck_conf_cram_order" maxLength="41">Kart seçim sırası</string>
-    <string name="deck_conf_cram_reschedule" maxLength="41" comment="Title of the box labelled by deck_conf_cram_reschedule_summ">Yeniden planlama</string>
-    <string name="deck_conf_cram_reschedule_summ">Bu destedeki cevaplarıma göre kartları yeniden planlama</string>
-    <string name="deck_conf_cram_filter_2_check">İkinci filtreyi etkinleştir</string>
-    <string name="deck_conf_cram_steps_summ" maxLength="41">Kendi adımlarınızı tanımlayın</string>
-    <string name="deck_conf_cram_preview_delays" maxLength="41">Gecikmeleri önizle</string>
-    <string name="deck_conf_cram_preview_delays_summ">Gecikmeler saniye cinsindendir. 0, kartı orijinal destesine döndürür.</string>
     <!-- analytics options -->
     <string name="analytics_dialog_title">AnkiDroid\'in iyileştirilmesine yardım et!</string>
     <string name="analytics_title" maxLength="41">Özellik kullanımını paylaş</string>
@@ -386,6 +380,8 @@
     <string name="new_study_screen_summ"><![CDATA[Şu anda varolan çalışma ekranının yerine geçecek olan ekran. Eski ekranın belirli özellikleri değiştirilmiş veya silinmiş bulunuyor. Lütfen herhangi bir <a href="%1$s">geri bildiriminizi</a> veya <a href="%2$s">bulduğunuz hataları</a> bildirin.]]></string>
     <string name="show_answer_feedback" maxLength="41">Cevap geribildirimini göster</string>
     <string name="screen" maxLength="41">Ekran</string>
+    <string name="only_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to only answer the card">Sadece cevap ver</string>
+    <string name="flip_and_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to answer the card if on the answer side, and flip it if on the question side">Çevir ve cevap ver</string>
     <!--Keyboard shortcuts dialog-->
     <string name="open_settings" comment="Description of the shortcut that opens the app settings">Ayarları aç</string>
 </resources>

@@ -48,13 +48,14 @@
     <string name="drawer_open">Ouvrir la barre de navigation</string>
     <string name="drawer_close">Fermer la barre de navigation</string>
     <string name="note_message">Note sauvegardée</string>
+    <!-- Note editor screen -->
     <string name="CardEditorCardDeck">Paquet de cartes :</string>
     <string name="CardEditorNoteDeck">Paquet :</string>
     <string name="CardEditorModel">Type :</string>
     <string name="CardEditorTags">Étiquettes : %1$s</string>
     <string name="CardEditorCards">Cartes : %1$s</string>
-    <string name="edit_occlusions">Modifier les Occlusions</string>
-    <string name="tag_name">Nom d\'étiquette</string>
+    <string name="edit_occlusions">Edit occlusions</string>
+    <string name="paste_from_clipboard" maxLength="28">Coller</string>
     <string name="add_new_filter_tags">Ajouter/filtrer étiquettes</string>
     <string name="add_tag" maxLength="28">Ajouter une étiquette</string>
     <string name="check_all_tags" maxLength="28">Cocher/décocher toutes les étiquettes</string>
@@ -70,11 +71,10 @@
     <string name="whiteboard_align_left" comment="Option to align the whiteboard toolbar on the left" maxLength="28">Gauche</string>
     <string name="whiteboard_align_bottom" comment="Option to align the whiteboard toolbar on the bottom" maxLength="28">Bas</string>
     <string name="whiteboard_align_right" comment="Option to align the whiteboard toolbar on the right" maxLength="28">Droite</string>
-    <string name="whiteboard_clear" comment="Button text to clear the whiteboard" maxLength="28">Effacer</string>
     <string name="whiteboard_more_options" comment="Tooltip of the whiteboard \'More\' button" maxLength="28">Plus d\'options</string>
     <string name="whiteboard_remove_brush_message">Êtes-vous sûr de vouloir supprimer ce pinceau de votre palette ?</string>
     <string name="whiteboard_ink_eraser" comment="Title of the whiteboard Ink eraser">Encre</string>
-    <string name="whiteboard_stroke_eraser" comment="Title of the whiteboard Stroke eraser">Stroke</string>
+    <string name="whiteboard_stroke_eraser" comment="Title of the whiteboard Stroke eraser">Trait</string>
     <string name="stylus_mode" comment="Title of the menu item that toggles the whiteboard stylus mode" maxLength="28">Mode stylet</string>
     <string name="cannot_remove_last_brush_message">Le dernier pinceau n\'a pas pu être supprimé</string>
     <string name="enable_whiteboard" maxLength="28">Activer le tableau blanc</string>
@@ -84,6 +84,7 @@
     <string name="disable_eraser" maxLength="28">Désactiver l\'efface</string>
     <string name="hide_whiteboard" maxLength="28">Masquer le tableau blanc</string>
     <string name="clear_whiteboard" maxLength="28">Effacer le tableau blanc</string>
+    <string name="hide_toolbar" maxLength="28">Masquer la barre d\'outils</string>
     <string name="replay_media" maxLength="28">Rejouer la vidéo</string>
     <string name="leech_suspend_notification">Carte marquée comme sangsue et suspendue</string>
     <string name="leech_notification">Carte marquée « encombrante »</string>
@@ -97,6 +98,10 @@
     <string name="webview_crash_loop_dialog_content">Le système WebView n\'a pas réussi à afficher la carte « %1$s ».\n %2$s</string>
     <string name="slide_to_cancel" comment="Message shown when pressing the record button">Glissez pour annuler</string>
     <string name="filter_by_flags" maxLength="41">Marqueurs</string>
+    <!-- filtered deck options -->
+    <string name="filtered_option_delay_again">Delay for again</string>
+    <string name="filtered_option_delay_hard">Delay for hard</string>
+    <string name="filtered_option_delay_good">Delay for good</string>
     <!-- Custom study options -->
     <string name="custom_study_loading_tags">Création de la liste des labels en cours&#8230;</string>
     <!-- Study options -->
@@ -118,7 +123,6 @@
     <string name="close">Fermer</string>
     <string name="select">Sélectionner</string>
     <string name="field_remapping">%1$s (de « %2$s »)</string>
-    <string name="confirm_map_cards_to_nothing">Toute carte sans connexion sera effacée. Si une note n’a aucune carte restante, elle sera perdue. Êtes-vous sûr de vouloir continuer ?</string>
     <string name="missing_note_type">Aucun type de note trouvé</string>
     <string name="card_previewer_empty_front_indicator" comment="Extra text appended onto a tab title in the card previewer so that the user can see at a glance whether a card has no front.">%1$s (vide)</string>
     <!-- Image cropper -->
@@ -164,7 +168,8 @@
     <string name="import_error_not_apkg_extension">Le nom de fichier « %s » n\'a pas d\'extension .apkg ou .colpkg</string>
     <string name="import_error_load_imported_database">Les remplacements de la base de données Anki (.anki2) ne sont pas pris en charge. Veuillez voir le guide d’utilisation pour les instructions de remplacement.</string>
     <string name="import_error_content_provider">Le fichier sélectionné n’a pas pu être importé automatiquement par AnkiDroid. Veuillez consulter le manuel de l’utilisateur pour savoir comment importer manuellement des fichiers de Anki : \n %s</string>
-    <string name="import_error_copy_to_cache">Échec de la mise en cache du fichier (éventuellement à court d\'espace de stockage)</string>
+    <string name="import_error_copy_to_cache_title">Échec de la mise en cache du fichier</string>
+    <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Ceci est souvent causé par un bug dans l\'application utilisée pour sélectionner le fichier. Veuillez essayer les corrections suivantes :\n\n%s</string>
     <string name="import_interrupted">Importation interrompue : AnkiDroid a fermé</string>
     <string name="export_ready_title">Exportation prête</string>
     <string name="export_send_no_handlers">Aucune application disponible pour ouvrir le fichier APKG. Sauvegarde&#8230;</string>
@@ -188,10 +193,9 @@
     <string name="select_tts" maxLength="28">Définir la langue de synthèse vocale</string>
     <string name="custom_study" maxLength="28">Étude personnalisée</string>
     <string name="dyn_deck_desc">Ceci est un paquet pour l\'étude en dehors des horaires normaux. Les cartes reviendront automatiquement à leur paquet d\'origine après leur révision. La suppression de ce paquet remettra toutes les cartes restantes dans leur paquet d\'origine.</string>
-    <string name="steps_error">Les pas doivent être des nombres supérieurs à 0</string>
-    <string name="steps_min_error">Au moins un pas est requis</string>
     <string name="tag_editor_add_feedback">Appuyez sur « %2$s » pour confirmer l\'addition de « %1$s »</string>
     <string name="tag_editor_add_feedback_existing">Étiquette existante «%1$s» sélectionnée</string>
+    <string name="tag_already_exists">Le mot-clé existe déjà</string>
     <!-- Time spans -->
     <!-- Currently only used if exporting APKG fails -->
     <string name="apk_share_error">Erreur lors du partage du fichier apkg</string>
@@ -205,9 +209,9 @@
     <string name="background_image_title" maxLength="41">Arrière-plan</string>
     <string name="choose_an_image" maxLength="41">Sélectionner une image</string>
     <string name="remove_wallpaper_image" maxLength="41">Retirer le fond d\'écran</string>
-    <string name="remove_background_image">Retirer l\'arrière-plan ?</string>
+    <string name="remove_background_image">Are you sure you wish to remove the background?</string>
     <!-- Card Template Browser Appearance -->
-    <string name="restore_default" maxLength="28">Rétablir par défaut</string>
+    <string name="restore_default" maxLength="28">Restore default</string>
     <string name="reviewer_tts_cloze_spoken_replacement">Vide</string>
     <!-- Whiteboard eraser mode toggle message in Reviewer -->
     <string name="white_board_eraser_enabled">Mode efface activé</string>
@@ -233,23 +237,24 @@
     <string name="search_decks" maxLength="28">Rechercher dans les paquets</string>
     <string name="ankidroid_init_failed_webview_title">Erreur fatale</string>
     <string name="ankidroid_init_failed_webview">AnkiDroid s\'appuie sur la WebView du système qui n\'est pas disponible. Ceci peut se produire si le système installe des mises à jour. Veuillez réessayer dans quelques minutes.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">AnkiDroid ne peut pas accéder au stockage en raison d\'une erreur Android.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Taille de la police</string>
     <string name="menu_show_toolbar" comment="Checkable item stating whether the note editor toolbar should be shown" maxLength="28">Afficher la barre d\'outils</string>
-    <string name="format_insert_bold">Formater comme gras</string>
-    <string name="format_insert_italic">Formater comme italique</string>
-    <string name="format_insert_underline">Formater comme souligné</string>
+    <string name="format_insert_bold">Formater en gras</string>
+    <string name="format_insert_italic">Formater en italique</string>
+    <string name="format_insert_underline">Souligner</string>
     <string name="insert_horizontal_line">Insérer une ligne horizontale</string>
     <string name="insert_heading">Insérer un entête</string>
-    <string name="format_font_size">Changer la taille de la police</string>
-    <string name="insert_mathjax">Insérer une équation MathJax</string>
+    <string name="format_font_size">Change font size</string>
+    <string name="insert_mathjax">Insert MathJax equation</string>
     <string name="note_editor_toolbar_icon">Texte du bouton</string>
-    <string name="before_text">HTML avant sélection</string>
-    <string name="after_text">HTML après sélection</string>
-    <string name="add_toolbar_item">Créer un élément de la barre d\'outils</string>
-    <string name="edit_toolbar_item">Modifier la barre d’outils</string>
+    <string name="before_text">HTML before selection</string>
+    <string name="after_text">HTML after selection</string>
+    <string name="add_toolbar_item">Create toolbar item</string>
+    <string name="edit_toolbar_item">Edit toolbar item</string>
     <string name="toolbar_item_explain_edit_or_remove">Entrez le code HTML à insérer avant et après le texte sélectionné\n\nAppuyez longuement sur un élément de la barre d\'outils pour le modifier ou le supprimer</string>
-    <string name="remove_toolbar_item">Supprimer l\'élément de la barre d\'outils ?</string>
+    <string name="remove_toolbar_item">Remove toolbar item?</string>
     <string name="note_editor_image_too_large">L’image est trop grande, veuillez insérer l’image manuellement</string>
     <string name="note_editor_video_too_large">Le fichier vidéo est trop volumineux, insérez la vidéo manuellement.</string>
     <string name="note_editor_audio_too_large">Le fichier audio est trop volumineux, insérez l’audio manuellement.</string>
@@ -259,9 +264,12 @@
     <string name="create_shortcut_error">Erreur lors de l\'ajout du raccourci : %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Mettre en majuscules les phrases</string>
     <string name="menu_scroll_toolbar" comment="Checkbox stating whether note editor toolbar is scrollable or stacked. Checked: Scroll" maxLength="28">Barre d\'outils à défilement</string>
-    <!-- Symbols used as Button text in IncrementNumberRangePreference -->
+    <!-- IncrementNumberRangePreference -->
     <string name="plus_sign" comment="Label for increment button in IncrementerNumberRangePreference">+</string>
     <string name="minus_sign" comment="Label for decrement button in IncrementerNumberRangePreference">-</string>
+    <string name="invalid_value" comment="Error message in IncrementerNumberRangePreference when input is not a valid number">Valeur non valide</string>
+    <string name="maximum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the maximum allowed value">La valeur maximale est %d</string>
+    <string name="minimum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the minimum allowed value">La valeur minimale est %d</string>
     <!-- Used for credential empty warning message -->
     <string name="invalid_email">Saisir un email valide</string>
     <string name="password_empty">Mot de passe requis</string>
@@ -279,7 +287,6 @@
     <string name="download_failed">Le téléchargement a échoué</string>
     <string name="deck_download_progress_message">Vous pouvez utiliser d\'autres applications pendant que le téléchargement est en cours d\'exécution</string>
     <string name="check_network">Veuillez vérifier votre connexion réseau</string>
-    <string name="search_using_deck_name">Chercher en utilisant le nom du paquet</string>
     <string name="external_storage_unavailable">Téléchargement interrompu, le stockage externe n\'est pas disponible</string>
     <string name="home" maxLength="28">Accueil</string>
     <!-- Study Screen actions
@@ -304,6 +311,10 @@
     <!-- Manage note types -->
     <string name="field_editor_model_not_available">Impossible d\'accéder à la collection. Veuillez réessayer !</string>
     <string name="cd_manage_notetypes_add">Ajouter un nouveau type de note</string>
+    <plurals name="note_types_selected">
+        <item quantity="one">%d type de note sélectionné</item>
+        <item quantity="other">%d types de note sélectionnés</item>
+    </plurals>
     <!-- App Intro -->
     <string name="intro_ankidroid_tagline_one">Réviser moins</string>
     <string name="intro_ankidroid_tagline_two">Souvenez-vous de plus</string>
@@ -312,7 +323,6 @@
     <string name="intro_sync_from_ankiweb">Synchroniser avec AnkiWeb</string>
     <!-- IntentHandler -->
     <string name="app_not_initialized_new">AnkiDroid n\'est pas encore initialisé. Veuillez ouvrir AnkiDroid et réessayer</string>
-    <string name="already_logged_in">Déjà connecté</string>
     <!-- Deck Creation -->
     <string name="deck_created">Paquet créé</string>
     <string name="deck_renamed">Paquet renommé</string>
@@ -321,7 +331,7 @@
     <!-- Browser Options Dialog -->
     <string name="show_cards" comment="Label for toggle cards button in BrowserOptionsDialog">Cartes</string>
     <string name="show_notes" comment="Label for toggle notes button in BrowserOptionsDialog">Notes</string>
-    <string name="toggle_cards_notes">Activer/Désactiver les Cartes/Notes</string>
+    <string name="toggle_cards_notes">Toggle cards/notes</string>
     <string name="truncate_content_help">Tronquer la hauteur de chaque ligne du navigateur pour ne montrer que les 3 premières lignes de contenu</string>
     <string name="browser_options_dialog_heading">Options du navigateur</string>
     <string name="audio_saved">Enregistrement sauvegardé</string>
@@ -337,10 +347,9 @@
     <string name="shared_decks_login_required">Veuillez vous connecter pour télécharger plus de decks</string>
     <string name="deck_description_field_hint">Description</string>
     <string name="deck_description_saved">Description mise à jour</string>
-    <string name="format_deck_description_as_markdown">Formater en tant que Markdown</string>
+    <string name="format_deck_description_as_markdown">Format as markdown</string>
     <string name="help_button_content_description">Ouvrir l\'aide pour \'%s\'</string>
     <string name="failed_to_copy">Échec de la copie</string>
-    <string name="card_browser_unavailable_when_notes_mode">Non disponible en mode \"Notes\"</string>
     <plurals name="unbury_cards_feedback">
         <item quantity="one">Carte %d déterrée</item>
         <item quantity="other">%d cartes  déterrées</item>
@@ -353,7 +362,7 @@
     <string name="play_recording">Lecture</string>
     <string name="next_recording" comment="Description of a button to go to the next recording">Suivant</string>
     <!--  AlertDialog in the deleteCardTemplate  -->
-    <string name="orphan_note_title">Impossible de supprimer le type de carte</string>
+    <string name="orphan_note_title">Cannot delete card type</string>
     <string name="orphan_note_message">Supprimer ce type de carte laissera certaines notes sans cartes.</string>
     <string name="voice_not_supported">Voix non prise en charge. Essayez une autre ou installez un moteur vocal.</string>
     <!--Keyboard shortcuts dialog-->
@@ -370,7 +379,13 @@
     <string name="copy_the_template" comment="Description of the shortcut that copy the template as markdown">Copier le modèle en markdown</string>
     <string name="edit_browser_appearance" comment="Description of the shortcut that edits the browser appearance of card template">Modifier l’apparence du navigateur</string>
     <string name="missing_user_action_dialog_message" comment="%s is the user action number">L’action utilisateur %s n’est pas définie dans ce type de note. Veuillez la configurer.</string>
+    <string name="feature_not_supported_by_study_screen">Cette carte contient des fonctionnalités qui ne sont pas encore prises en charge par le nouvel écran d\'étude.</string>
     <string name="directory_inaccessible_info">En savoir plus sur la restauration de l’accès ici %s ou allez dans les paramètres pour mettre à jour le dossier de collection.</string>
     <!-- Scheduler Upgrade Required Dialog title-->
     <string name="scheduler_upgrade_required_dialog_title" comment="Shown in a dialog when user has imported a collection using a very old version of the Anki spaced repetition scheduler">Mise à jour du planificateur requise</string>
+    <!-- Whitespace is OK -->
+    <string name="list_separator" comment="The character and spacing to display between elements of a list, for example \', \' in \'Apple, Banana, Cherry" tools:ignore="TranslationTypo">, </string>
+    <!-- Other errors -->
+    <!-- Similar to TR.qtMiscNameExists(): "Name exists." -->
+    <string name="error_name_exists">Name already exists</string>
 </resources>

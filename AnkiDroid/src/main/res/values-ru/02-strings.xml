@@ -48,13 +48,14 @@
     <string name="drawer_open">Открыть панель</string>
     <string name="drawer_close">Закрыть панель</string>
     <string name="note_message">Запись сохранена</string>
+    <!-- Note editor screen -->
     <string name="CardEditorCardDeck">Колода:</string>
     <string name="CardEditorNoteDeck">Колода:</string>
     <string name="CardEditorModel">Тип:</string>
     <string name="CardEditorTags">Метки: %1$s</string>
     <string name="CardEditorCards">Карточки: %1$s</string>
-    <string name="edit_occlusions">Править скрытие</string>
-    <string name="tag_name">Название метки</string>
+    <string name="edit_occlusions">Edit occlusions</string>
+    <string name="paste_from_clipboard" maxLength="28">Вставить из буфера обмена</string>
     <string name="add_new_filter_tags">Добавить/отфильтровать метки</string>
     <string name="add_tag" maxLength="28">Добавить метку</string>
     <string name="check_all_tags" maxLength="28">Выбрать/снять все метки</string>
@@ -65,18 +66,17 @@
     <string name="save_whiteboard" maxLength="28">Сохранить написанное</string>
     <string name="enable_stylus" maxLength="28">Включить режим стилуса</string>
     <string name="disable_stylus">Выключить режим стилуса</string>
-    <string name="eraser" maxLength="28">Eraser</string>
-    <string name="add_brush" maxLength="28">Add brush</string>
-    <string name="whiteboard_align_left" comment="Option to align the whiteboard toolbar on the left" maxLength="28">Left</string>
-    <string name="whiteboard_align_bottom" comment="Option to align the whiteboard toolbar on the bottom" maxLength="28">Bottom</string>
-    <string name="whiteboard_align_right" comment="Option to align the whiteboard toolbar on the right" maxLength="28">Right</string>
-    <string name="whiteboard_clear" comment="Button text to clear the whiteboard" maxLength="28">Clear</string>
-    <string name="whiteboard_more_options" comment="Tooltip of the whiteboard \'More\' button" maxLength="28">More options</string>
-    <string name="whiteboard_remove_brush_message">Are you sure you want to remove this brush from your palette?</string>
-    <string name="whiteboard_ink_eraser" comment="Title of the whiteboard Ink eraser">Ink</string>
-    <string name="whiteboard_stroke_eraser" comment="Title of the whiteboard Stroke eraser">Stroke</string>
-    <string name="stylus_mode" comment="Title of the menu item that toggles the whiteboard stylus mode" maxLength="28">Stylus mode</string>
-    <string name="cannot_remove_last_brush_message">The last brush may not be removed</string>
+    <string name="eraser" maxLength="28">Ластик</string>
+    <string name="add_brush" maxLength="28">Добавить кисть</string>
+    <string name="whiteboard_align_left" comment="Option to align the whiteboard toolbar on the left" maxLength="28">Слева</string>
+    <string name="whiteboard_align_bottom" comment="Option to align the whiteboard toolbar on the bottom" maxLength="28">Снизу</string>
+    <string name="whiteboard_align_right" comment="Option to align the whiteboard toolbar on the right" maxLength="28">Справа</string>
+    <string name="whiteboard_more_options" comment="Tooltip of the whiteboard \'More\' button" maxLength="28">Дополнительные параметры</string>
+    <string name="whiteboard_remove_brush_message">Вы уверены, что хотите удалить эту кисть?</string>
+    <string name="whiteboard_ink_eraser" comment="Title of the whiteboard Ink eraser">Чернила</string>
+    <string name="whiteboard_stroke_eraser" comment="Title of the whiteboard Stroke eraser">Штрих</string>
+    <string name="stylus_mode" comment="Title of the menu item that toggles the whiteboard stylus mode" maxLength="28">Режим стилей</string>
+    <string name="cannot_remove_last_brush_message">Последнее повторение не может быть удалено</string>
     <string name="enable_whiteboard" maxLength="28">Включить доску</string>
     <string name="disable_whiteboard">Отключить доску</string>
     <string name="show_whiteboard">Показать доску</string>
@@ -84,6 +84,7 @@
     <string name="disable_eraser" maxLength="28">Отключить ластик</string>
     <string name="hide_whiteboard" maxLength="28">Скрыть доску</string>
     <string name="clear_whiteboard" maxLength="28">Стереть с доски</string>
+    <string name="hide_toolbar" maxLength="28">Скрыть панель инструментов</string>
     <string name="replay_media" maxLength="28">Повторить медиа</string>
     <string name="leech_suspend_notification">Карточка помечена как приставучая и исключена</string>
     <string name="leech_notification">Карточка помечена как приставучая</string>
@@ -97,6 +98,10 @@
     <string name="webview_crash_loop_dialog_content">Системному WebView не удалось отрисовать карточку «%1$s».\n %2$s</string>
     <string name="slide_to_cancel" comment="Message shown when pressing the record button">Проведите для отмены</string>
     <string name="filter_by_flags" maxLength="41">Флажки</string>
+    <!-- filtered deck options -->
+    <string name="filtered_option_delay_again">Delay for again</string>
+    <string name="filtered_option_delay_hard">Delay for hard</string>
+    <string name="filtered_option_delay_good">Delay for good</string>
     <!-- Custom study options -->
     <string name="custom_study_loading_tags">Строится список меток&#8230;</string>
     <!-- Study options -->
@@ -120,8 +125,7 @@
     <string name="close">Закрыть</string>
     <string name="select">Выбрать</string>
     <string name="field_remapping">%1$s (из «%2$s»)</string>
-    <string name="confirm_map_cards_to_nothing">Несопоставленные карты будут удалены. Записи, оставшиеся без карт, будут утеряны. Продолжить?</string>
-    <string name="missing_note_type">Такого типа заметок не найдено</string>
+    <string name="missing_note_type">Не найден тип записи</string>
     <string name="card_previewer_empty_front_indicator" comment="Extra text appended onto a tab title in the card previewer so that the user can see at a glance whether a card has no front.">%1$s (пусто)</string>
     <!-- Image cropper -->
     <string name="image_cropper_action_rotate" maxLength="28" comment="Action in image cropper screen">Повернуть</string>
@@ -170,7 +174,8 @@
     <string name="import_error_not_apkg_extension">У файла “%s” должно быть расширение .apkg или .colpkg</string>
     <string name="import_error_load_imported_database">Замена базы данных Anki (.anki2) пока не поддерживается. Смотрите руководство для инструкций по замене.</string>
     <string name="import_error_content_provider">Этот файл не получится импортировать автоматически. См. руководство, чтобы импортировать Anki-файлы вручную: \n %s</string>
-    <string name="import_error_copy_to_cache">Не удалось кэшировать файл (возможно, не хватает места)</string>
+    <string name="import_error_copy_to_cache_title">Не удалось кэшировать файл</string>
+    <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Часто это вызвано ошибкой в приложении, которое вы использовали для выбора файла. Пожалуйста, попробуйте следующие исправления:\n\n%s</string>
     <string name="import_interrupted">Импорт прерван</string>
     <string name="export_ready_title">Экспорт готов</string>
     <string name="export_send_no_handlers">Нет приложений для чтения файлов apkg. Сохраняется&#8230;</string>
@@ -194,10 +199,9 @@
     <string name="select_tts" maxLength="28">Язык синтеза речи</string>
     <string name="custom_study" maxLength="28">Учить ещё</string>
     <string name="dyn_deck_desc">Это специальная колода для зубрёжки не по расписанию. После просмотра карточки вернутся в свою колоду. Удаление этой колоды вернёт все оставшиеся карточки в их колоду.</string>
-    <string name="steps_error">Шаги должны быть больше 0</string>
-    <string name="steps_min_error">Требуется хотя бы один шаг</string>
     <string name="tag_editor_add_feedback">Выберите “%2$s” чтобы подтвердить добавление “%1$s”</string>
     <string name="tag_editor_add_feedback_existing">Выбрана существующая метка «%1$s»</string>
+    <string name="tag_already_exists">Tag already exists</string>
     <!-- Time spans -->
     <!-- Currently only used if exporting APKG fails -->
     <string name="apk_share_error">Ошибка при отправке файла apkg</string>
@@ -211,9 +215,9 @@
     <string name="background_image_title" maxLength="41">Фон</string>
     <string name="choose_an_image" maxLength="41">Выбрать изображение</string>
     <string name="remove_wallpaper_image" maxLength="41">Удалить фон</string>
-    <string name="remove_background_image">Удалить фон?</string>
+    <string name="remove_background_image">Are you sure you wish to remove the background?</string>
     <!-- Card Template Browser Appearance -->
-    <string name="restore_default" maxLength="28">Сбросить настройки</string>
+    <string name="restore_default" maxLength="28">Restore default</string>
     <string name="reviewer_tts_cloze_spoken_replacement">Пусто</string>
     <!-- Whiteboard eraser mode toggle message in Reviewer -->
     <string name="white_board_eraser_enabled">Режим ластика включен</string>
@@ -239,23 +243,24 @@
     <string name="search_decks" maxLength="28">Найти колоду</string>
     <string name="ankidroid_init_failed_webview_title">Критическая ошибка</string>
     <string name="ankidroid_init_failed_webview">AnkiDroid использует системный WebView, который сейчас не доступен. Это может произойти, если система устанавливает обновления. Повторите попытку через несколько минут.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">AnkiDroid не может получить доступ к хранилищу из-за ошибки Android.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Размер шрифта</string>
     <string name="menu_show_toolbar" comment="Checkable item stating whether the note editor toolbar should be shown" maxLength="28">Показать панель инструментов</string>
-    <string name="format_insert_bold">Жирным</string>
-    <string name="format_insert_italic">Курсивом</string>
-    <string name="format_insert_underline">Подчеркнуть</string>
-    <string name="insert_horizontal_line">Вставить линейку</string>
-    <string name="insert_heading">Вставить заголовок</string>
-    <string name="format_font_size">Изменить размер шрифта</string>
-    <string name="insert_mathjax">Вставить уравнение MathJax</string>
+    <string name="format_insert_bold">Format as bold</string>
+    <string name="format_insert_italic">Format as italic</string>
+    <string name="format_insert_underline">Format as underline</string>
+    <string name="insert_horizontal_line">Insert horizontal line</string>
+    <string name="insert_heading">Insert heading</string>
+    <string name="format_font_size">Change font size</string>
+    <string name="insert_mathjax">Insert MathJax equation</string>
     <string name="note_editor_toolbar_icon">Текст на кнопке</string>
-    <string name="before_text">HTML перед выделением</string>
-    <string name="after_text">HTML после выделения</string>
-    <string name="add_toolbar_item">Создать элемент панели инструментов</string>
-    <string name="edit_toolbar_item">Изменить элемент панели</string>
+    <string name="before_text">HTML before selection</string>
+    <string name="after_text">HTML after selection</string>
+    <string name="add_toolbar_item">Create toolbar item</string>
+    <string name="edit_toolbar_item">Edit toolbar item</string>
     <string name="toolbar_item_explain_edit_or_remove">Введите HTML, который будет вставлен до и после выделенного текста.\n\nНажмите и удерживайте элемент панели инструментов, чтобы изменить или удалить его.</string>
-    <string name="remove_toolbar_item">Удалить элемент панели инструментов?</string>
+    <string name="remove_toolbar_item">Remove toolbar item?</string>
     <string name="note_editor_image_too_large">Изображение слишком большое. Вставьте изображение вручную</string>
     <string name="note_editor_video_too_large">Видео слишком большое. Вставьте видео вручную</string>
     <string name="note_editor_audio_too_large">Аудио слишком большое. Вставьте аудио вручную</string>
@@ -265,9 +270,12 @@
     <string name="create_shortcut_error">Ошибка при добавлении ярлыка: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Предложение с заглавной буквы</string>
     <string name="menu_scroll_toolbar" comment="Checkbox stating whether note editor toolbar is scrollable or stacked. Checked: Scroll" maxLength="28">Прокрутка панели</string>
-    <!-- Symbols used as Button text in IncrementNumberRangePreference -->
+    <!-- IncrementNumberRangePreference -->
     <string name="plus_sign" comment="Label for increment button in IncrementerNumberRangePreference">+</string>
     <string name="minus_sign" comment="Label for decrement button in IncrementerNumberRangePreference">-</string>
+    <string name="invalid_value" comment="Error message in IncrementerNumberRangePreference when input is not a valid number">Недопустимое значение</string>
+    <string name="maximum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the maximum allowed value">Максимальное значение - %d</string>
+    <string name="minimum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the minimum allowed value">Минимальное значение - %d</string>
     <!-- Used for credential empty warning message -->
     <string name="invalid_email">Введите допустимую почту</string>
     <string name="password_empty">Требуется пароль</string>
@@ -285,7 +293,6 @@
     <string name="download_failed">Загрузка не удалась</string>
     <string name="deck_download_progress_message">Вы можете использовать другие приложения во время загрузки</string>
     <string name="check_network">Проверьте подключение к Интернету</string>
-    <string name="search_using_deck_name">Искать по названию колоды</string>
     <string name="external_storage_unavailable">Загрузка прервана, внешняя память недоступна</string>
     <string name="home" maxLength="28">Главная</string>
     <!-- Study Screen actions
@@ -312,6 +319,12 @@
     <!-- Manage note types -->
     <string name="field_editor_model_not_available">Не удалось получить доступ к коллекции. Попробуйте еще раз.</string>
     <string name="cd_manage_notetypes_add">Добавить новый тип записи</string>
+    <plurals name="note_types_selected">
+        <item quantity="one">%d тип записи выбран</item>
+        <item quantity="few">%d типа записей выбрано</item>
+        <item quantity="many">%d типов записей выбрано</item>
+        <item quantity="other">%d типов записей выбрано</item>
+    </plurals>
     <!-- App Intro -->
     <string name="intro_ankidroid_tagline_one">Учиться эффективнее</string>
     <string name="intro_ankidroid_tagline_two">Запоминать больше</string>
@@ -320,7 +333,6 @@
     <string name="intro_sync_from_ankiweb">Скачать с AnkiWeb</string>
     <!-- IntentHandler -->
     <string name="app_not_initialized_new">AnkiDroid не запущен. Пожалуйста, откройте AnkiDroid и попробуйте снова</string>
-    <string name="already_logged_in">Вход уже выполнен</string>
     <!-- Deck Creation -->
     <string name="deck_created">Колода создана</string>
     <string name="deck_renamed">Колода переименована</string>
@@ -329,7 +341,7 @@
     <!-- Browser Options Dialog -->
     <string name="show_cards" comment="Label for toggle cards button in BrowserOptionsDialog">Карточки</string>
     <string name="show_notes" comment="Label for toggle notes button in BrowserOptionsDialog">Записи</string>
-    <string name="toggle_cards_notes">Карточки — записи</string>
+    <string name="toggle_cards_notes">Toggle cards/notes</string>
     <string name="truncate_content_help">Показывать только 3 строки в каждом ряду</string>
     <string name="browser_options_dialog_heading">Параметры списка карточек</string>
     <string name="audio_saved">Запись сохранена</string>
@@ -345,10 +357,9 @@
     <string name="shared_decks_login_required">Пожалуйста, войдите, чтобы скачать больше колод</string>
     <string name="deck_description_field_hint">Описание</string>
     <string name="deck_description_saved">Описание обновлено</string>
-    <string name="format_deck_description_as_markdown">Форматировать как Markdown</string>
+    <string name="format_deck_description_as_markdown">Format as markdown</string>
     <string name="help_button_content_description">Открыть справку для ‘%s’</string>
     <string name="failed_to_copy">Не удалось скопировать</string>
-    <string name="card_browser_unavailable_when_notes_mode">Недоступно в режиме записей</string>
     <plurals name="unbury_cards_feedback">
         <item quantity="one">%d карточка возвращена</item>
         <item quantity="few">%d карточки возвращены</item>
@@ -363,7 +374,7 @@
     <string name="play_recording">Играть</string>
     <string name="next_recording" comment="Description of a button to go to the next recording">След.</string>
     <!--  AlertDialog in the deleteCardTemplate  -->
-    <string name="orphan_note_title">Не удается удалить тип карточек</string>
+    <string name="orphan_note_title">Cannot delete card type</string>
     <string name="orphan_note_message">Удаление этого типа карточек оставит некоторые записи без карточек.</string>
     <string name="voice_not_supported">Этот голос не поддерживается. Попробуйте другой или установите голосовой движок.</string>
     <!--Keyboard shortcuts dialog-->
@@ -380,7 +391,13 @@
     <string name="copy_the_template" comment="Description of the shortcut that copy the template as markdown">Копировать шаблон как markdown</string>
     <string name="edit_browser_appearance" comment="Description of the shortcut that edits the browser appearance of card template">Изменить вид браузера</string>
     <string name="missing_user_action_dialog_message" comment="%s is the user action number">В этом блокноте не задано действие пользователя %s. Пожалуйста, настройте его</string>
+    <string name="feature_not_supported_by_study_screen">Эта карта имеет функции, которые еще не поддерживаются новым экраном обучения.</string>
     <string name="directory_inaccessible_info">Узнайте больше о том, как восстановить доступ здесь %s или перейдите к настройкам для обновления папки коллекции.</string>
     <!-- Scheduler Upgrade Required Dialog title-->
     <string name="scheduler_upgrade_required_dialog_title" comment="Shown in a dialog when user has imported a collection using a very old version of the Anki spaced repetition scheduler">Требуется обновление расписания</string>
+    <!-- Whitespace is OK -->
+    <string name="list_separator" comment="The character and spacing to display between elements of a list, for example \', \' in \'Apple, Banana, Cherry" tools:ignore="TranslationTypo">, </string>
+    <!-- Other errors -->
+    <!-- Similar to TR.qtMiscNameExists(): "Name exists." -->
+    <string name="error_name_exists">Name already exists</string>
 </resources>

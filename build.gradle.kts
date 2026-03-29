@@ -5,14 +5,17 @@ import com.slack.keeper.optInToKeeper
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.internal.jvm.Jvm
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
+import java.util.Properties
 import kotlin.math.max
+import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.milliseconds
 
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file where you can add configuration options common to all subprojects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -24,19 +27,19 @@ plugins {
     alias(libs.plugins.keeper) apply false
 }
 
-val localProperties = java.util.Properties()
+val localProperties = Properties()
 if (project.rootProject.file("local.properties").exists()) {
     localProperties.load(project.rootProject.file("local.properties").inputStream())
 }
-val fatalWarnings = !(localProperties["fatal_warnings"] == "false")
+val fatalWarnings = localProperties["fatal_warnings"] != "false"
 
 // can't be obtained inside 'subprojects'
-val ktlintVersion = libs.versions.ktlint.get()
+val ktlintVersion: String? = libs.versions.ktlint.get()
 
 // Here we extract per-module "best practices" settings to a single top-level evaluation
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    configure<KtlintExtension> {
         version.set(ktlintVersion)
     }
 
@@ -84,33 +87,38 @@ subprojects {
             }
         }
 
-        /**
-        Kotlin allows concrete function implementations inside interfaces.
-        For those to work when Kotlin compilation targets the JVM backend, you have to enable the interoperability via
-        'freeCompilerArgs' in your gradle file, and you have to choose one of the appropriate '-Xjvm-default' modes.
-
-        https://kotlinlang.org/docs/java-to-kotlin-interop.html#default-methods-in-interfaces
-
-        and we used "all" because we don't have downstream consumers
-        https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
-
+        /*
         Related to ExperimentalCoroutinesApi: this opt-in is added to enable usage of experimental
-        coroutines API, this targets all project modules with the exception of the "api" module,
-        which doesn't use coroutines so the annotation isn't not available. This would normally
-        result in a warning but we treat warnings as errors.
+        coroutines API, this targets all project modules except the "api" module,
+        which doesn't use coroutines so the annotation isn't available. This would normally
+        result in a warning, but we treat warnings as errors.
         (see https://youtrack.jetbrains.com/issue/KT-28777/Using-experimental-coroutines-api-causes-unresolved-dependency)
          */
         tasks.withType(KotlinCompile::class.java).configureEach {
+            // We use `isInIdeaSync` to resolve a mismatch between Android Studio's code analyzer
+            // and the Kotlin 2.3 compiler regarding Explicit Backing Fields. The IDE requires
+            // the unsafe '-XXLanguage' flag to clear false syntax errors, but the actual compiler
+            // crashes if it receives this flag due to our strict 'warnings as errors'.
+            // This workaround safely feeds the unsafe flag *only* to the IDE during Gradle sync,
+            // while passing the standard, crash-free flag to the compiler during the actual build.
+            val isInIdeaSync = System.getProperty("idea.sync.active").toBoolean()
+
             compilerOptions {
                 allWarningsAsErrors = fatalWarnings
                 val compilerArgs = mutableListOf(
-                    "-Xjvm-default=all",
                     // https://youtrack.jetbrains.com/issue/KT-73255
                     // Apply @StringRes to both constructor params and generated properties
-                    "-Xannotation-default-target=param-property"
+                    "-Xannotation-default-target=param-property",
+                    "-Xexplicit-backing-fields"
                 )
+
+                if (isInIdeaSync) {
+                    compilerArgs += "-XXLanguage:+ExplicitBackingFields"
+                }
+
                 if (project.name != "api") {
                     compilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+                    compilerArgs += "-Xcontext-parameters"
                 }
                 freeCompilerArgs = compilerArgs
             }
@@ -118,27 +126,31 @@ subprojects {
     }
 }
 
-val jvmVersion = Jvm.current().javaVersion?.majorVersion
-val minSdk = libs.versions.compileSdk.get()
-if (jvmVersion != "17" && jvmVersion != "21" && jvmVersion != "24") {
+val jvmVersion = Jvm.current().javaVersion?.majorVersion.parseIntOrDefault(defaultValue = 0)
+val minSdk: String? = libs.versions.minSdk.get()
+val jvmVersionLowerBound = 21
+val jvmVersionUpperBound = 25
+if (jvmVersion !in jvmVersionLowerBound..jvmVersionUpperBound) {
     println("\n\n\n")
     println("**************************************************************************************************************")
     println("\n\n\n")
-    println("ERROR: AnkiDroid builds with JVM version 17, 21 and 24.")
+    println("ERROR: AnkiDroid builds with JVM versions between $jvmVersionLowerBound and $jvmVersionUpperBound.")
     println("  Incompatible major version detected: '$jvmVersion'")
-    if (jvmVersion.parseIntOrDefault(defaultValue = 0) > 24) {
-        println("\n\n\n")
+    println("\n\n\n")
+    if (jvmVersion > jvmVersionUpperBound) {
         println("  If you receive this error because you want to use a newer JDK, we may accept PRs to support new versions.")
         println("  Edit the main build.gradle file, find this message in the file, and add support for the new version.")
         println("  Please make sure the `jacocoTestReport` target works on an emulator with our minSdk (currently $minSdk).")
+    } else {
+        println("  Please update: Settings - Build, Execution, Deployment - Build Tools - Gradle - Gradle JDK")
     }
     println("\n\n\n")
     println("**************************************************************************************************************")
     println("\n\n\n")
-    System.exit(1)
+    exitProcess(1)
 }
 
-val ciBuild by extra(System.getenv("CI") == "true") // works for Travis CI or Github Actions
+val ciBuild by extra(System.getenv("CI") == "true") // true when running on GitHub Actions
 // allows for -Dpre-dex=false to be set
 val preDexEnabled by extra("true" == System.getProperty("pre-dex", "true"))
 // allows for universal APKs to be generated

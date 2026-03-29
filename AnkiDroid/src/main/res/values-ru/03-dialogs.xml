@@ -87,11 +87,14 @@
     <string name="restore_backup_choose_another">Выбрать другой</string>
     <string name="dialog_cancel">Отменить</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_add" comment="Positive dialog action button label to add \'something\'">Add</string>
+    <string name="restore">Restore</string>
     <string name="dialog_confirm" tools:ignore="UnusedResources">Подтвердить</string>
     <string name="dialog_no">Нет</string>
     <string name="dialog_yes">Да</string>
     <string name="dialog_keep">Оставить</string>
     <string name="dialog_remove">Удалить</string>
+    <string name="dialog_exit" comment="Label for a button which will exit/finish the current screen">Exit</string>
     <string name="dialog_continue">Продолжить</string>
     <string name="dialog_processing">Обработка&#8230;</string>
     <string name="dialog_positive_create" comment="Create a new collection, probably erasing the previous one, may be necessary in case of error.">Создать</string>
@@ -222,8 +225,6 @@
     <string name="dismiss_backup_warning_title">Внимание: потеря данных</string>
     <string name="dismiss_backup_warning_new_user">В связи с изменениями конфиденциальности Android, при удалении приложения ваши данные и автоматизированные резервные копии будут удалены с вашего телефона</string>
     <string name="dismiss_backup_warning_upgrade">В связи с изменениями конфиденциальности Android, после удалении приложения ваши данные и автоматизированные резервные копии будут недоступны</string>
-    <string name="deck_already_exists">Колода уже существует</string>
-    <string name="empty_deck_name">Название колоды не может быть пустым</string>
     <string name="create_deck_numeric_hint">Если у вас возникли проблемы с сортировкой колоды (например, \'10\' появляется перед \'2\'), замените \'2\' на \'02\'</string>
     <!-- Set Due Date -->
     <string name="set_due_date_match_interval" comment="when setting a card\'s due date, this checkbox also changes the interval of the card">Задать то же значение интервалу</string>
@@ -256,7 +257,7 @@
     <string name="set_due_date_range_end" comment="\'Set Due Date\' may change the due date of a card to a random number of days in the future. This labels the \'maximum\' value of this range (inclusive)">До</string>
     <!-- Instant Note Editor -->
     <string name="cloze_note_required">Нужен тип записи с пропусками</string>
-    <string name="cloze_not_found_message">Записей с пропусками не найдено, откройте редактор записей или попробуйте снова после добавления карточки с пропусками.</string>
+    <string name="cloze_not_found_message">Нет типа записей для тестов с пропусками. Откройте редактор записей или попробуйте снова после того, как добавите нужный тип записей.</string>
     <string name="open">Открыть</string>
     <string name="change_cloze_number">Количество пропусков</string>
     <string name="cloze_number">Количество пропусков:</string>
@@ -271,4 +272,32 @@
     <string name="tts_error_dialog_reason_text">TTS движок <b>%1$s</b> не поддерживает язык: <b>%2$s</b></string>
     <string name="tts_error_dialog_change_button_text">Изменить движок</string>
     <string name="tts_error_dialog_supported_voices_button_text">Настройки голоса</string>
+    <!-- import_cache_error_resolutions -->
+    <string name="import_error_resolution_try_again">Повторите импорт файла</string>
+    <string name="import_error_resolution_free_up_space">Убедитесь что на устройстве достаточно свободного места</string>
+    <string name="import_error_resolution_check_internet">Убедитесь что вы подключены к Интернету</string>
+    <string name="import_error_resolution_copy_to_device">Скопируйте файл на ваше устройство и повторите попытку с локальным файлом</string>
+    <string name="import_error_resolution_select_file">Открыть файл с помощью файлового менеджера вашего устройства</string>
+    <!-- Post-login dialog -->
+    <string name="login_successful">Вход выполнен успешно</string>
+    <string name="sync_now">Синхронизировать сейчас?</string>
+    <!--Change Note Type Dialog Fragment-->
+    <string name="card_numbers_unchanged">Номера карт останутся без изменений</string>
+    <!-- Subset of TR.changeNotetypeToFromCloze -->
+    <string name="extra_cloze_deletions_removed">If changing to a regular note type, and there are more cloze deletions than available card templates, any extra cards will be removed.</string>
+    <string name="different_note_types_selected">Пожалуйста, выберите записи только одного типа.</string>
+    <string name="error_no_changes_to_save">Нет изменений для сохранения</string>
+    <string name="choose_color">Выберите цвет</string>
+    <!-- Special Fields -->
+    <string name="standard_fields_tab_header" comment="Tab header for inserting non-special fields: {{Front}}">Fields</string>
+    <string name="special_fields_tab_header" comment="Tab header for inserting special fields: {{Deck}}">Special</string>
+    <string name="special_field_example_suffix"><![CDATA[: ‘<b>%1$s</b>’]]></string>
+    <string name="special_field_front_side_help">The front template content. Audio is not automatically played</string>
+    <string name="special_field_deck_help" comment="%s: either blank or \' %s\'">The full deck of the card, including parent decks%s</string>
+    <string name="special_field_subdeck_help" comment="%s: either blank or \' %s\'">The current deck of the card, excluding parent decks%s</string>
+    <string name="special_field_flag_help">Outputs ‘%1$s’, where %2$s is the flag code (%3$s\–%4$s\)</string>
+    <string name="special_field_tags_help" comment="%s: either blank or \' %s\'">The tags of the note%s</string>
+    <string name="special_field_card_id_help" comment="%s: either blank or \' %s\'">The ID of the card%s</string>
+    <string name="special_field_card_help" comment="%s: either blank or \' %s\'">The name of the card template%s</string>
+    <string name="special_field_type_help" comment="%s: either blank or \' %s\'">The name of the note type%s</string>
 </resources>

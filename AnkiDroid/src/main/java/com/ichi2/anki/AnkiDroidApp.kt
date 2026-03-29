@@ -1,20 +1,20 @@
-/****************************************************************************************
- * Copyright (c) 2009 Edu Zamora <edu.zasu@gmail.com>                                   *
- * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
- * Copyright (c) 2014 Timothy Rae <perceptualchaos2@gmail.com>                          *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2009 Edu Zamora <edu.zasu@gmail.com>
+ * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>
+ * Copyright (c) 2014 Timothy Rae <perceptualchaos2@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.ichi2.anki
 
 import android.app.Activity
@@ -23,27 +23,28 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.system.Os
 import android.webkit.CookieManager
 import androidx.annotation.VisibleForTesting
-import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import anki.collection.OpChanges
+import com.ichi2.anki.AnkiDroidApp.Companion.sharedPreferencesTestingOverride
 import com.ichi2.anki.CrashReportService.sendExceptionReport
 import com.ichi2.anki.analytics.UsageAnalytics
 import com.ichi2.anki.browser.SharedPreferencesLastDeckIdRepository
 import com.ichi2.anki.common.annotations.LegacyNotifications
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.common.utils.annotation.KotlinCleanup
-import com.ichi2.anki.common.utils.isRunningAsUnitTest
 import com.ichi2.anki.contextmenu.AnkiCardContextMenu
 import com.ichi2.anki.contextmenu.CardBrowserContextMenu
 import com.ichi2.anki.exception.StorageAccessException
+import com.ichi2.anki.exception.SystemStorageException
 import com.ichi2.anki.logging.FragmentLifecycleLogger
 import com.ichi2.anki.logging.LogType
 import com.ichi2.anki.logging.ProductionCrashReportingTree
@@ -53,6 +54,7 @@ import com.ichi2.anki.preferences.SharedPreferencesProvider
 import com.ichi2.anki.preferences.sharedPrefs
 import com.ichi2.anki.servicelayer.DebugInfoService
 import com.ichi2.anki.servicelayer.ThrowableFilterService
+import com.ichi2.anki.services.AlarmManagerService
 import com.ichi2.anki.services.NotificationService
 import com.ichi2.anki.settings.Prefs
 import com.ichi2.anki.ui.dialogs.ActivityAgnosticDialogs
@@ -61,6 +63,7 @@ import com.ichi2.utils.AdaptionUtil
 import com.ichi2.utils.ExceptionUtil
 import com.ichi2.utils.LanguageUtil
 import com.ichi2.utils.Permissions
+import com.ichi2.utils.setWebContentsDebuggingEnabled
 import com.ichi2.widget.cardanalysis.CardAnalysisWidget
 import com.ichi2.widget.deckpicker.DeckPickerWidget
 import kotlinx.coroutines.CoroutineScope
@@ -78,8 +81,8 @@ import java.util.Locale
 open class AnkiDroidApp :
     Application(),
     ChangeManager.Subscriber {
-    /** An exception if the WebView subsystem fails to load  */
-    private var webViewError: Throwable? = null
+    /** An exception if AnkiDroidApp fails to load  */
+    private var fatalInitializationError: FatalInitializationError? = null
 
     @LegacyNotifications("The widget triggers notifications by posting null to this, but we plan to stop relying on the widget")
     private val notifications = MutableLiveData<Void?>()
@@ -90,10 +93,10 @@ open class AnkiDroidApp :
     /** Used to avoid showing extra progress dialogs when one already shown. */
     var progressDialogShown = false
 
-    @KotlinCleanup("analytics can be moved to attachBaseContext()")
     /**
      * On application creation.
      */
+    @KotlinCleanup("analytics can be moved to attachBaseContext()")
     override fun onCreate() {
         try {
             Os.setenv("PLATFORM", syncPlatform(), false)
@@ -109,6 +112,12 @@ open class AnkiDroidApp :
         // because the SQL statement appeared later.
         //   Os.setenv("TRACESQL", "1", false);
         super.onCreate()
+        val appLifecycleObserver = AppLifecycleObserver(applicationContext)
+
+        androidx.lifecycle.ProcessLifecycleOwner
+            .get()
+            .lifecycle
+            .addObserver(appLifecycleObserver)
         if (isInitialized) {
             Timber.i("onCreate() called multiple times")
             // 5887 - fix crash.
@@ -151,6 +160,7 @@ open class AnkiDroidApp :
         ThrowableFilterService.initialize()
 
         applicationScope.launch {
+            Timber.i("AnkiDroidApp: listing debug info")
             Timber.i(DebugInfoService.getDebugInfo(this@AnkiDroidApp))
         }
 
@@ -163,10 +173,8 @@ open class AnkiDroidApp :
             showThemedToast(this.applicationContext, getString(R.string.user_is_a_robot), false)
         }
 
-        // make default HTML / JS debugging true for debug build and disable for unit/android tests
-        if (BuildConfig.DEBUG && !isRunningAsUnitTest) {
-            preferences.edit { putBoolean("html_javascript_debugging", true) }
-        }
+        setWebContentsDebuggingEnabled(Prefs.isWebDebugEnabled)
+
         CardBrowserContextMenu.ensureConsistentStateWithPreferenceStatus(
             this,
             preferences.getBoolean(
@@ -191,24 +199,11 @@ open class AnkiDroidApp :
         CardBrowser.clearLastDeckId()
         LanguageUtil.setDefaultBackendLanguages()
 
-        // Create the AnkiDroid directory if missing. Send exception report if inaccessible.
-        if (Permissions.hasLegacyStorageAccessPermission(this)) {
-            try {
-                val dir = CollectionHelper.getCurrentAnkiDroidDirectory(this)
-                CollectionHelper.initializeAnkiDroidDirectory(dir)
-            } catch (e: StorageAccessException) {
-                Timber.e(e, "Could not initialize AnkiDroid directory")
-                val defaultDir = CollectionHelper.getDefaultAnkiDroidDirectory(this)
-                if (isSdCardMounted && CollectionHelper.getCurrentAnkiDroidDirectory(this) == defaultDir) {
-                    // Don't send report if the user is using a custom directory as SD cards trip up here a lot
-                    sendExceptionReport(e, "AnkiDroidApp.onCreate")
-                }
-            }
-        }
+        initializeAnkiDroidDirectory()
 
         if (Prefs.newReviewRemindersEnabled) {
             Timber.i("Setting review reminder notifications if they have not already been set")
-            // TODO: GSoC 2025
+            AlarmManagerService.scheduleAllNotifications(applicationContext)
         } else {
             // Register for notifications
             Timber.i("AnkiDroidApp: Starting Services")
@@ -224,7 +219,10 @@ open class AnkiDroidApp :
                     activity: Activity,
                     savedInstanceState: Bundle?,
                 ) {
-                    Timber.i("${activity::class.simpleName}::onCreate")
+                    Timber.i(
+                        "${activity::class.simpleName}::onCreate, savedInstanceState: %s",
+                        savedInstanceState?.let { "${it.keySet().size} keys" },
+                    )
                     (activity as? FragmentActivity)
                         ?.supportFragmentManager
                         ?.registerFragmentLifecycleCallbacks(
@@ -269,6 +267,51 @@ open class AnkiDroidApp :
     }
 
     /**
+     * Manually initializes the collection directory and `.nomedia` if
+     * [Permissions.hasLegacyStorageAccessPermission] is set
+     *
+     * On failure, sets [fatalInitializationError] to [storageError][FatalInitializationError.StorageError]
+     *
+     * In most cases the Anki Backend now creates the collection and [initializeAnkiDroidDirectory]
+     *  is called on startup of the activity.
+     */
+    private fun initializeAnkiDroidDirectory() {
+        // #13207: `getCurrentAnkiDroidDirectory` failing is an unconditional be a fatal error
+        // TODO: For now, a null getExternalFilesDir, but a valid AnkiDroid Directory in prefs
+        //  is not considered to be a fatal error, unless the directory itself is not writable.
+        val ankiDroidDir =
+            try {
+                CollectionHelper.getCurrentAnkiDroidDirectory(this)
+            } catch (e: SystemStorageException) {
+                fatalInitializationError = FatalInitializationError.StorageError(e)
+                return
+            }
+
+        // TODO: This line is questionable, as it doesn't work on most post-scoped-storage
+        //  builds/Android versions, but we call initializeAnkiDroidDirectory later on startup
+        if (!Permissions.hasLegacyStorageAccessPermission(this)) return
+
+        try {
+            CollectionHelper.initializeAnkiDroidDirectory(ankiDroidDir)
+            return
+        } catch (e: StorageAccessException) {
+            Timber.e(e, "Could not initialize AnkiDroid directory")
+            try {
+                val defaultDir = CollectionHelper.getDefaultAnkiDroidDirectory(this)
+                if (isSdCardMounted && CollectionHelper.getCurrentAnkiDroidDirectory(this) == defaultDir) {
+                    // Don't send report if the user is using a custom directory as SD cards trip up here a lot
+                    sendExceptionReport(e, "AnkiDroidApp.onCreate")
+                }
+            } catch (e: SystemStorageException) {
+                // The user can't write to the AnkiDroid directory (=> cant write to the collection)
+                // AND getExternalFilesDir is null - file permissions are likely corrupted (Android 16 bug)
+                // => show the 'fatal storage error' screen
+                fatalInitializationError = FatalInitializationError.StorageError(e)
+            }
+        }
+    }
+
+    /**
      * @return the app version, OS version and device model, provided when syncing.
      */
     private fun syncPlatform(): String {
@@ -297,7 +340,7 @@ open class AnkiDroidApp :
             // 5794: Errors occur if the WebView fails to load
             // android.webkit.WebViewFactory.MissingWebViewPackageException.MissingWebViewPackageException
             // Error may be excessive, but I expect a UnsatisfiedLinkError to be possible here.
-            webViewError = e
+            fatalInitializationError = FatalInitializationError.WebViewError(e)
             sendExceptionReport(e, "setAcceptFileSchemeCookies")
             Timber.e(e, "setAcceptFileSchemeCookies")
             false
@@ -353,7 +396,6 @@ open class AnkiDroidApp :
         /** Running under instrumentation. a "/androidTest" directory will be created which contains a test collection  */
         @Suppress("ktlint:standard:property-naming")
         var INSTRUMENTATION_TESTING = false
-        const val XML_CUSTOM_NAMESPACE = "http://arbitrary.app.namespace/com.ichi2.anki"
         const val ANDROID_NAMESPACE = "http://schemas.android.com/apk/res/android"
 
         // Tag for logging messages.
@@ -441,6 +483,11 @@ open class AnkiDroidApp :
             return Intent(Intent.ACTION_VIEW, parsed)
         } // TODO actually this can be done by translating "link_help" string for each language when the App is
 
+        @VisibleForTesting
+        fun clearFatalError() {
+            this.instance.fatalInitializationError = null
+        }
+
         /**
          * Get the url for the properly translated feedback page
          * @return
@@ -469,16 +516,36 @@ open class AnkiDroidApp :
                     else -> appResources.getString(R.string.link_manual)
                 }
 
-        fun webViewFailedToLoad(): Boolean = instance.webViewError != null
-
-        val webViewErrorMessage: String?
-            get() {
-                val error = instance.webViewError
-                if (error == null) {
-                    Timber.w("getWebViewExceptionMessage called without webViewFailedToLoad check")
-                    return null
-                }
-                return ExceptionUtil.getExceptionMessage(error)
-            }
+        /** (optional) set if an unrecoverable error occurs during Application startup */
+        val fatalError: FatalInitializationError?
+            get() = instance.fatalInitializationError
     }
+}
+
+/**
+ * Types of unrecoverable errors which we want to inform the user of
+ */
+sealed class FatalInitializationError {
+    data class WebViewError(
+        val error: Throwable,
+    ) : FatalInitializationError()
+
+    data class StorageError(
+        val error: SystemStorageException,
+    ) : FatalInitializationError()
+
+    /** Advanced/developer-facing string representing the error */
+    val errorDetail: String
+        get() =
+            when (this) {
+                is WebViewError -> ExceptionUtil.getExceptionMessage(error)
+                is StorageError -> error.message
+            }
+
+    val infoLink: Uri?
+        get() =
+            when (this) {
+                is WebViewError -> null
+                is StorageError -> error.infoUri?.toUri()
+            }
 }

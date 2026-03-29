@@ -87,11 +87,14 @@
     <string name="restore_backup_choose_another">Вибрати інший</string>
     <string name="dialog_cancel">Скасувати</string>
     <string name="dialog_ok">Ок</string>
+    <string name="dialog_add" comment="Positive dialog action button label to add \'something\'">Add</string>
+    <string name="restore">Restore</string>
     <string name="dialog_confirm" tools:ignore="UnusedResources">Підтвердити</string>
     <string name="dialog_no">Ні</string>
     <string name="dialog_yes">Так</string>
     <string name="dialog_keep">Залишити</string>
     <string name="dialog_remove">Видалити</string>
+    <string name="dialog_exit" comment="Label for a button which will exit/finish the current screen">Вихід</string>
     <string name="dialog_continue">Продовжити</string>
     <string name="dialog_processing">Обробка&#8230;</string>
     <string name="dialog_positive_create" comment="Create a new collection, probably erasing the previous one, may be necessary in case of error.">Створити</string>
@@ -130,8 +133,8 @@
     <string name="multimedia_editor_failed">Не вдалося відкрити мультимедійний редактор</string>
     <!-- Multimedia - Audio View -->
     <string name="multimedia_editor_audio_permission_denied">Відхилено доступ до запису звуку</string>
-    <string name="permission_denied">Permission denied</string>
-    <string name="recording_permission_denied_message">Microphone permission is necessary for the “Record voice” feature. Please grant it in the app settings.</string>
+    <string name="permission_denied">Відмовлено у доступі</string>
+    <string name="recording_permission_denied_message">Для функції \"Запис голосу\" потрібний доступ до мікрофона. Будь ласка, надайте його в налаштуваннях додатку.</string>
     <!-- Database Integrity Check -->
     <string name="integrity_check_startup_title">AnkiDroid оновлено</string>
     <string name="integrity_check_startup_content">AnkiDroid оновлено. Оновлення включає в себе виправлення можливих проблем з базою даних, і ми радимо Вам запустити перевірку бази даних.</string>
@@ -221,8 +224,6 @@
     <string name="dismiss_backup_warning_title">Ризик втрати даних</string>
     <string name="dismiss_backup_warning_new_user">У зв\'язку зі зміною політики конфіденційності Android, ваші дані та автоматичні резервні копії будуть видалені з вашого телефону, якщо додаток буде видалено.</string>
     <string name="dismiss_backup_warning_upgrade">У зв\'язку зі зміною політики конфіденційності Android, ваші дані та автоматичні резервні копії будуть недоступними, якщо додаток буде видалено.</string>
-    <string name="deck_already_exists">Колода вже існує</string>
-    <string name="empty_deck_name">Назва колоди не може бути порожньою</string>
     <string name="create_deck_numeric_hint">Якщо у вас є проблеми з порядком колод (наприклад, \'10\' стоїть перед \'2\') - замініть \'2\' на \'02\'</string>
     <!-- Set Due Date -->
     <string name="set_due_date_match_interval" comment="when setting a card\'s due date, this checkbox also changes the interval of the card">Встановити інтервал на те саме значення</string>
@@ -270,4 +271,32 @@
     <string name="tts_error_dialog_reason_text">Рушій перетворення тексту в мовлення <b>%1$s</b> не підтримує наступну мову: <b>%2$s</b></string>
     <string name="tts_error_dialog_change_button_text">Змінити рушій</string>
     <string name="tts_error_dialog_supported_voices_button_text">Параметри голосу</string>
+    <!-- import_cache_error_resolutions -->
+    <string name="import_error_resolution_try_again">Знову імпортувати файл</string>
+    <string name="import_error_resolution_free_up_space">Переконайтеся, що на пристрої достатньо вільного місця</string>
+    <string name="import_error_resolution_check_internet">Впевніться, що ви підключені до Інтернету</string>
+    <string name="import_error_resolution_copy_to_device">Скопіюйте файл на пристрій і спробуйте ще раз з локальним файлом</string>
+    <string name="import_error_resolution_select_file">Відкрити файл в переглядачі файлів пристрою</string>
+    <!-- Post-login dialog -->
+    <string name="login_successful">Вдалося ввійти</string>
+    <string name="sync_now">Синхронізувати зараз?</string>
+    <!--Change Note Type Dialog Fragment-->
+    <string name="card_numbers_unchanged">Номери карток залишаться без змін</string>
+    <!-- Subset of TR.changeNotetypeToFromCloze -->
+    <string name="extra_cloze_deletions_removed">Якщо ви змінюєте тип запису на звичайний, а кількість пропусків Cloze більша, ніж кількість доступних шаблонів карток, то надлишкові картки будуть видалені.</string>
+    <string name="different_note_types_selected">Будь ласка, виберіть записи лише одного типу.</string>
+    <string name="error_no_changes_to_save">Немає змін для збереження</string>
+    <string name="choose_color">Обрати колір</string>
+    <!-- Special Fields -->
+    <string name="standard_fields_tab_header" comment="Tab header for inserting non-special fields: {{Front}}">Поля</string>
+    <string name="special_fields_tab_header" comment="Tab header for inserting special fields: {{Deck}}">Спеціально</string>
+    <string name="special_field_example_suffix"><![CDATA[<b>%1$s</b>]]></string>
+    <string name="special_field_front_side_help">Вміст переднього шаблону. Аудіо не відтворюється автоматично</string>
+    <string name="special_field_deck_help" comment="%s: either blank or \' %s\'">Повна колода карти, включаючи батьківські колоди%s</string>
+    <string name="special_field_subdeck_help" comment="%s: either blank or \' %s\'">Поточна колода карти, без урахування батьківських колод%s</string>
+    <string name="special_field_flag_help">Outputs ‘%1$s’, where %2$s is the flag code (%3$s\–%4$s\)</string>
+    <string name="special_field_tags_help" comment="%s: either blank or \' %s\'">Тег нотатку%s</string>
+    <string name="special_field_card_id_help" comment="%s: either blank or \' %s\'">ID картки%s</string>
+    <string name="special_field_card_help" comment="%s: either blank or \' %s\'">Ім\'я шаблону картки%s</string>
+    <string name="special_field_type_help" comment="%s: either blank or \' %s\'">Назва типу нотатки%s</string>
 </resources>

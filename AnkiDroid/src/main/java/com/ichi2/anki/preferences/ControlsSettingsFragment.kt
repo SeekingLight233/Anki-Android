@@ -16,10 +16,14 @@
 package com.ichi2.anki.preferences
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
 import androidx.annotation.XmlRes
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withResumed
+import androidx.lifecycle.withStarted
 import androidx.preference.Preference
 import androidx.preference.children
+import com.bytehamster.lib.preferencesearch.SearchPreferenceResult
 import com.google.android.material.tabs.TabLayout
 import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.R
@@ -27,12 +31,16 @@ import com.ichi2.anki.cardviewer.ViewerCommand
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.preferences.reviewer.ViewerAction
 import com.ichi2.anki.previewer.PreviewerAction
+import com.ichi2.anki.reviewer.CardSide
 import com.ichi2.anki.reviewer.MappableAction
 import com.ichi2.anki.reviewer.MappableBinding.Companion.toPreferenceString
 import com.ichi2.anki.settings.Prefs
 import com.ichi2.anki.ui.internationalization.toSentenceCase
 import com.ichi2.anki.utils.ext.sharedPrefs
 import com.ichi2.preferences.ControlPreference
+import com.ichi2.preferences.ReviewerControlPreference
+import com.ichi2.utils.show
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ControlsSettingsFragment :
@@ -59,6 +67,44 @@ class ControlsSettingsFragment :
         setControlPreferencesDefaultValues(initialScreen)
         setDynamicTitle()
         setupNewStudyScreenSettings()
+        setupAnswerCommands()
+    }
+
+    /**
+     * Selects the appropriate tab based on a preference key from search results.
+     * This allows search navigation to automatically switch to the correct tab.
+     */
+    fun selectTabForPreference(key: String) {
+        val targetTabIndex = actionToScreenMap[key]?.ordinal
+        if (targetTabIndex == null) {
+            Timber.w("Could not find the preference with %s key", key)
+            return
+        }
+
+        view?.post {
+            requirePreference<ControlsTabPreference>(
+                R.string.pref_controls_tab_layout_key,
+            ).selectTab(targetTabIndex)
+        }
+    }
+
+    /**
+     * Highlights a search result with proper lifecycle handling.
+     *
+     * This handles the specific case where a tab must be selected before highlighting,
+     * ensuring the fragment is in the appropriate lifecycle states.
+     */
+    fun highlightPreference(result: SearchPreferenceResult) {
+        lifecycleScope.launch {
+            withStarted {
+                selectTabForPreference(result.key)
+            }
+            withResumed {
+                view?.post {
+                    result.highlight(this@ControlsSettingsFragment)
+                }
+            }
+        }
     }
 
     private fun setControlPreferencesDefaultValues(screen: ControlPreferenceScreen) {
@@ -126,12 +172,16 @@ class ControlsSettingsFragment :
         }
     }
 
-    private fun String.toSentenceCase(
-        @StringRes resId: Int,
-    ): String = this.toSentenceCase(this@ControlsSettingsFragment, resId)
-
     private fun setupNewStudyScreenSettings() {
-        if (!Prefs.isNewStudyScreenEnabled) return
+        if (!Prefs.isNewStudyScreenEnabled) {
+            findPreference<Preference>(R.string.gestures_corner_touch_preference)?.dependency = getString(R.string.gestures_preference)
+            findPreference<Preference>(R.string.pref_swipe_sensitivity_key)?.dependency = getString(R.string.gestures_preference)
+            findPreference<Preference>(R.string.pref_key_whiteboard_undo)?.isVisible = false
+            findPreference<Preference>(R.string.pref_key_whiteboard_toggle_eraser)?.isVisible = false
+            findPreference<Preference>(R.string.pref_key_whiteboard_redo)?.isVisible = false
+            findPreference<Preference>(R.string.pref_key_whiteboard_clear)?.isVisible = false
+            return
+        }
         for (keyRes in legacyStudyScreenSettings) {
             val key = getString(keyRes)
             findPreference<Preference>(key)?.isVisible = false
@@ -152,13 +202,58 @@ class ControlsSettingsFragment :
         }
     }
 
+    private fun setupAnswerCommands() {
+        val showAnswerPref = (findPreference<ControlPreference>(R.string.show_answer_command_key) as? ReviewerControlPreference)
+
+        val answerCommandKeys =
+            listOf(
+                ViewerAction.ANSWER_AGAIN.preferenceKey,
+                ViewerAction.ANSWER_HARD.preferenceKey,
+                ViewerAction.ANSWER_GOOD.preferenceKey,
+                ViewerAction.ANSWER_EASY.preferenceKey,
+            )
+        for (key in answerCommandKeys) {
+            (findPreference<Preference>(key) as? ReviewerControlPreference)?.let { answerPref ->
+                val items =
+                    arrayOf(
+                        getString(R.string.only_answer),
+                        getString(R.string.flip_and_answer),
+                    )
+                answerPref.setOnBindingSelectedListener { binding ->
+                    AlertDialog.Builder(requireContext()).show {
+                        setTitle(answerPref.title)
+                        setIcon(answerPref.icon)
+                        setItems(items) { _, index ->
+                            when (index) {
+                                0 -> answerPref.addBinding(binding, CardSide.ANSWER)
+                                1 -> {
+                                    answerPref.addBinding(binding, CardSide.ANSWER)
+                                    showAnswerPref?.addBinding(binding, CardSide.QUESTION)
+                                }
+                            }
+                        }
+                    }
+                    true
+                }
+            }
+        }
+    }
+
     companion object {
+        private val actionToScreenMap: Map<String, ControlPreferenceScreen> by lazy {
+            ControlPreferenceScreen.entries
+                .flatMap { screen ->
+                    screen.getActions().map { action -> action.preferenceKey to screen }
+                }.toMap()
+        }
+
         val legacyStudyScreenSettings =
             listOf(
                 R.string.save_voice_command_key,
                 R.string.toggle_eraser_command_key,
                 R.string.clear_whiteboard_command_key,
                 R.string.change_whiteboard_pen_color_command_key,
+                R.string.gestures_preference,
             )
     }
 }
@@ -172,7 +267,7 @@ enum class ControlPreferenceScreen(
 
     fun getActions(): List<MappableAction<*>> =
         when (this) {
-            REVIEWER -> ViewerCommand.entries
+            REVIEWER -> if (Prefs.isNewStudyScreenEnabled) ViewerAction.entries else ViewerCommand.entries
             PREVIEWER -> PreviewerAction.entries
         }
 }

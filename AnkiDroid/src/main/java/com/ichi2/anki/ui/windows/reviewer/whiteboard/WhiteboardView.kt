@@ -26,6 +26,7 @@ import android.graphics.PorterDuffXfermode
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import androidx.core.graphics.createBitmap
 import com.ichi2.anki.R
 
@@ -36,18 +37,14 @@ class WhiteboardView : View {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context) : this(context, null)
 
-    // Callbacks for user actions
     var onNewPath: ((Path) -> Unit)? = null
     var onEraseGestureStart: (() -> Unit)? = null
     var onEraseGestureMove: ((Float, Float) -> Unit)? = null
     var onEraseGestureEnd: (() -> Unit)? = null
-
-    // Public properties for tool state
     var isEraserActive: Boolean = false
     var eraserMode: EraserMode = EraserMode.INK
     var isStylusOnlyMode: Boolean = false
 
-    // Internal drawing state
     private val currentPath = Path()
     private val currentPaint =
         Paint().apply {
@@ -67,6 +64,19 @@ class WhiteboardView : View {
     private val canvasPaint = Paint(Paint.DITHER_FLAG)
 
     private var hasMoved = false
+    private var isDrawing = false
+    private val multiTouchDetector =
+        MultiTouchDetector(
+            touchSlop = ViewConfiguration.get(context).scaledTouchSlop,
+        )
+
+    fun setOnMultiTouchListener(listener: OnMultiTouchListener) {
+        multiTouchDetector.setOnMultiTouchListener(listener)
+    }
+
+    fun setOnScrollByListener(listener: OnScrollByListener) {
+        multiTouchDetector.setOnScrollByListener(listener)
+    }
 
     /**
      * Recreates the drawing buffer when the view size changes.
@@ -107,6 +117,14 @@ class WhiteboardView : View {
      * Ignores finger input if stylus-only mode is enabled.
      */
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (event.pointerCount >= 2) {
+            isDrawing = false
+            currentPath.reset()
+            invalidate()
+
+            return multiTouchDetector.onTouchEvent(event)
+        }
+
         if (isStylusOnlyMode && event.getToolType(0) != MotionEvent.TOOL_TYPE_STYLUS) {
             return false
         }
@@ -117,6 +135,7 @@ class WhiteboardView : View {
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                isDrawing = true
                 hasMoved = false
                 currentPath.moveTo(touchX, touchY)
                 if (isPathEraser) {
@@ -126,6 +145,8 @@ class WhiteboardView : View {
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
+                if (!isDrawing) return false
+
                 hasMoved = true
                 currentPath.lineTo(touchX, touchY)
                 if (isPathEraser) {
@@ -134,6 +155,8 @@ class WhiteboardView : View {
                 invalidate()
             }
             MotionEvent.ACTION_UP -> {
+                if (!isDrawing) return false
+
                 if (isPathEraser) {
                     onEraseGestureEnd?.invoke()
                 } else {
@@ -146,6 +169,7 @@ class WhiteboardView : View {
                 }
                 // Reset the path for the next gesture
                 currentPath.reset()
+                isDrawing = false
                 invalidate()
             }
             else -> return false

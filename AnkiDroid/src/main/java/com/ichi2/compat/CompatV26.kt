@@ -1,22 +1,23 @@
-/***************************************************************************************
- * Copyright (c) 2018 Mike Hardy <github@mikehardy.net>                                 *
- * Copyright (c) 2022 Arthur Milchior <arthur@milchior.fr>                              *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2018 Mike Hardy <github@mikehardy.net>
+ * Copyright (c) 2022 Arthur Milchior <arthur@milchior.fr>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.ichi2.compat
 
 import android.content.Context
+import android.icu.text.ListFormatter
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
@@ -137,5 +138,18 @@ open class CompatV26 : CompatV24() {
                 }
             }
         }
+    }
+
+    // API 26+: Use ListFormatter to dynamically get the locale-specific separator
+    override fun getListSeparator(context: Context): String {
+        val formatter = ListFormatter.getInstance()
+        // Format a list with 3 dummy items
+        val formatted = formatter.format("A", "B", "C")
+        // Parse the separator from the first two items
+        // The format should be something like "A, B, and C" or "A، B، و C" (Arabic)
+        // We extract the part between "A" and "B"
+        val separatorStart = formatted.indexOf("A") + 1
+        val separatorEnd = formatted.indexOf("B")
+        return formatted.substring(separatorStart, separatorEnd)
     }
 }

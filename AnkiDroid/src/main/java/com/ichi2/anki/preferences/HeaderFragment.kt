@@ -23,10 +23,10 @@ import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import com.bytehamster.lib.preferencesearch.SearchConfiguration
 import com.bytehamster.lib.preferencesearch.SearchPreference
-import com.google.android.material.appbar.MaterialToolbar
 import com.ichi2.anki.BuildConfig
 import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.R
+import com.ichi2.anki.preferences.profiles.SwitchProfilesFragment
 import com.ichi2.anki.preferences.reviewer.ReviewerMenuSettingsFragment
 import com.ichi2.anki.reviewreminders.ReviewReminderScope
 import com.ichi2.anki.reviewreminders.ScheduleReminders
@@ -55,8 +55,8 @@ class HeaderFragment : SettingsFragment() {
             }
         }
 
-        requirePreference<Preference>(R.string.pref_dev_options_screen_key)
-            .isVisible = Prefs.isDevOptionsEnabled
+        requirePreference<Preference>(R.string.pref_developer_options_screen_key)
+            .isVisible = Prefs.isDeveloperOptionsEnabled
 
         requirePreference<HeaderPreference>(R.string.pref_review_reminders_screen_key)
             .setOnPreferenceClickListener {
@@ -68,6 +68,7 @@ class HeaderFragment : SettingsFragment() {
 
         requirePreference<HeaderPreference>(R.string.pref_review_reminders_screen_key).isVisible = Prefs.newReviewRemindersEnabled
         requirePreference<HeaderPreference>(R.string.pref_notifications_screen_key).isVisible = !Prefs.newReviewRemindersEnabled
+        requirePreference<HeaderPreference>(R.string.pref_switch_profile_screen_key).isVisible = Prefs.switchProfileEnabled
 
         configureSearchBar(
             requireActivity() as AppCompatActivity,
@@ -80,7 +81,7 @@ class HeaderFragment : SettingsFragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             requireActivity().finish()
         }
     }
@@ -118,6 +119,7 @@ class HeaderFragment : SettingsFragment() {
                         .indexItem()
                         .withKey(activity.getString(R.string.pref_review_reminders_screen_key))
                         .withTitle("Review reminders")
+                        .withResId(R.xml.preference_headers)
                 } else {
                     index(R.xml.preferences_notifications)
                 }
@@ -128,6 +130,12 @@ class HeaderFragment : SettingsFragment() {
                         .addBreadcrumb(R.string.pref_cat_appearance)
                 }
                 index(R.xml.preferences_controls)
+                index(R.xml.preferences_reviewer_controls)
+                    .addBreadcrumb(activity.getString(R.string.pref_cat_controls))
+                    .addBreadcrumb(activity.getString(R.string.pref_controls_reviews_tab))
+                index(R.xml.preferences_previewer_controls)
+                    .addBreadcrumb(activity.getString(R.string.pref_cat_controls))
+                    .addBreadcrumb(activity.getString(R.string.pref_controls_previews_tab))
                 index(R.xml.preferences_accessibility)
                 index(R.xml.preferences_backup_limits)
                 ignorePreference(activity.getString(R.string.pref_backups_help_key))
@@ -193,27 +201,27 @@ class HeaderFragment : SettingsFragment() {
             // Some preferences and categories are only shown conditionally,
             // so they should be searchable based on the same conditions
 
-            /** From [HeaderFragment.onCreatePreferences] */
-            if (Prefs.isDevOptionsEnabled) {
-                searchConfiguration.index(R.xml.preferences_dev_options)
-                /** From [DevOptionsFragment.initSubscreen] */
+            // From [HeaderFragment.onCreatePreferences]
+            if (Prefs.isDeveloperOptionsEnabled) {
+                searchConfiguration.index(R.xml.preferences_developer_options)
+                // From [DeveloperOptionsFragment.initSubscreen]
                 if (BuildConfig.DEBUG) {
-                    searchConfiguration.ignorePreference(activity.getString(R.string.dev_options_enabled_by_user_key))
+                    searchConfiguration.ignorePreference(activity.getString(R.string.developer_options_enabled_by_user_key))
                 }
             }
 
-            /** From [HeaderFragment.onCreatePreferences] */
+            // From [HeaderFragment.onCreatePreferences]
             if (!AdaptionUtil.isXiaomiRestrictedLearningDevice) {
                 searchConfiguration.index(R.xml.preferences_advanced)
             }
 
-            /** From [NotificationsSettingsFragment.initSubscreen] */
+            // From [NotificationsSettingsFragment.initSubscreen]
             if (AdaptionUtil.isXiaomiRestrictedLearningDevice) {
                 searchConfiguration.ignorePreference(activity.getString(R.string.pref_notifications_vibrate_key))
                 searchConfiguration.ignorePreference(activity.getString(R.string.pref_notifications_blink_key))
             }
 
-            /** From [AdvancedSettingsFragment.removeUnnecessaryAdvancedPrefs] */
+            // From [AdvancedSettingsFragment.removeUnnecessaryAdvancedPrefs]
             if (!CompatHelper.hasScrollKeys()) {
                 searchConfiguration.ignorePreference(activity.getString(R.string.double_scrolling_gap_key))
             }
@@ -251,8 +259,9 @@ class HeaderFragment : SettingsFragment() {
                 is BackupLimitsSettingsFragment -> R.string.pref_backup_limits_screen_key
                 is AdvancedSettingsFragment -> R.string.pref_advanced_screen_key
                 is ReviewerOptionsFragment, is ReviewerMenuSettingsFragment -> R.string.new_reviewer_options_key
-                is DevOptionsFragment -> R.string.pref_dev_options_screen_key
+                is DeveloperOptionsFragment -> R.string.pref_developer_options_screen_key
                 is AboutFragment -> R.string.about_screen_key
+                is SwitchProfilesFragment -> R.string.pref_switch_profile_screen_key
                 else -> null
             }
     }

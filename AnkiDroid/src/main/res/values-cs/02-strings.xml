@@ -48,13 +48,14 @@
     <string name="drawer_open">Otevřít menu</string>
     <string name="drawer_close">Zavřít menu</string>
     <string name="note_message">Poznámka uložena</string>
+    <!-- Note editor screen -->
     <string name="CardEditorCardDeck">Balíček karet:</string>
     <string name="CardEditorNoteDeck">Balíček:</string>
     <string name="CardEditorModel">Typ poznámky:</string>
     <string name="CardEditorTags">Štítky: %1$s</string>
     <string name="CardEditorCards">Karty: %1$s</string>
-    <string name="edit_occlusions">Upravit okluze</string>
-    <string name="tag_name">Název štítku</string>
+    <string name="edit_occlusions">Edit occlusions</string>
+    <string name="paste_from_clipboard" maxLength="28">Vložit ze schránky</string>
     <string name="add_new_filter_tags">Přidat/Filtrovat štítky</string>
     <string name="add_tag" maxLength="28">Přidat štítek</string>
     <string name="check_all_tags" maxLength="28">Označit/odznačit všechny štítky</string>
@@ -70,7 +71,6 @@
     <string name="whiteboard_align_left" comment="Option to align the whiteboard toolbar on the left" maxLength="28">Vlevo</string>
     <string name="whiteboard_align_bottom" comment="Option to align the whiteboard toolbar on the bottom" maxLength="28">Dole</string>
     <string name="whiteboard_align_right" comment="Option to align the whiteboard toolbar on the right" maxLength="28">Vpravo</string>
-    <string name="whiteboard_clear" comment="Button text to clear the whiteboard" maxLength="28">Vymazat</string>
     <string name="whiteboard_more_options" comment="Tooltip of the whiteboard \'More\' button" maxLength="28">Další možnosti</string>
     <string name="whiteboard_remove_brush_message">Jste si jisti, že chcete odstranit tento štětec z vaší palety?</string>
     <string name="whiteboard_ink_eraser" comment="Title of the whiteboard Ink eraser">Inkoust</string>
@@ -84,6 +84,7 @@
     <string name="disable_eraser" maxLength="28">Zakázat gumování</string>
     <string name="hide_whiteboard" maxLength="28">Skrýt tabuli</string>
     <string name="clear_whiteboard" maxLength="28">Smazat tabuli</string>
+    <string name="hide_toolbar" maxLength="28">Hide toolbar</string>
     <string name="replay_media" maxLength="28">Přehrát multimédia</string>
     <string name="leech_suspend_notification">Karta označena jako pijavice a vyřazena</string>
     <string name="leech_notification">Karta byla označena jako pijavice</string>
@@ -95,8 +96,12 @@
     <string name="webview_crash_fatal">Kritická chyba: Vykreslování WebView selhalo. Příčina: %s</string>
     <string name="webview_crash_loop_dialog_title">Selhání vykreslování systémového webView</string>
     <string name="webview_crash_loop_dialog_content">Systémovému WebView se nepodařilo vykreslit kartu „%1$s“.\n %2$s</string>
-    <string name="slide_to_cancel" comment="Message shown when pressing the record button">Slide to cancel</string>
+    <string name="slide_to_cancel" comment="Message shown when pressing the record button">Posunutím zrušíte</string>
     <string name="filter_by_flags" maxLength="41">Příznaky</string>
+    <!-- filtered deck options -->
+    <string name="filtered_option_delay_again">Delay for again</string>
+    <string name="filtered_option_delay_hard">Delay for hard</string>
+    <string name="filtered_option_delay_good">Delay for good</string>
     <!-- Custom study options -->
     <string name="custom_study_loading_tags">Vytváří se seznam štítků&#8230;</string>
     <!-- Study options -->
@@ -120,7 +125,6 @@
     <string name="close">Zavřít</string>
     <string name="select">Vybrat</string>
     <string name="field_remapping">%1$s (z \'%2$s\')</string>
-    <string name="confirm_map_cards_to_nothing">Karty mapované na prázdný cíl budou odstraněny. Nezbývají-li už v poznámce žádné karty, bude poznámka ztracena. Opravdu chcete pokračovat?</string>
     <string name="missing_note_type">Nenalezen žádný typ poznámky</string>
     <string name="card_previewer_empty_front_indicator" comment="Extra text appended onto a tab title in the card previewer so that the user can see at a glance whether a card has no front.">%1$s (prázdné)</string>
     <!-- Image cropper -->
@@ -170,7 +174,8 @@
     <string name="import_error_not_apkg_extension">Název souboru „%s“ nemá příponu .apkg nebo .colpkg</string>
     <string name="import_error_load_imported_database">Náhrady Anki databáze (.anki2) ještě nejsou podporovány. Pokyny k náhradě naleznete v příručce.</string>
     <string name="import_error_content_provider">Vybraný soubor nelze automaticky importovat pomocí AnkiDroid. V uživatelské příručce naleznete, jak provést ruční import souborů Anki: \n %s</string>
-    <string name="import_error_copy_to_cache">Nepodařilo se uložit soubor do mezipaměti (možná nedostatek místa v úložišti)</string>
+    <string name="import_error_copy_to_cache_title">Nepodařilo se uložit soubor do mezipaměti</string>
+    <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Toto je často způsobeno chybou v aplikaci, kterou jste použili pro výběr souboru. Zkuste prosím následující opravy:\n\n%s</string>
     <string name="import_interrupted">Import přerušen: AnkiDroid se zavřel</string>
     <string name="export_ready_title">Export připraven</string>
     <string name="export_send_no_handlers">Nenalezena žádná aplikace pro zpracování apkg. Ukládá se&#8230;</string>
@@ -194,10 +199,9 @@
     <string name="select_tts" maxLength="28">Nastavit jazyk TTS</string>
     <string name="custom_study" maxLength="28">Vlastní studium</string>
     <string name="dyn_deck_desc">Toto je speciální balíček pro studium mimo normální plán. Karty se po opakování automaticky vrátí do svých původních balíčků. Odstraněním tohoto balíčku ze seznamu se všechny zbývající karty vrátí do svých původních balíčků.</string>
-    <string name="steps_error">Kroky musí být čísla větší než 0</string>
-    <string name="steps_min_error">Je požadován alespoň jeden krok</string>
     <string name="tag_editor_add_feedback">Klepněte na „%2$s“, abyste potvrdili přidání „%1$s“</string>
     <string name="tag_editor_add_feedback_existing">Vybrán stávající štítek „%1$s“</string>
+    <string name="tag_already_exists">Tag already exists</string>
     <!-- Time spans -->
     <!-- Currently only used if exporting APKG fails -->
     <string name="apk_share_error">Chyba sdílení souboru apkg</string>
@@ -211,9 +215,9 @@
     <string name="background_image_title" maxLength="41">Pozadí</string>
     <string name="choose_an_image" maxLength="41">Vybrat obrázek</string>
     <string name="remove_wallpaper_image" maxLength="41">Odebrat pozadí</string>
-    <string name="remove_background_image">Odebrat pozadí?</string>
+    <string name="remove_background_image">Are you sure you wish to remove the background?</string>
     <!-- Card Template Browser Appearance -->
-    <string name="restore_default" maxLength="28">Obnovit výchozí</string>
+    <string name="restore_default" maxLength="28">Restore default</string>
     <string name="reviewer_tts_cloze_spoken_replacement">Prázdné</string>
     <!-- Whiteboard eraser mode toggle message in Reviewer -->
     <string name="white_board_eraser_enabled">Režim gumování povolen</string>
@@ -239,23 +243,24 @@
     <string name="search_decks" maxLength="28">Hledat balíčky</string>
     <string name="ankidroid_init_failed_webview_title">Kritická chyba</string>
     <string name="ankidroid_init_failed_webview">AnkiDroid spoléhá na systémový WebView, který je nedostupný. K tomu může dojít, jestliže systém instaluje aktualizace. Zkuste to prosím znovu za pár minut.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">AnkiDroid nemůže přistupovat k úložišti kvůli chybě Androidu.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Velikost písma</string>
     <string name="menu_show_toolbar" comment="Checkable item stating whether the note editor toolbar should be shown" maxLength="28">Zobrazit nástrojovou lištu</string>
-    <string name="format_insert_bold">Formátovat jako tučné</string>
-    <string name="format_insert_italic">Formát jako kurzíva</string>
-    <string name="format_insert_underline">Formát jako podtržené</string>
-    <string name="insert_horizontal_line">Vložit vodorovnou čáru</string>
-    <string name="insert_heading">Vložit nadpis</string>
-    <string name="format_font_size">Změnit velikost písma</string>
-    <string name="insert_mathjax">Vložit rovnici MathJax</string>
+    <string name="format_insert_bold">Format as bold</string>
+    <string name="format_insert_italic">Format as italic</string>
+    <string name="format_insert_underline">Format as underline</string>
+    <string name="insert_horizontal_line">Insert horizontal line</string>
+    <string name="insert_heading">Insert heading</string>
+    <string name="format_font_size">Change font size</string>
+    <string name="insert_mathjax">Insert MathJax equation</string>
     <string name="note_editor_toolbar_icon">Text tlačítka</string>
-    <string name="before_text">HTML před výběrem</string>
-    <string name="after_text">HTML za výběrem</string>
-    <string name="add_toolbar_item">Vytvořit položku nástrojové lišty</string>
-    <string name="edit_toolbar_item">Upravit položku nástrojové lišty</string>
+    <string name="before_text">HTML before selection</string>
+    <string name="after_text">HTML after selection</string>
+    <string name="add_toolbar_item">Create toolbar item</string>
+    <string name="edit_toolbar_item">Edit toolbar item</string>
     <string name="toolbar_item_explain_edit_or_remove">Zadejte HTML, které se vloží před a za vybraný text\n\nDlouze stiskněte položku nástrojové lišty, abyste ji upravili nebo odstranili</string>
-    <string name="remove_toolbar_item">Odstranit položku nástrojové lišty?</string>
+    <string name="remove_toolbar_item">Remove toolbar item?</string>
     <string name="note_editor_image_too_large">Obrázek je příliš velký, vložte ho prosím ručně</string>
     <string name="note_editor_video_too_large">Video je příliš velké, vložte ho prosím ručně</string>
     <string name="note_editor_audio_too_large">Zvukový soubor je příliš velký, vložte ho prosím ručně</string>
@@ -265,9 +270,12 @@
     <string name="create_shortcut_error">Chyba při přidávání zástupce: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Velká počáteční písmena</string>
     <string name="menu_scroll_toolbar" comment="Checkbox stating whether note editor toolbar is scrollable or stacked. Checked: Scroll" maxLength="28">Posouvat nástrojovou lištu</string>
-    <!-- Symbols used as Button text in IncrementNumberRangePreference -->
+    <!-- IncrementNumberRangePreference -->
     <string name="plus_sign" comment="Label for increment button in IncrementerNumberRangePreference">+</string>
     <string name="minus_sign" comment="Label for decrement button in IncrementerNumberRangePreference">-</string>
+    <string name="invalid_value" comment="Error message in IncrementerNumberRangePreference when input is not a valid number">Invalid value</string>
+    <string name="maximum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the maximum allowed value">Maximum value is %d</string>
+    <string name="minimum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the minimum allowed value">Minimum value is %d</string>
     <!-- Used for credential empty warning message -->
     <string name="invalid_email">Zadejte platný e-mail</string>
     <string name="password_empty">Je požadováno heslo</string>
@@ -285,7 +293,6 @@
     <string name="download_failed">Stahování se nezdařilo</string>
     <string name="deck_download_progress_message">Během stahování můžete používat jiné aplikace</string>
     <string name="check_network">Zkontrolujte prosím připojení k síti</string>
-    <string name="search_using_deck_name">Hledat pomocí názvu balíčku</string>
     <string name="external_storage_unavailable">Stahování přerušeno, externí úložiště není k dispozici</string>
     <string name="home" maxLength="28">Domů</string>
     <!-- Study Screen actions
@@ -312,6 +319,12 @@
     <!-- Manage note types -->
     <string name="field_editor_model_not_available">Přístup ke kolekci se nezdařil. Zkuste to prosím znovu!</string>
     <string name="cd_manage_notetypes_add">Přidat nový typ poznámky</string>
+    <plurals name="note_types_selected">
+        <item quantity="one">Vybrán %d typ poznámky</item>
+        <item quantity="few">Vybrány %d typy poznámek</item>
+        <item quantity="many">Vybráno %d typu poznámky</item>
+        <item quantity="other">Vybráno %d typů poznámek</item>
+    </plurals>
     <!-- App Intro -->
     <string name="intro_ankidroid_tagline_one">Studujte méně</string>
     <string name="intro_ankidroid_tagline_two">Pamatujte si více</string>
@@ -320,7 +333,6 @@
     <string name="intro_sync_from_ankiweb">Synchronizovat z AnkiWebu</string>
     <!-- IntentHandler -->
     <string name="app_not_initialized_new">AnkiDroid ještě není inicializován. Otevřete prosím AnkiDroid a zkuste to znovu</string>
-    <string name="already_logged_in">Již jste přihlášeni</string>
     <!-- Deck Creation -->
     <string name="deck_created">Balíček vytvořen</string>
     <string name="deck_renamed">Balíček přejmenován</string>
@@ -329,7 +341,7 @@
     <!-- Browser Options Dialog -->
     <string name="show_cards" comment="Label for toggle cards button in BrowserOptionsDialog">Karty</string>
     <string name="show_notes" comment="Label for toggle notes button in BrowserOptionsDialog">Poznámky</string>
-    <string name="toggle_cards_notes">Přepnout karty/poznámky</string>
+    <string name="toggle_cards_notes">Toggle cards/notes</string>
     <string name="truncate_content_help">Zkrátit výšku každého řádku prohlížeče, aby se zobrazily pouze první 3 řádky obsahu</string>
     <string name="browser_options_dialog_heading">Možnosti prohlížeče</string>
     <string name="audio_saved">Nahrávka uložena</string>
@@ -345,10 +357,9 @@
     <string name="shared_decks_login_required">Prosím přihlaste se, abyste mohli stáhnout více balíčků</string>
     <string name="deck_description_field_hint">Popisek</string>
     <string name="deck_description_saved">Popis aktualizován</string>
-    <string name="format_deck_description_as_markdown">Formátovat jako Markdown</string>
+    <string name="format_deck_description_as_markdown">Format as markdown</string>
     <string name="help_button_content_description">Otevřít nápovědu pro „%s“</string>
     <string name="failed_to_copy">Kopírování se nezdařilo</string>
-    <string name="card_browser_unavailable_when_notes_mode">Nedostupné v režimu „Poznámky“</string>
     <plurals name="unbury_cards_feedback">
         <item quantity="one">Zrušeno přeskočení %d karty</item>
         <item quantity="few">Zrušeno přeskočení %d karet</item>
@@ -363,7 +374,7 @@
     <string name="play_recording">Přehrát</string>
     <string name="next_recording" comment="Description of a button to go to the next recording">Další</string>
     <!--  AlertDialog in the deleteCardTemplate  -->
-    <string name="orphan_note_title">Typ karty nelze odstranit</string>
+    <string name="orphan_note_title">Cannot delete card type</string>
     <string name="orphan_note_message">Smazání tohoto typu karty zanechá některé poznámky bez jakýchkoliv karet.</string>
     <string name="voice_not_supported">Hlas není podporován. Zkuste jiný nebo nainstalujte hlasový modul.</string>
     <!--Keyboard shortcuts dialog-->
@@ -380,7 +391,13 @@
     <string name="copy_the_template" comment="Description of the shortcut that copy the template as markdown">Kopírovat šablonu v markdown</string>
     <string name="edit_browser_appearance" comment="Description of the shortcut that edits the browser appearance of card template">Upravit vzhled prohlížeče</string>
     <string name="missing_user_action_dialog_message" comment="%s is the user action number">Akce uživatele %s není v tomto typu poznámky nastavena. Nakonfigurujte ji prosím</string>
+    <string name="feature_not_supported_by_study_screen">Tato karta využívá funkce, které ještě nejsou podporovány novou obrazovkou učení.</string>
     <string name="directory_inaccessible_info">Další informace o tom, jak obnovit přístup zde %s nebo přejděte do nastavení a aktualizujte složku s kolekcí.</string>
     <!-- Scheduler Upgrade Required Dialog title-->
     <string name="scheduler_upgrade_required_dialog_title" comment="Shown in a dialog when user has imported a collection using a very old version of the Anki spaced repetition scheduler">Je vyžadována aktualizace plánovače</string>
+    <!-- Whitespace is OK -->
+    <string name="list_separator" comment="The character and spacing to display between elements of a list, for example \', \' in \'Apple, Banana, Cherry" tools:ignore="TranslationTypo">, </string>
+    <!-- Other errors -->
+    <!-- Similar to TR.qtMiscNameExists(): "Name exists." -->
+    <string name="error_name_exists">Name already exists</string>
 </resources>

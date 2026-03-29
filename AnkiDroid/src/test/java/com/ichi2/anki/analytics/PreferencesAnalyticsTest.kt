@@ -31,13 +31,13 @@ import kotlin.test.assertNull
 @RunWith(AndroidJUnit4::class)
 @Config(application = EmptyApplication::class)
 class PreferencesAnalyticsTest : RobolectricTest() {
-    private val devOptionsKeys = PreferenceTestUtils.getDevOptionsKeys(targetContext)
+    private val developerOptionsKeys = PreferenceTestUtils.getDeveloperOptionsKeys(targetContext)
 
     /** All preference keys besides dev options */
     private val allKeys =
         PreferenceTestUtils
             .getAllPreferenceKeys(targetContext)
-            .subtract(devOptionsKeys)
+            .subtract(developerOptionsKeys)
 
     private val reportableKeys = UsageAnalytics.reportablePrefKeys.toStringResourceSet()
 
@@ -61,6 +61,7 @@ class PreferencesAnalyticsTest : RobolectricTest() {
             R.string.pref_review_reminders_screen_key, // reviewRemindersScreen
             R.string.pref_backup_limits_screen_key, // backupLimitsScreen
             R.string.about_screen_key, // aboutScreen
+            R.string.pref_switch_profile_screen_key, // switchProfileScreen
             // Categories: don't have a value
             R.string.study_screen_category_key, // studyScreenAppearance
             R.string.pref_appearance_screen_key, // appearance_preference_group
@@ -147,14 +148,14 @@ class PreferencesAnalyticsTest : RobolectricTest() {
     }
 
     @Test
-    fun `Dev options changes must not be reported`() {
-        val devOptionsKeys = PreferenceTestUtils.getKeysFromXml(targetContext, R.xml.preferences_dev_options)
-        val devOptionsAtReportList = reportableKeys.intersect(devOptionsKeys.toSet())
+    fun `Developer options changes must not be reported`() {
+        val developerOptionsKeys = PreferenceTestUtils.getKeysFromXml(targetContext, R.xml.preferences_developer_options)
+        val developerOptionsAtReportList = reportableKeys.intersect(developerOptionsKeys.toSet())
 
         assertThat(
             "dev options keys must not be in the `reportableKeys` list" +
-                ": $devOptionsAtReportList",
-            devOptionsAtReportList.isEmpty(),
+                ": $developerOptionsAtReportList",
+            developerOptionsAtReportList.isEmpty(),
         )
     }
 

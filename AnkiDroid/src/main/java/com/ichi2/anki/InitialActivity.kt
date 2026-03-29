@@ -16,8 +16,10 @@
 
 package com.ichi2.anki
 
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.database.sqlite.SQLiteDatabaseCorruptException
 import android.database.sqlite.SQLiteFullException
 import android.os.Build
 import android.os.Environment
@@ -25,10 +27,13 @@ import android.os.Parcelable
 import androidx.annotation.CheckResult
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
+import com.ichi2.anki.dialogs.DatabaseErrorDialog
 import com.ichi2.anki.exception.StorageAccessException
 import com.ichi2.anki.servicelayer.PreferenceUpgradeService
 import com.ichi2.anki.servicelayer.PreferenceUpgradeService.setPreferencesUpToDate
 import com.ichi2.anki.servicelayer.ScopedStorageService.isLegacyStorage
+import com.ichi2.anki.ui.windows.permissions.InternetPermissionFragment
+import com.ichi2.anki.ui.windows.permissions.NotificationsPermissionFragment
 import com.ichi2.anki.ui.windows.permissions.PermissionsFragment
 import com.ichi2.anki.ui.windows.permissions.PermissionsStartingAt30Fragment
 import com.ichi2.anki.ui.windows.permissions.PermissionsUntil29Fragment
@@ -48,9 +53,8 @@ object InitialActivity {
     /** Returns null on success  */
     @CheckResult
     fun getStartupFailureType(initializeAnkiDroidDirectory: () -> Boolean): StartupFailure? {
-        // A WebView failure means that we skip `AnkiDroidApp`, and therefore haven't loaded the collection
-        if (AnkiDroidApp.webViewFailedToLoad()) {
-            return StartupFailure.WebviewFailed
+        AnkiDroidApp.fatalError?.let {
+            return StartupFailure.InitializationError(it)
         }
 
         val failure =
@@ -66,6 +70,10 @@ object InitialActivity {
             } catch (e: SQLiteFullException) {
                 Timber.w(e)
                 StartupFailure.DiskFull
+            } catch (e: SQLiteDatabaseCorruptException) {
+                Timber.w(e)
+                DatabaseErrorDialog.databaseCorruptFlag = true
+                StartupFailure.DBError(e)
             } catch (e: StorageAccessException) {
                 // Same handling as the fall through, but without the exception report
                 // These are now handled with a dialog and don't generate actionable reports
@@ -150,7 +158,29 @@ object InitialActivity {
 
         data object DatabaseLocked : StartupFailure()
 
-        data object WebviewFailed : StartupFailure()
+        /**
+         * [AnkiDroidApp] encountered a fatal error
+         */
+        data class InitializationError(
+            val error: FatalInitializationError,
+        ) : StartupFailure() {
+            val infoLink
+                get() = error.infoLink
+
+            fun toHumanReadableString(context: Context): String =
+                when (error) {
+                    is FatalInitializationError.WebViewError ->
+                        context.getString(
+                            R.string.ankidroid_init_failed_webview,
+                            error.errorDetail,
+                        )
+                    is FatalInitializationError.StorageError ->
+                        context.getString(
+                            R.string.ankidroid_init_failed_storage,
+                            error.errorDetail,
+                        )
+                }
+        }
 
         data object DiskFull : StartupFailure()
     }
@@ -186,12 +216,16 @@ enum class PermissionSet(
     val permissions: List<String>,
     val permissionsFragment: Class<out PermissionsFragment>?,
 ) : Parcelable {
-    LEGACY_ACCESS(Permissions.legacyStorageAccessPermissions, PermissionsUntil29Fragment::class.java),
+    LEGACY_ACCESS(Permissions.legacyStorageAccessStartupPermissions, PermissionsUntil29Fragment::class.java),
 
     @RequiresApi(Build.VERSION_CODES.R)
-    EXTERNAL_MANAGER(listOf(Permissions.MANAGE_EXTERNAL_STORAGE), PermissionsStartingAt30Fragment::class.java),
+    EXTERNAL_MANAGER(Permissions.externalManagerStorageAccessStartupPermissions, PermissionsStartingAt30Fragment::class.java),
 
-    APP_PRIVATE(emptyList(), null),
+    APP_PRIVATE(Permissions.appPrivateStartupPermissions, InternetPermissionFragment::class.java),
+
+    /** Optional. */
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    NOTIFICATIONS(listOf(Manifest.permission.POST_NOTIFICATIONS), NotificationsPermissionFragment::class.java),
 }
 
 /**
@@ -216,7 +250,7 @@ internal fun selectAnkiDroidFolder(
     return if (canManageExternalStorage) {
         AnkiDroidFolder.PublicFolder(PermissionSet.EXTERNAL_MANAGER)
     } else {
-        return AnkiDroidFolder.AppPrivateFolder
+        AnkiDroidFolder.AppPrivateFolder
     }
 }
 

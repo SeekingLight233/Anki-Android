@@ -51,6 +51,8 @@
     <string name="add_to_deck_decide_by_note_type">Elekti laŭ nototipo</string>
     <!-- theme labels -->
     <string name="theme_follow_system">Laŭ operaciumo</string>
+    <string name="theme_day" comment="Day/Light theme color scheme">Taga</string>
+    <string name="theme_night" comment="Night/Dark theme color scheme">Nokta</string>
     <!-- day_theme_labels -->
     <string name="day_theme_light">Hela</string>
     <string name="day_theme_plain">Norma</string>
@@ -66,10 +68,10 @@
     <string name="html_size_code_x_large">pli granda</string>
     <string name="html_size_code_xx_large">plej granda</string>
     <!-- gestures_labels -->
-    <string name="answer_again" maxLength="41">Respondi “denove”</string>
-    <string name="answer_hard" maxLength="41">Respondi “malfacila”</string>
-    <string name="answer_good" maxLength="41">Respondi “bona”</string>
-    <string name="answer_easy" maxLength="41">Respondi “facila”</string>
+    <string name="answer_again" maxLength="41">Respondi “Denove”</string>
+    <string name="answer_hard" maxLength="41">Respondi “Malfacila”</string>
+    <string name="answer_good" maxLength="41">Respondi “Bona”</string>
+    <string name="answer_easy" maxLength="41">Respondi “Facila”</string>
     <string name="gesture_abort_learning" maxLength="41">Fermi lernadan ekranon</string>
     <string name="gesture_flag_red" maxLength="41">Baskuligi ruĝan flagon</string>
     <string name="gesture_flag_orange" maxLength="41">Baskuligi oranĝkoloran flagon</string>

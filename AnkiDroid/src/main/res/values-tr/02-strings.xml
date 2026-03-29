@@ -48,13 +48,14 @@
     <string name="drawer_open">Çekmeceyi aç</string>
     <string name="drawer_close">Çekmeceyi kapat</string>
     <string name="note_message">Not kaydedildi</string>
+    <!-- Note editor screen -->
     <string name="CardEditorCardDeck">Kart destesi:</string>
     <string name="CardEditorNoteDeck">Deste:</string>
     <string name="CardEditorModel">Tür:</string>
     <string name="CardEditorTags">Etiketler: %1$s</string>
     <string name="CardEditorCards">Kartlar: %1$s</string>
-    <string name="edit_occlusions">Örtüleri Düzenle</string>
-    <string name="tag_name">Etiket adı</string>
+    <string name="edit_occlusions">Edit occlusions</string>
+    <string name="paste_from_clipboard" maxLength="28">Panodan yapıştır</string>
     <string name="add_new_filter_tags">Etiket ekle/filtrele</string>
     <string name="add_tag" maxLength="28">Etiket ekle</string>
     <string name="check_all_tags" maxLength="28">Tüm etiketleri işaretle/kaldır</string>
@@ -70,7 +71,6 @@
     <string name="whiteboard_align_left" comment="Option to align the whiteboard toolbar on the left" maxLength="28">Sol</string>
     <string name="whiteboard_align_bottom" comment="Option to align the whiteboard toolbar on the bottom" maxLength="28">Alt</string>
     <string name="whiteboard_align_right" comment="Option to align the whiteboard toolbar on the right" maxLength="28">Sağ</string>
-    <string name="whiteboard_clear" comment="Button text to clear the whiteboard" maxLength="28">Temizle</string>
     <string name="whiteboard_more_options" comment="Tooltip of the whiteboard \'More\' button" maxLength="28">Daha fazla seçenek</string>
     <string name="whiteboard_remove_brush_message">Bu fırçayı paletinizden kaldırmak istediğinize emin misiniz?</string>
     <string name="whiteboard_ink_eraser" comment="Title of the whiteboard Ink eraser">Mürekkep</string>
@@ -84,6 +84,7 @@
     <string name="disable_eraser" maxLength="28">Silgiyi devre dışı bırak</string>
     <string name="hide_whiteboard" maxLength="28">Yazı tahtasını gizle</string>
     <string name="clear_whiteboard" maxLength="28">Yazı tahtasını temizle</string>
+    <string name="hide_toolbar" maxLength="28">Araç çubuğunu gizle</string>
     <string name="replay_media" maxLength="28">Medyayı yeniden oynat</string>
     <string name="leech_suspend_notification">Kart asalak olarak işaretlenip askıya alınmış</string>
     <string name="leech_notification">Kart asalak olarak işaretlenmiş</string>
@@ -97,6 +98,10 @@
     <string name="webview_crash_loop_dialog_content">Sistem WebView bu kartı işleyemedi: \'%1$s\'.\n %2$s</string>
     <string name="slide_to_cancel" comment="Message shown when pressing the record button">İptal etmek için kaydır</string>
     <string name="filter_by_flags" maxLength="41">Bayraklar</string>
+    <!-- filtered deck options -->
+    <string name="filtered_option_delay_again">Delay for again</string>
+    <string name="filtered_option_delay_hard">Delay for hard</string>
+    <string name="filtered_option_delay_good">Delay for good</string>
     <!-- Custom study options -->
     <string name="custom_study_loading_tags">Etiket listesi oluşturuluyor&#8230;</string>
     <!-- Study options -->
@@ -118,7 +123,6 @@
     <string name="close">Kapat</string>
     <string name="select">Seç</string>
     <string name="field_remapping">%1$s (\'%2$s\' içinden)</string>
-    <string name="confirm_map_cards_to_nothing">Hiçbir şeyle eşlemeyen tüm kartlar silinecektir. Eğer bir notun kalan kartları yoksa, kaybolacaktır. Devam etmek istediğinizden emin misiniz?</string>
     <string name="missing_note_type">Not türü bulunmuyor</string>
     <string name="card_previewer_empty_front_indicator" comment="Extra text appended onto a tab title in the card previewer so that the user can see at a glance whether a card has no front.">%1$s (boş)</string>
     <!-- Image cropper -->
@@ -164,7 +168,8 @@
     <string name="import_error_not_apkg_extension">\"%s\" adlı dosyanın uzantısı .apkg veya .colpkg değil</string>
     <string name="import_error_load_imported_database">Anki Veritabanı (.anki2) değiştirmeleri henüz desteklenmiyor. Lütfen değiştirme yönergeleri için kılavuza bakın.</string>
     <string name="import_error_content_provider">Seçilen dosya AnkiDroid tarafından otomatik olarak içeri aktarılamadı. Lütfen Anki dosyalarının nasıl elle içeri aktarıldığı hakkında kullanıcı kılavuzuna bakın:\n %s</string>
-    <string name="import_error_copy_to_cache">Dosya belleğe alınamadı (depolama alanı bitmiş olabilir)</string>
+    <string name="import_error_copy_to_cache_title">Dosya belleğe alınamadı</string>
+    <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Bu genellikle dosyayı seçmek için kullandığınız uygulamadaki bir bugdan kaynaklanır. Lütfen şu düzeltmeleri deneyin:\n\n%s</string>
     <string name="import_interrupted">Aktarım yarıda kesildi: AnkiDroid kapatıldı</string>
     <string name="export_ready_title">Dışa aktarım hazır</string>
     <string name="export_send_no_handlers">Apkg işleyecek uygulama yok. Kaydediliyor&#8230;</string>
@@ -188,10 +193,9 @@
     <string name="select_tts" maxLength="28">Metin okuma dilini ayarla</string>
     <string name="custom_study" maxLength="28">Kişisel çalışma</string>
     <string name="dyn_deck_desc">Bu normal programın dışında çalışmak için özel bir deste. Kartlar çalışıldıktan sonra otomatik olarak kendi destelerine geri dönecekler. Bu desteyi deste listesinden silmek kalan bütün kartları kendi destelerine geri döndürecek.</string>
-    <string name="steps_error">Adım 0\'dan büyük bir sayı olmalıdır</string>
-    <string name="steps_min_error">En az bir adım gerekiyor</string>
     <string name="tag_editor_add_feedback">\"%1$s\" eklemek için buna dokunun: \"%2$s\"</string>
     <string name="tag_editor_add_feedback_existing">Varolan bir etiketi seçtiniz: \"%1$s\"</string>
+    <string name="tag_already_exists">Etiket hâlihazırda var</string>
     <!-- Time spans -->
     <!-- Currently only used if exporting APKG fails -->
     <string name="apk_share_error">Apkg dosyasını paylaşırken hata</string>
@@ -205,9 +209,9 @@
     <string name="background_image_title" maxLength="41">Arkaplan</string>
     <string name="choose_an_image" maxLength="41">Bir resim seç</string>
     <string name="remove_wallpaper_image" maxLength="41">Arkaplanı kaldır</string>
-    <string name="remove_background_image">Arkaplan kaldırılsın mı?</string>
+    <string name="remove_background_image">Are you sure you wish to remove the background?</string>
     <!-- Card Template Browser Appearance -->
-    <string name="restore_default" maxLength="28">Varsayılana Dön</string>
+    <string name="restore_default" maxLength="28">Varsayılana döndür</string>
     <string name="reviewer_tts_cloze_spoken_replacement">Boş</string>
     <!-- Whiteboard eraser mode toggle message in Reviewer -->
     <string name="white_board_eraser_enabled">Silgi modu etkinleştirildi</string>
@@ -233,23 +237,24 @@
     <string name="search_decks" maxLength="28">Deste ara</string>
     <string name="ankidroid_init_failed_webview_title">Kritik Hata</string>
     <string name="ankidroid_init_failed_webview">AnkiDroid şu an ulaşılamayan System WebView\'a dayanır. Bu sistem güncelleme yüklerken olabilir. Lütfen birkaç dakika sonra tekrar deneyin.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">AnkiDroid bir Android hatasından dolayı depolamaya erişemiyor.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Yazı tipi boyutu</string>
     <string name="menu_show_toolbar" comment="Checkable item stating whether the note editor toolbar should be shown" maxLength="28">Araç çubuğunu göster</string>
-    <string name="format_insert_bold">Kalın olarak biçimlendir</string>
-    <string name="format_insert_italic">İtalik olarak biçimlendir</string>
-    <string name="format_insert_underline">Altı çizili olarak biçimlendir</string>
-    <string name="insert_horizontal_line">Yatay Çizgi ekle</string>
+    <string name="format_insert_bold">Kalın olarak şekillendir</string>
+    <string name="format_insert_italic">İtalik olarak şekillendir</string>
+    <string name="format_insert_underline">Altı çizili olarak şekillendir</string>
+    <string name="insert_horizontal_line">Yatay çizgi ekle</string>
     <string name="insert_heading">Başlık ekle</string>
-    <string name="format_font_size">Yazı Tipi Boyutunu Değiştir</string>
+    <string name="format_font_size">Yazı boyutunu değiştir</string>
     <string name="insert_mathjax">MathJax denklemi ekle</string>
     <string name="note_editor_toolbar_icon">Düğme yazısı</string>
     <string name="before_text">Seçimden önce HTML</string>
     <string name="after_text">Seçimden sonra HTML</string>
-    <string name="add_toolbar_item">Araç Çubuğu Öğesi Oluştur</string>
-    <string name="edit_toolbar_item">Araç Çubuğu Öğesini Düzenle</string>
+    <string name="add_toolbar_item">Araç çubuğu öğesi oluştur</string>
+    <string name="edit_toolbar_item">Araç çubuğu öğesini düzenle</string>
     <string name="toolbar_item_explain_edit_or_remove">Seçili yazıdan önce ve sonra eklenecek HTML girin\n\nBir araç çubuğu öğesini değiştirmek ya da kaldırmak için basılı tutun</string>
-    <string name="remove_toolbar_item">Araç Çubuğu Öğesi Silinsin Mi?</string>
+    <string name="remove_toolbar_item">Araç çubuğu öğesi kaldırılsın mı?</string>
     <string name="note_editor_image_too_large">Bu resim fazla büyük, lütfen resmi elle ekleyin</string>
     <string name="note_editor_video_too_large">Bu video dosyası fazla büyük, lütfen videoyu elle ekleyin</string>
     <string name="note_editor_audio_too_large">Bu ses dosyası fazla büyük, lütfen sesi elle ekleyin</string>
@@ -259,9 +264,12 @@
     <string name="create_shortcut_error">Kısayolu eklerken hata: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Cümlelerin baş harflerini büyült</string>
     <string name="menu_scroll_toolbar" comment="Checkbox stating whether note editor toolbar is scrollable or stacked. Checked: Scroll" maxLength="28">Araç çubuğunu kaydır</string>
-    <!-- Symbols used as Button text in IncrementNumberRangePreference -->
+    <!-- IncrementNumberRangePreference -->
     <string name="plus_sign" comment="Label for increment button in IncrementerNumberRangePreference">+</string>
     <string name="minus_sign" comment="Label for decrement button in IncrementerNumberRangePreference">-</string>
+    <string name="invalid_value" comment="Error message in IncrementerNumberRangePreference when input is not a valid number">Geçersiz değer</string>
+    <string name="maximum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the maximum allowed value">Maksimum değer %d</string>
+    <string name="minimum_value_is" comment="Error message in IncrementerNumberRangePreference. %d is the minimum allowed value">Minimum değer %d</string>
     <!-- Used for credential empty warning message -->
     <string name="invalid_email">Geçerli bir e-posta girin</string>
     <string name="password_empty">Parola gereklidir</string>
@@ -279,7 +287,6 @@
     <string name="download_failed">İndirme başarısız</string>
     <string name="deck_download_progress_message">İndirme devam ederken diğer uygulamaları kullanabilirsiniz</string>
     <string name="check_network">Lütfen ağ bağlantını kontrol et</string>
-    <string name="search_using_deck_name">Deste ismini kullanarak ara</string>
     <string name="external_storage_unavailable">İndirme iptal edildi, harici hafıza erişilebilir değil.</string>
     <string name="home" maxLength="28">Ana sayfa</string>
     <!-- Study Screen actions
@@ -304,6 +311,10 @@
     <!-- Manage note types -->
     <string name="field_editor_model_not_available">Koleksiyona erişilemedi. Lütfen tekrar deneyin!</string>
     <string name="cd_manage_notetypes_add">Yeni bir not türü ekle</string>
+    <plurals name="note_types_selected">
+        <item quantity="one">%d not türü seçili</item>
+        <item quantity="other">%d not türü seçili</item>
+    </plurals>
     <!-- App Intro -->
     <string name="intro_ankidroid_tagline_one">Daha az ders çalış</string>
     <string name="intro_ankidroid_tagline_two">Daha çok hatırla</string>
@@ -312,7 +323,6 @@
     <string name="intro_sync_from_ankiweb">AnkiWeb\'den senkronize et</string>
     <!-- IntentHandler -->
     <string name="app_not_initialized_new">AnkiDroid henüz açılmadı. Lütfen AnkiDroid\'i açıp tekrar deneyin</string>
-    <string name="already_logged_in">Zaten giriş yapılmış</string>
     <!-- Deck Creation -->
     <string name="deck_created">Deste oluşturuldu</string>
     <string name="deck_renamed">Deste yeniden adlandırıldı</string>
@@ -321,7 +331,7 @@
     <!-- Browser Options Dialog -->
     <string name="show_cards" comment="Label for toggle cards button in BrowserOptionsDialog">Kartlar</string>
     <string name="show_notes" comment="Label for toggle notes button in BrowserOptionsDialog">Notlar</string>
-    <string name="toggle_cards_notes">Kartları/Notları Aç/Kapat</string>
+    <string name="toggle_cards_notes">Kartları/notları aç/kapat</string>
     <string name="truncate_content_help">Tarayıcının her satırının yüksekliğini içeriğin sadece ilk 3 satırını gösterecek şekilde sınırla</string>
     <string name="browser_options_dialog_heading">Tarayıcı seçenekleri</string>
     <string name="audio_saved">Alınan kayıtlar kaydedildi.</string>
@@ -340,7 +350,6 @@
     <string name="format_deck_description_as_markdown">Markdown olarak formatla</string>
     <string name="help_button_content_description">\"%s\" için yardımı aç</string>
     <string name="failed_to_copy">Kopyalanamadı</string>
-    <string name="card_browser_unavailable_when_notes_mode">\"Notlar\" modunda kullanılamıyor</string>
     <plurals name="unbury_cards_feedback">
         <item quantity="one">%d kart çıkarıldı</item>
         <item quantity="other">%d kart çıkarıldı</item>
@@ -353,7 +362,7 @@
     <string name="play_recording">Oynat</string>
     <string name="next_recording" comment="Description of a button to go to the next recording">Sonraki</string>
     <!--  AlertDialog in the deleteCardTemplate  -->
-    <string name="orphan_note_title">Kart Türü Silinemiyor</string>
+    <string name="orphan_note_title">Kart türü silinemiyor</string>
     <string name="orphan_note_message">Bu kart türünü silmek bazı notları kartsız bırakacak.</string>
     <string name="voice_not_supported">Seslendirme desteklenmiyor. Başka bir seslendirme motoru deneyin ya da bir tane yükleyin.</string>
     <!--Keyboard shortcuts dialog-->
@@ -370,7 +379,13 @@
     <string name="copy_the_template" comment="Description of the shortcut that copy the template as markdown">Şablonu markdown olarak kopyala</string>
     <string name="edit_browser_appearance" comment="Description of the shortcut that edits the browser appearance of card template">Tarayıcı görünümünü düzenle</string>
     <string name="missing_user_action_dialog_message" comment="%s is the user action number">%s kullanıcı eylemi bu not türünde belirlenmemiş. Lütfen eylemi ayarlayın</string>
+    <string name="feature_not_supported_by_study_screen">Bu kart, yeni çalışma ekranı tarafından henüz desteklenmeyen özellikleri bulunduruyor.</string>
     <string name="directory_inaccessible_info">Erişimin nasıl yeniden sağlanıldığına dair daha fazlasını burda %s öğrenin ya da koleksiyon klasörünü değiştirmek için ayarlara gidin.</string>
     <!-- Scheduler Upgrade Required Dialog title-->
     <string name="scheduler_upgrade_required_dialog_title" comment="Shown in a dialog when user has imported a collection using a very old version of the Anki spaced repetition scheduler">Zamanlayıcı güncellemesi gerekiyor</string>
+    <!-- Whitespace is OK -->
+    <string name="list_separator" comment="The character and spacing to display between elements of a list, for example \', \' in \'Apple, Banana, Cherry" tools:ignore="TranslationTypo">, </string>
+    <!-- Other errors -->
+    <!-- Similar to TR.qtMiscNameExists(): "Name exists." -->
+    <string name="error_name_exists">Name already exists</string>
 </resources>

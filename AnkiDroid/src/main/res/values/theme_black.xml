@@ -31,7 +31,7 @@
         <item name="currentDeckBackground">@drawable/item_background_selected</item>
         <item name="currentDeckBackgroundColor">@color/theme_black_row_current</item>
         <item name="focusedRowBackgroundColor">@color/theme_black_row_current</item>
-        <item name="dynDeckColor">#305683</item>
+        <item name="dynDeckColor">@color/material_light_blue_500</item>
         <item name="deckDivider">@drawable/divider_black</item>
         <item name="expandRef">@drawable/ic_chevron_right_white</item>
         <item name="collapseRef">@drawable/ic_expand_more_white</item>
@@ -80,6 +80,7 @@
         <item name="duplicateColor">#855</item>
         <!-- Note editor colors -->
         <item name="editTextBackgroundColor">#EE5C5C5C</item>
+        <item name="editTextHighlightColor">@color/material_light_blue_900</item>
         <item name="toolbarBackgroundColor">#616161</item>
         <item name="toolbarIconColor">@color/white</item>
         <item name="buttonShadowColor">#726B6B</item>
@@ -117,6 +118,11 @@
         <!-- ProgressDialog-->
         <item name="dialogBackground">@color/theme_black_primary_light</item>
         <item name="progressDialogButtonTextColor">@color/material_light_blue_400</item>
+
+        <!-- HTML 'lightblue' -->
+        <item name="clozeColor">#ADD8E6</item>
+
+        <item name="incrementerButtonBackground">@color/material_blue_grey_900</item>
     </style>
 
     <style name="SnackbarTextStyleBlack" parent="@style/Widget.MaterialComponents.Snackbar.TextView">
@@ -128,7 +134,7 @@
     </style>
 
     <style name="ThemeOverlay.AnkiDroid.AlertDialog.Black" parent="ThemeOverlay.AnkiDroid.AlertDialog">
-        <item name="android:background">@color/theme_black_primary_light</item>
+        <item name="android:colorBackground">@color/theme_black_primary_light</item>
     </style>
 
     <style name="Theme_Dark.Black" parent="Base.Theme.Dark.Black"/>

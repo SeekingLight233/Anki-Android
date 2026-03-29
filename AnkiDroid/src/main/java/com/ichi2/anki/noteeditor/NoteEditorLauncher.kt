@@ -105,14 +105,13 @@ sealed interface NoteEditorLauncher : Destination {
      */
     data class AddNoteFromCardBrowser(
         val viewModel: CardBrowserViewModel,
-        val inCardBrowserActivity: Boolean = false,
     ) : NoteEditorLauncher {
         override fun toBundle(): Bundle {
             val fragmentArgs =
                 bundleOf(
                     NoteEditorFragment.EXTRA_CALLER to NoteEditorCaller.CARDBROWSER_ADD.value,
                     NoteEditorFragment.EXTRA_TEXT_FROM_SEARCH_VIEW to viewModel.searchTerms,
-                    NoteEditorFragment.IN_CARD_BROWSER_ACTIVITY to inCardBrowserActivity,
+                    NoteEditorFragment.IN_CARD_BROWSER_ACTIVITY to false,
                 )
             if (viewModel.lastDeckId?.let { id -> id > 0 } == true) {
                 fragmentArgs.putLong(NoteEditorFragment.EXTRA_DID, viewModel.lastDeckId!!)
@@ -165,12 +164,12 @@ sealed interface NoteEditorLauncher : Destination {
     }
 
     /**
-     * Represents editing a card in the NoteEditor.
-     * @property cardId The ID of the card to edit.
+     * Opens the NoteEditor for the current selection (card or note).
+     * @property cardId The selected card ID, or null when editing a note.
      * @property animation The animation direction.
      */
-    data class EditCard(
-        val cardId: CardId,
+    data class EditSelection(
+        val cardId: CardId?,
         val animation: ActivityTransitionAnimation.Direction,
         val inCardBrowserActivity: Boolean = false,
     ) : NoteEditorLauncher {

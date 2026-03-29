@@ -1,18 +1,18 @@
-/****************************************************************************************
- * Copyright (c) 2018 Mike Hardy <mike@mikehardy.net>                                   *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2018 Mike Hardy <mike@mikehardy.net>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.ichi2.anki
 
@@ -27,8 +27,6 @@ import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
-import androidx.sqlite.db.SupportSQLiteOpenHelper
-import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.Configuration
 import androidx.work.testing.SynchronousExecutor
@@ -59,7 +57,7 @@ import com.ichi2.testutils.ProductionCollectionManager
 import com.ichi2.testutils.common.FailOnUnhandledExceptionRule
 import com.ichi2.testutils.common.IgnoreFlakyTestsInCIRule
 import com.ichi2.testutils.filter
-import com.ichi2.utils.InMemorySQLiteOpenHelperFactory
+import com.ichi2.testutils.grantPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestDispatcher
@@ -100,7 +98,7 @@ open class RobolectricTest :
         controllersForCleanup.add(controller)
     }
 
-    /** Allows [com.ichi2.testutils.Flaky] to annotate tests in subclasses */
+    /** Allows [com.ichi2.testutils.common.Flaky] to annotate tests in subclasses */
     @get:Rule
     val ignoreFlakyTests = IgnoreFlakyTestsInCIRule()
 
@@ -173,17 +171,10 @@ open class RobolectricTest :
 
         // BUG: We do not reset the MetaDB
         MetaDB.closeDB()
+
+        // https://github.com/ankidroid/Anki-Android/pull/19004#discussion_r2739833965
+        grantPermissions(Manifest.permission.INTERNET)
     }
-
-    protected open fun useLegacyHelper(): Boolean = false
-
-    protected fun getHelperFactory(): SupportSQLiteOpenHelper.Factory =
-        if (getCollectionStorageMode() != ON_DISK) {
-            Timber.w("Using in-memory database for test. Collection should not be re-opened")
-            InMemorySQLiteOpenHelperFactory()
-        } else {
-            FrameworkSQLiteOpenHelperFactory()
-        }
 
     @After
     @CallSuper

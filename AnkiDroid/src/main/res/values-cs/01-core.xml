@@ -60,7 +60,7 @@
     <!-- DeckPicker.kt -->
     <string name="expand" comment="In the deck picker: accessibility label of the buttons that display the subdecks of a deck.">Rozbalit</string>
     <string name="collapse" comment="In the deck picker: accessibility label of the buttons that hide the subdecks of a deck.">Sbalit</string>
-    <string name="menu_import" comment="Title of the import page and the button to open it." maxLength="28">Import</string>
+    <string name="menu_import" comment="Title of the import page and the button to open it." maxLength="28">Importovat</string>
     <string name="no_cards_placeholder_title" comment="Text shown the first time AnkiDroid is opened, to explain to the user why they can\'t yet review.">Kolekce je prázdná</string>
     <string name="no_cards_placeholder_description" comment="Text shown the first time AnkiDroid is opened, to explain what should be their first action.">Začněte přidávat karty\npoužitím ikony +</string>
     <!-- Reviewer -->
@@ -94,7 +94,7 @@
     <string name="undo" maxLength="28" comment="When tapping on this text, the last action is undone.">Vrátit zpět</string>
     <string name="redo" maxLength="28" comment="Menu entry that allows to redo action that was just undone.">Znovu</string>
     <!-- flashcard_portrait.xml -->
-    <string name="undo_action_whiteboard_last_stroke" comment="One of the display patterns of \'Undo\' item on the action menu in the Study Screen. It is shown as the title of the item when the whiteboard (handwriting) feature is enabled and visible and has any strokes (handwritten lines)" maxLength="28">Zrušit čáru</string>
+    <string name="undo_action_whiteboard_last_stroke" comment="One of the display patterns of \'Undo\' item on the action menu in the Study Screen. It is shown as the title of the item when the whiteboard (handwriting) feature is enabled and visible and has any strokes (handwritten lines)" maxLength="28">Vrátit zpět tah</string>
     <string name="move_all_to_deck">Přesunout vše do balíčku</string>
     <string name="unbury" maxLength="28">Zrušit přeskočení</string>
     <string name="rename_deck" maxLength="28">Přejmenovat balíček</string>
@@ -135,9 +135,8 @@
     <string name="empty_cram_label" maxLength="28">Vyprázdnit</string>
     <string name="create_subdeck">Vytvořit podřízený balíček</string>
     <string name="empty_filtered_deck">Vyprazdňuje se filtrovaný balíček&#8230;</string>
-    <string name="search_deck" comment="Deck search for selecting it">Hledat balíček</string>
+    <string name="search_deck" comment="Deck search for selecting it">Deck search</string>
     <string name="empty_deck">Tento balíček je prázdný</string>
-    <string name="search_for_download_deck" comment="Deck search value for downloading deck" maxLength="28">Hledat balíček</string>
     <string name="invalid_deck_name">Neplatný název balíčku</string>
     <string name="studyoptions_congrats_finished">Blahopřejeme! Pro dnešek máte hotovo.</string>
     <string name="studyoptions_congrats_next_due_in" comment="The param will be replaced with \'The next card will be ready in X time\'">Balíček byl prozatím dokončen! %s</string>
@@ -151,7 +150,6 @@
     <string name="syncing_media">Synchronizace multimédií</string>
     <string name="export_deck" maxLength="28">Export balíčku</string>
     <string name="export_collection">Exportovat kolekci</string>
-    <string name="nothing">Nic</string>
     <!-- Card template editor -->
     <string name="title_activity_template_editor">Typ karet</string>
     <string name="card_template_editor_front">Šablona líce</string>
@@ -180,6 +178,7 @@
     <string name="card_template_browser_appearance_title">Vzhled prohlížeče</string>
     <!-- card Info -->
     <string name="card_info_title" maxLength="28">Informace o kartě</string>
+    <string name="previous_card_info_title" maxLength="28">Informace o předchozí kartě</string>
     <!-- Permissions -->
     <string name="read_write_permission_label">Čtení a zápis do AnkiDroid databáze</string>
     <string name="read_write_permission_description">spravovat stávající poznámky, karty, typy poznámek a balíčky, a také vytvářet nové</string>
@@ -222,4 +221,10 @@
     <string name="remove_account" comment="open a website to start the deletion of an AnkiWeb account">Odebrat účet</string>
     <!-- Instant Note Editor -->
     <string name="instant_card" comment="Used in the Android system context menu/share dialog to quickly create a note. This does not need to be translated literally, translate the concept of quickly adding a Cloze note with a popup. ">Okamžitá karta</string>
+    <!-- Internet Permissions -->
+    <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
+    <string name="permission_access_summary">Required for the app to work</string>
+    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <!-- Multiple profile -->
+    <string name="add_profile">Přidat profil</string>
 </resources>

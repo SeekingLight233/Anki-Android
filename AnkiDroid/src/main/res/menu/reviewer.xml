@@ -106,12 +106,17 @@
     <item
         android:id="@+id/action_add_note_reviewer"
         android:title="@string/menu_add_note"
-        android:icon="@drawable/ic_add_white"
+        android:icon="@drawable/ic_add"
         ankidroid:showAsAction="never"/>
     <item
         android:id="@+id/action_card_info"
         android:icon="@drawable/ic_dialog_info"
         android:title="@string/card_info_title"
+        ankidroid:showAsAction="never"/>
+    <item
+        android:id="@+id/action_previous_card_info"
+        android:icon="@drawable/ic_outline_info_24"
+        android:title="@string/previous_card_info_title"
         ankidroid:showAsAction="never"/>
     <item
         android:id="@+id/action_tag"

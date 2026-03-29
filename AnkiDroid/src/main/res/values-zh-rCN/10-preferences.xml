@@ -211,7 +211,7 @@
     <string name="exit_via_double_tap_back_summ">防止误触退出学习界面</string>
     <!-- Allow all files in media imports -->
     <string name="media_import_allow_all_files" maxLength="41">导入所有媒体文件</string>
-    <string name="media_import_allow_all_files_summ">假如系统不识别媒体文件</string>
+    <string name="media_import_allow_all_files_summ">如果 Android 系统无法识别媒体文件</string>
     <!-- Custom sync server settings -->
     <string name="custom_sync_server_title" maxLength="41">自定义同步服务器</string>
     <string name="custom_sync_server_summary_none_of_the_two_servers_used" comment="This summary is shown when neither of the two custom sync servers are used,         which is the default.">未使用</string>
@@ -233,20 +233,14 @@
     <string name="misc" maxLength="41">杂项</string>
     <!-- Review reminders -->
     <string name="add_reminder" comment="Label for the add reminder button in the screen for adding and editing review reminders">添加提醒</string>
+    <string name="add_review_reminder" comment="Title of the screen for creating a new review reminder">添加复习提醒</string>
+    <string name="edit_review_reminder" comment="Title of the screen for editing an existing review reminder">编辑复习提醒</string>
+    <string name="you_have_no_review_reminders" comment="Text that appears in the review reminder editing screen when there are no reminders set">您没有复习提醒</string>
     <!-- studyoptions -->
     <string name="studyoptions_limit_select_tags">选择标签</string>
     <!-- Deck configurations -->
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">常规</string>
-    <string name="deck_conf_cram_filter" maxLength="41">筛选器</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">搜索</string>
-    <string name="deck_conf_cram_limit" maxLength="41">限制至</string>
-    <string name="deck_conf_cram_order" maxLength="41">卡片选择标准</string>
-    <string name="deck_conf_cram_reschedule" maxLength="41" comment="Title of the box labelled by deck_conf_cram_reschedule_summ">重新安排学习进度</string>
-    <string name="deck_conf_cram_reschedule_summ">按当前牌组的回答重排卡牌</string>
-    <string name="deck_conf_cram_filter_2_check">启用第二筛选器</string>
-    <string name="deck_conf_cram_steps_summ" maxLength="41">自定义学习间隔</string>
-    <string name="deck_conf_cram_preview_delays" maxLength="41">预览延迟</string>
-    <string name="deck_conf_cram_preview_delays_summ">延迟时间以秒为单位。0返回卡牌到原始牌组。</string>
     <!-- analytics options -->
     <string name="analytics_dialog_title">帮助改进 AnkiDroid！</string>
     <string name="analytics_title" maxLength="41">分享软件使用情况</string>
@@ -383,6 +377,8 @@
     <string name="new_study_screen_summ"><![CDATA[完善了新学习屏，它会取代当前的学习屏。旧屏幕的一些功能已经更改或删除。请报告任何<a href="%1$s">反馈</a>或<a href="%2$s">故障</a>。]]></string>
     <string name="show_answer_feedback" maxLength="41">显示回答反馈</string>
     <string name="screen" maxLength="41">屏幕</string>
+    <string name="only_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to only answer the card">仅回答</string>
+    <string name="flip_and_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to answer the card if on the answer side, and flip it if on the question side">翻转和回答</string>
     <!--Keyboard shortcuts dialog-->
     <string name="open_settings" comment="Description of the shortcut that opens the app settings">打开设置</string>
 </resources>

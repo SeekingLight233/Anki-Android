@@ -129,9 +129,8 @@
     <string name="empty_cram_label" maxLength="28">ખાલી</string>
     <string name="create_subdeck">સબડેક બનાવો</string>
     <string name="empty_filtered_deck">ફિલ્ટર કરેલ ડેક ખાલી કરી રહ્યું છે&#8230;</string>
-    <string name="search_deck" comment="Deck search for selecting it">ડેક શોધ</string>
+    <string name="search_deck" comment="Deck search for selecting it">Deck search</string>
     <string name="empty_deck">આ ડેક ખાલી છે</string>
-    <string name="search_for_download_deck" comment="Deck search value for downloading deck" maxLength="28">ડેક શોધ</string>
     <string name="invalid_deck_name">અમાન્ય ડેક નામ</string>
     <string name="studyoptions_congrats_finished">અભિનંદ! તમે આજનું કાર્ય પૂરું કરી લીધુ છે.</string>
     <string name="studyoptions_congrats_next_due_in" comment="The param will be replaced with \'The next card will be ready in X time\'">ડેક હમણાં માટે સમાપ્ત! %s</string>
@@ -145,7 +144,6 @@
     <string name="syncing_media">મીડિયા સમન્વયિત કરી રહ્યું છે</string>
     <string name="export_deck" maxLength="28">નિકાસ ડેક</string>
     <string name="export_collection">નિકાસ સંગ્રહ</string>
-    <string name="nothing">કંઈ નહીં</string>
     <!-- Card template editor -->
     <string name="title_activity_template_editor">કાર્ડ પ્રકારો</string>
     <string name="card_template_editor_front">ફ્રન્ટ ટેમ્પલેટ</string>
@@ -170,6 +168,7 @@
     <string name="card_template_browser_appearance_title">બ્રાઉઝર દેખાવ</string>
     <!-- card Info -->
     <string name="card_info_title" maxLength="28">કાર્ડ માહિતી</string>
+    <string name="previous_card_info_title" maxLength="28">Previous card info</string>
     <!-- Permissions -->
     <string name="read_write_permission_label">AnkiDroid ડેટાબેઝ વાંચો અને લખો</string>
     <string name="read_write_permission_description">હાલની નોંધો, કાર્ડ્સ, નોંધના પ્રકારો અને ડેકને ઍક્સેસ કરો તેમજ નવી બનાવો</string>
@@ -212,4 +211,10 @@
     <string name="remove_account" comment="open a website to start the deletion of an AnkiWeb account">એકાઉન્ટ દૂર કરો</string>
     <!-- Instant Note Editor -->
     <string name="instant_card" comment="Used in the Android system context menu/share dialog to quickly create a note. This does not need to be translated literally, translate the concept of quickly adding a Cloze note with a popup. ">ઇન્સ્ટન્ટ કાર્ડ</string>
+    <!-- Internet Permissions -->
+    <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
+    <string name="permission_access_summary">Required for the app to work</string>
+    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <!-- Multiple profile -->
+    <string name="add_profile">Add profile</string>
 </resources>

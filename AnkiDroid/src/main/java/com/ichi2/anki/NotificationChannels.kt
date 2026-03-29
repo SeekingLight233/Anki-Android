@@ -1,19 +1,19 @@
-/****************************************************************************************
- * Copyright (c) 2018 Timothy Rae <perceptualchaos2@gmail.com>                          *
- * Copyright (c) 2018 Mike Hardy <mike@mikehardy.net>                                   *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2018 Timothy Rae <perceptualchaos2@gmail.com>
+ * Copyright (c) 2018 Mike Hardy <mike@mikehardy.net>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.ichi2.anki
 
@@ -24,6 +24,13 @@ import androidx.annotation.StringRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationManagerCompat
 import timber.log.Timber
+
+/**
+ * Minimum delay between notifications to avoid reaching the
+ * maximum update rate, which currently is 5 updates per second.
+ * https://cs.android.com/android/platform/superproject/+/android-latest-release:frameworks/base/core/java/android/app/NotificationManager.java;l=675;drc=e13ace5dabea6d65c05dbfd9d19dc697a687d7be
+ */
+const val NOTIFICATION_MIN_DELAY_MS = 200L
 
 /**
  * Create or update all the notification channels for the app

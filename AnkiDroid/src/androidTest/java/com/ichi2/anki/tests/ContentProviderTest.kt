@@ -1,21 +1,20 @@
-/***************************************************************************************
- *                                                                                      *
- * Copyright (c) 2015 Frank Oltmanns <frank.oltmanns@gmail.com>                         *
- * Copyright (c) 2015 Timothy Rae <timothy.rae@gmail.com>                               *
- * Copyright (c) 2016 Mark Carter <mark@marcardar.com>                                  *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2015 Frank Oltmanns <frank.oltmanns@gmail.com>
+ * Copyright (c) 2015 Timothy Rae <timothy.rae@gmail.com>
+ * Copyright (c) 2016 Mark Carter <mark@marcardar.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.ichi2.anki.tests
 
 import android.content.ContentResolver
@@ -124,7 +123,7 @@ class ContentProviderTest : InstrumentedTest() {
                 /* If parent already exists, don't add the deck, so
                  * that we are sure it won't get deleted at
                  * set-down, */
-                val did = col.decks.byName(partialName!!)?.id ?: col.decks.id(partialName)
+                val did = col.decks.byName(partialName)?.id ?: col.decks.id(partialName)
                 testDeckIds.add(did)
                 createdNotes.add(setupNewNote(col, noteTypeId, did, dummyFields, TEST_TAG))
                 partialName += "::"
@@ -172,7 +171,7 @@ class ContentProviderTest : InstrumentedTest() {
             col.decks.count(),
         )
         // Delete test note type
-        col.modSchemaNoCheck()
+        col.modSchema(check = false)
         removeAllNoteTypesByName(col, BASIC_NOTE_TYPE_NAME)
         removeAllNoteTypesByName(col, TEST_NOTE_TYPE_NAME)
     }
@@ -184,7 +183,7 @@ class ContentProviderTest : InstrumentedTest() {
     ) {
         var testNoteType = col.notetypes.byName(name)
         while (testNoteType != null) {
-            col.notetypes.rem(testNoteType)
+            col.notetypes.remove(testNoteType.id)
             testNoteType = col.notetypes.byName(name)
         }
     }
@@ -258,6 +257,198 @@ class ContentProviderTest : InstrumentedTest() {
         }
     }
 
+    @Test
+    fun testSearchCards_singleCardNote_returnsOneCard() {
+        // Basic note types produce exactly one card
+        val card = getFirstCardFromScheduler(col)
+        val noteId = card!!.nid
+
+        val cursor =
+            contentResolver.query(
+                FlashCardsContract.Card.CONTENT_URI,
+                null,
+                "nid:$noteId",
+                null,
+                null,
+            )
+
+        assertNotNull(cursor)
+        cursor.use {
+            assertEquals(
+                "basic note should produce exactly one card",
+                1,
+                it.count,
+            )
+
+            assertTrue(it.moveToFirst())
+            val returnedNoteId =
+                it.getLong(it.getColumnIndex(FlashCardsContract.Card.NOTE_ID))
+
+            assertEquals(
+                "returned card belongs to searched note",
+                noteId,
+                returnedNoteId,
+            )
+        }
+    }
+
+    @Test
+    fun testSearchCards_multiCardNote_returnsAllCards() {
+        // Cloze note with two cards
+        val note =
+            addTempClozeNote("{{c1::A}} {{c2::B}}")
+
+        val expectedCardCount = note.numberOfCards(col)
+        assertThat("sanity check", expectedCardCount, greaterThan(1))
+
+        val cursor =
+            contentResolver.query(
+                FlashCardsContract.Card.CONTENT_URI,
+                null,
+                "nid:${note.id}",
+                null,
+                null,
+            )
+
+        assertNotNull(cursor)
+        cursor.use {
+            assertEquals(
+                "all cards for the note should be returned",
+                expectedCardCount,
+                it.count,
+            )
+
+            while (it.moveToNext()) {
+                val returnedNoteId =
+                    it.getLong(it.getColumnIndex(FlashCardsContract.Card.NOTE_ID))
+                assertEquals(
+                    "each returned card belongs to the searched note",
+                    note.id,
+                    returnedNoteId,
+                )
+            }
+        }
+    }
+
+    @Test
+    fun testSearchCards_onlyIdProjection() {
+        val card = getFirstCardFromScheduler(col)
+
+        val cursor =
+            contentResolver.query(
+                FlashCardsContract.Card.CONTENT_URI,
+                arrayOf(FlashCardsContract.Card._ID),
+                "cid:${card!!.id}",
+                null,
+                null,
+            )
+
+        assertNotNull(cursor)
+        cursor.use {
+            assertEquals("single column", 1, it.columnCount)
+            assertEquals("_id", FlashCardsContract.Card._ID, it.getColumnName(0))
+            assertEquals("one result", 1, it.count)
+
+            it.moveToFirst()
+            assertEquals("correct card id", card.id, it.getLong(0))
+        }
+    }
+
+    @Test
+    fun testQueryCardById() {
+        val card = getFirstCardFromScheduler(col)
+
+        val cardUri =
+            Uri.withAppendedPath(
+                FlashCardsContract.Card.CONTENT_URI,
+                card!!.id.toString(),
+            )
+
+        val cursor =
+            contentResolver.query(
+                cardUri,
+                null,
+                null,
+                null,
+                null,
+            )
+
+        assertNotNull(cursor)
+        cursor.use {
+            assertEquals("one row", 1, it.count)
+            assertTrue(it.moveToFirst())
+
+            val returnedCardId =
+                it.getLong(it.getColumnIndex(FlashCardsContract.Card._ID))
+            val returnedNoteId =
+                it.getLong(it.getColumnIndex(FlashCardsContract.Card.NOTE_ID))
+            val returnedOrd =
+                it.getInt(it.getColumnIndex(FlashCardsContract.Card.CARD_ORD))
+
+            assertEquals(card.id, returnedCardId)
+            assertEquals(card.nid, returnedNoteId)
+            assertEquals(card.ord, returnedOrd)
+        }
+    }
+
+    @Test
+    fun testQueryCardsRoot_returnsCards() {
+        val cursor =
+            contentResolver.query(
+                FlashCardsContract.Card.CONTENT_URI,
+                null,
+                null,
+                null,
+                null,
+            )
+
+        assertNotNull(cursor)
+        cursor.use {
+            assertThat("at least one card returned", it.count, greaterThan(0))
+        }
+    }
+
+    @Test
+    fun testQueryCardById_invalidIdThrows() {
+        val invalidCardUri =
+            Uri.withAppendedPath(
+                FlashCardsContract.Card.CONTENT_URI,
+                "999999999",
+            )
+
+        val exception =
+            assertThrows<RuntimeException> {
+                contentResolver.query(
+                    invalidCardUri,
+                    null,
+                    null,
+                    null,
+                    null,
+                )
+            }
+        // error message (as observed when writing this test): "No such card: '999999999'"
+        assertThat(exception.message, containsString("card"))
+    }
+
+    @Test
+    fun testSearchCards_invalidQueryAndThrows() {
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                contentResolver.query(
+                    FlashCardsContract.Card.CONTENT_URI,
+                    null,
+                    "and",
+                    null,
+                    null,
+                )
+            }
+
+        assertThat(
+            exception.message,
+            containsString("Invalid Anki search query"),
+        )
+    }
+
     /**
      * Check that inserting a note with an invalid noteTypeId returns a reasonable exception
      */
@@ -328,7 +519,7 @@ class ContentProviderTest : InstrumentedTest() {
         assertEquals("Check afmt", TEST_NOTE_TYPE_AFMT[testIndex], template.afmt)
         assertEquals("Check bqfmt", TEST_NOTE_TYPE_QFMT[testIndex], template.bqfmt)
         assertEquals("Check bafmt", TEST_NOTE_TYPE_AFMT[testIndex], template.bafmt)
-        col.notetypes.rem(noteType)
+        col.notetypes.remove(noteType.id)
     }
 
     /**
@@ -367,7 +558,7 @@ class ContentProviderTest : InstrumentedTest() {
             TEST_FIELD_NAME,
             fldsArr.last().name,
         )
-        col.notetypes.rem(noteType)
+        col.notetypes.remove(noteType.id)
     }
 
     /**
@@ -643,11 +834,11 @@ class ContentProviderTest : InstrumentedTest() {
             }
         } finally {
             // Delete the note type (this will force a full-sync)
-            col.modSchemaNoCheck()
+            col.modSchema(check = false)
             try {
                 val noteType = col.notetypes.get(noteTypeId)
                 assertNotNull("Check note type", noteType)
-                col.notetypes.rem(noteType!!)
+                col.notetypes.remove(noteType!!.id)
             } catch (e: ConfirmModSchemaException) {
                 // This will never happen
             }

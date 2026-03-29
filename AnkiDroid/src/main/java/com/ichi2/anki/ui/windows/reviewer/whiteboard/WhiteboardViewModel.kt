@@ -24,6 +24,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.ichi2.anki.common.utils.ext.indexOfOrNull
+import com.ichi2.anki.preferences.reviewer.WhiteboardAction
+import com.ichi2.anki.reviewer.BindingProcessor
+import com.ichi2.anki.reviewer.ReviewerBinding
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -76,7 +80,8 @@ data class ClearAction(
  */
 class WhiteboardViewModel(
     private val repository: WhiteboardRepository,
-) : ViewModel() {
+) : ViewModel(),
+    BindingProcessor<ReviewerBinding, WhiteboardAction> {
     // State for drawing history and undo/redo
     val paths = MutableStateFlow<List<DrawingAction>>(emptyList())
     private val undoStack = MutableStateFlow<List<UndoableAction>>(emptyList())
@@ -98,6 +103,7 @@ class WhiteboardViewModel(
     val eraserMode = MutableStateFlow(EraserMode.INK)
     val isStylusOnlyMode = MutableStateFlow(false)
     val toolbarAlignment = MutableStateFlow(ToolbarAlignment.BOTTOM)
+    val isToolbarShown = MutableStateFlow(true)
 
     val eraserDisplayWidth =
         combine(eraserMode, inkEraserStrokeWidth, strokeEraserStrokeWidth) { mode, inkWidth, strokeWidth ->
@@ -119,6 +125,7 @@ class WhiteboardViewModel(
         eraserMode.value = repository.eraserMode
         isStylusOnlyMode.value = repository.stylusOnlyMode
         toolbarAlignment.value = repository.toolbarAlignment
+        isToolbarShown.value = repository.isToolbarShown
 
         val lastActiveIndex = repository.loadLastActiveBrushIndex(isDarkMode)
 
@@ -226,12 +233,9 @@ class WhiteboardViewModel(
         if (pathsErasedInCurrentGesture.isNotEmpty()) {
             val removedWithIndices =
                 pathsErasedInCurrentGesture.mapNotNull { removedAction ->
-                    val index = pathsBeforeGesture.indexOf(removedAction)
-                    if (index != -1) {
-                        Pair(index, removedAction)
-                    } else {
-                        null
-                    }
+                    pathsBeforeGesture
+                        .indexOfOrNull(removedAction)
+                        ?.let { Pair(it, removedAction) }
                 }
             val action = RemoveAction(removedWithIndices)
             undoStack.update { it + action }
@@ -323,6 +327,17 @@ class WhiteboardViewModel(
     fun enableEraser() {
         isEraserActive.value = true
         activeStrokeWidth.value = eraserDisplayWidth.value
+    }
+
+    /**
+     * Toggles between the eraser and the last active brush.
+     */
+    fun toggleEraser() {
+        if (isEraserActive.value) {
+            setActiveBrush(activeBrushIndex.value)
+        } else {
+            enableEraser()
+        }
     }
 
     /**
@@ -435,12 +450,35 @@ class WhiteboardViewModel(
     }
 
     /**
+     * Sets the toolbar visibility.
+     */
+    fun setIsToolbarShown(isShown: Boolean) {
+        if (isToolbarShown.value != isShown) {
+            isToolbarShown.value = isShown
+            repository.isToolbarShown = isShown
+        }
+    }
+
+    /**
      * Clear the canvas and the undo/redo states
      */
     fun reset() {
         clearCanvas()
         undoStack.value = emptyList()
         redoStack.value = emptyList()
+    }
+
+    override fun processAction(
+        action: WhiteboardAction,
+        binding: ReviewerBinding,
+    ): Boolean {
+        when (action) {
+            WhiteboardAction.TOGGLE_ERASER -> toggleEraser()
+            WhiteboardAction.CLEAR -> clearCanvas()
+            WhiteboardAction.UNDO -> undo()
+            WhiteboardAction.REDO -> redo()
+        }
+        return true
     }
 
     companion object {

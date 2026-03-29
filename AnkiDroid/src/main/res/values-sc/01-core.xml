@@ -131,9 +131,8 @@
     <string name="empty_cram_label" maxLength="28">Isbòida</string>
     <string name="create_subdeck">Crea unu suta-matzu</string>
     <string name="empty_filtered_deck">Isboidende su matzu filtradu&#8230;</string>
-    <string name="search_deck" comment="Deck search for selecting it">Chirca de matzos</string>
+    <string name="search_deck" comment="Deck search for selecting it">Deck search</string>
     <string name="empty_deck">Custu matzu est bòidu</string>
-    <string name="search_for_download_deck" comment="Deck search value for downloading deck" maxLength="28">Chirca de matzos</string>
     <string name="invalid_deck_name">Nùmene de su matzu non vàlidu</string>
     <string name="studyoptions_congrats_finished">Congratulations! You have finished for today.</string>
     <string name="studyoptions_congrats_next_due_in" comment="The param will be replaced with \'The next card will be ready in X time\'">Matzu acabbadu pro como! %s</string>
@@ -148,7 +147,6 @@
     <string name="syncing_media">Sincronizende sos mèdios</string>
     <string name="export_deck" maxLength="28">Esporta su matzu</string>
     <string name="export_collection">Esporta sa colletzione</string>
-    <string name="nothing">Nudda</string>
     <!-- Card template editor -->
     <string name="title_activity_template_editor">Castas de cartas</string>
     <string name="card_template_editor_front">Mollu de su fronte</string>
@@ -173,6 +171,7 @@
     <string name="card_template_browser_appearance_title">Aparèntzia de su navigadore</string>
     <!-- card Info -->
     <string name="card_info_title" maxLength="28">Info de sa carta</string>
+    <string name="previous_card_info_title" maxLength="28">Previous card info</string>
     <!-- Permissions -->
     <string name="read_write_permission_label">Leghe e iscrie in sa base de datos de AnkiDroid</string>
     <string name="read_write_permission_description">atzede a sas notas, a sas cartas, a sas castas de notas e a sos matzos chi esistint giai, e crea·nde de noos</string>
@@ -216,4 +215,10 @@
     <string name="remove_account" comment="open a website to start the deletion of an AnkiWeb account">Boga su contu</string>
     <!-- Instant Note Editor -->
     <string name="instant_card" comment="Used in the Android system context menu/share dialog to quickly create a note. This does not need to be translated literally, translate the concept of quickly adding a Cloze note with a popup. ">Carta istantànea</string>
+    <!-- Internet Permissions -->
+    <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
+    <string name="permission_access_summary">Required for the app to work</string>
+    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <!-- Multiple profile -->
+    <string name="add_profile">Add profile</string>
 </resources>

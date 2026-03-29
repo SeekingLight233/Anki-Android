@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/action_add_note_from_card_browser"
-        android:icon="@drawable/ic_add_white"
+        android:icon="@drawable/ic_add"
         android:title="@string/menu_add"
         ankidroid:showAsAction="ifRoom"/>
 
@@ -52,7 +52,7 @@
         android:icon="@drawable/ic_undo_white"/>
 
     <item
-        android:id="@+id/action_preview"
+        android:id="@+id/action_preview_many"
         android:title="@string/card_editor_preview_card"/>
 
     <item

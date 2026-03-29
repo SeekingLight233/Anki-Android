@@ -45,7 +45,6 @@
     </plurals>
     <!--Browser-->
     <string name="model_browser_delete">नोट प्रकार मिटाएँ</string>
-    <string name="model_browser_rename" comment="Rename a note type">नाम बदलें</string>
     <string name="model_browser_template">पत्ते संपादित करें</string>
     <!--Rename-->
     <string name="rename_model">नोट के प्रकार का नाम बदलें</string>
@@ -53,7 +52,6 @@
     <!--Language Hint-->
     <string name="model_field_editor_language_hint_dialog_success_result">भाषा संकेत के रूप में %s सेट करें</string>
     <!--Field Editing-->
-    <string name="model_field_editor_title">फ़ील्ड संपादित करें</string>
     <string name="model_field_editor_add" maxLength="28">फ़ील्ड जोड़ें</string>
     <string name="model_field_editor_delete">फ़ील्ड मिटाएँ</string>
     <string name="model_field_editor_rename">फ़ील्ड का नाम बदलें</string>
@@ -63,6 +61,12 @@
     <string name="model_field_editor_sort_field">इस फ़ील्ड के अनुसार क्रम में रखें</string>
     <!--Warnings-->
     <string name="model_delete_warning">आप सुनिश्चित करें कि आप इस नोटों को हटाना चाहते हैं?</string>
+    <!--
+        Example output:
+        Delete the note types below?
+        Basic, Basic (and reversed card), Cloze
+     -->
+    <string name="model_delete_multiple_warning">Delete the note types below?\n %s</string>
     <string name="field_delete_warning">क्या आप सचमुच इस फ़ील्ड को मिटाना चाहते हैं?</string>
     <!--Model Add Suffixes-->
     <string name="model_browser_add_add">Add: %1$s</string>
@@ -70,9 +74,9 @@
     <string name="model_browser_add_clone">Clone: %1$s</string>
     <!--Browser Appearance-->
     <string name="card_template_browser_appearance_summary">वह टेम्प्लेट दर्ज करें जिसका उपयोग कार्ड ब्राउज़र आपके कार्ड प्रदर्शित करने के लिए करेगा।अधिक संक्षिप्त उत्तर प्रदर्शित करने के लिए इसका उपयोग करें।\n\n एक \"{{Country}} की राजधानी है:\" अग्र टेम्पलेट को \n कार्ड ब्राउज़र में \n \"राजधानी:{{Country}}\" की तरह संपीड़ित किया जा सकता है I</string>
-    <string name="card_template_browser_appearance_question_format">प्रश्न प्रारूप</string>
-    <string name="card_template_browser_appearance_answer_format">उत्तर प्रारूप</string>
-    <string name="card_template_browser_appearance_restore_default_dialog">डिफ़ॉल्ट मानों को बहाल करें?</string>
+    <string name="card_template_browser_appearance_question_format">Question format</string>
+    <string name="card_template_browser_appearance_answer_format">Answer format</string>
+    <string name="card_template_browser_appearance_restore_default_dialog">Are you sure you want to restore the browser appearance to default?</string>
     <string name="card_template_browser_appearance_saving_note">कार्ड टेम्पलेट सहेजे जाने पर ये परिवर्तन लागू होते हैं</string>
     <!-- Deck Override -->
     <string name="card_template_editor_deck_override_on">डेक ओवरराइड (चालू करो)

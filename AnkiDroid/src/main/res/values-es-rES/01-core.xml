@@ -83,7 +83,7 @@
     <string name="ease_button_hard" maxLength="41" comment="In the reviewer, in the answer side. Label of the button that used by the user to state finding the correct answer was hard.">Difícil</string>
     <string name="ease_button_good" maxLength="41" comment="In the reviewer, in the answer side. Label of the button that used by the user to state their answer was good.">Bien</string>
     <string name="ease_button_easy" maxLength="41" comment="In the reviewer, in the answer side. Label of the button that used by the user to state that finding the answer to the question was easy.">Fácil</string>
-    <string name="show_answer_hint_long_press" comment="In the reviewer, hint is shown when touching the show answer button and the user has the long-press accessibility setting enabled">\'%s\' is enabled</string>
+    <string name="show_answer_hint_long_press" comment="In the reviewer, hint is shown when touching the show answer button and the user has the long-press accessibility setting enabled">\'%s\' está habilitado</string>
     <!-- General -->
     <string name="undo" maxLength="28" comment="When tapping on this text, the last action is undone.">Deshacer</string>
     <string name="redo" maxLength="28" comment="Menu entry that allows to redo action that was just undone.">Rehacer</string>
@@ -106,7 +106,7 @@
     <string name="menu_bury" maxLength="28">Enterrar</string>
     <string name="menu_suspend" maxLength="28">Suspender</string>
     <string name="menu_delete_note" maxLength="28">Eliminar nota</string>
-    <string name="menu_flag" maxLength="41">Marca</string>
+    <string name="menu_flag" maxLength="41">Marcador</string>
     <string name="rename_flag">Renombrar banderas</string>
     <string name="menu_flag_card" maxLength="28">Marcar tarjeta</string>
     <string name="menu_edit_tags" maxLength="28">Editar etiquetas</string>
@@ -129,11 +129,10 @@
     <string name="empty_cram_label" maxLength="28">Vaciar</string>
     <string name="create_subdeck">Crear submazo</string>
     <string name="empty_filtered_deck">Vaciando mazo filtrado&#8230;</string>
-    <string name="search_deck" comment="Deck search for selecting it">Buscar Mazos</string>
+    <string name="search_deck" comment="Deck search for selecting it">Buscar mazos</string>
     <string name="empty_deck">Este mazo está vacío</string>
-    <string name="search_for_download_deck" comment="Deck search value for downloading deck" maxLength="28">Búsqueda de Mazo</string>
     <string name="invalid_deck_name">Nombre de mazo no válido</string>
-    <string name="studyoptions_congrats_finished">¡Felicitaciones! Has finalizado por hoy.</string>
+    <string name="studyoptions_congrats_finished">¡Felicitaciones! Has finalizado este mazo por ahora.</string>
     <string name="studyoptions_congrats_next_due_in" comment="The param will be replaced with \'The next card will be ready in X time\'">¡El mazo ha terminado por ahora! %s</string>
     <string name="studyoptions_no_cards_due">Todavía no hay ninguna tarjeta pendiente.</string>
     <string name="sd_card_not_mounted">Almacenamiento del dispositivo no montado</string>
@@ -145,7 +144,6 @@
     <string name="syncing_media">Sincronizando archivos multimedia</string>
     <string name="export_deck" maxLength="28">Exportar mazo</string>
     <string name="export_collection">Exportar colección</string>
-    <string name="nothing">Nada</string>
     <!-- Card template editor -->
     <string name="title_activity_template_editor">Tipos de tarjeta</string>
     <string name="card_template_editor_front">Plantilla del anverso</string>
@@ -170,6 +168,7 @@
     <string name="card_template_browser_appearance_title">Apariencia del navegador</string>
     <!-- card Info -->
     <string name="card_info_title" maxLength="28">Información de la tarjeta</string>
+    <string name="previous_card_info_title" maxLength="28">Información de la tarjeta anterior</string>
     <!-- Permissions -->
     <string name="read_write_permission_label">Leer y escribir en la base de datos de AnkiDroid</string>
     <string name="read_write_permission_description">acceder a notas, tarjetas, tipo de notas, y mazos existentes, así como crear otros nuevos</string>
@@ -197,19 +196,25 @@
     <string name="new_unsafe_collection">La nueva colección se eliminará de tu teléfono si desinstalas AnkiDroid</string>
     <!-- Permissions screen -->
     <string name="permissions_screen_headline">AnkiDroid necesita algunos permisos para funcionar</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid works best with these permissions</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid funciona mejor con estos permisos</string>
     <string name="storage_access_title">Acceso al almacenamiento</string>
     <string name="storage_access_summary">Guarda tu colección en un lugar seguro que no se borrará si se desinstala la aplicación</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Acceso a todos los archivos</string>
-    <string name="image_occlusion">Imagen oculta</string>
-    <string name="microphone" comment="Title of the microphone permission in the permissions explanation screen.">Microphone</string>
-    <string name="microphone_permission_explanation" comment="Description explaining why AnkiDroid needs the microphone permission, shown on the permissions explanation screen.">Allows you to add sounds to cards and enables voice playback while reviewing</string>
-    <string name="notifications_permission_explanation" comment="Description explaining why AnkiDroid needs the notification permission.">Enables background media syncing and allows you to create review reminders</string>
-    <string name="heading_required_permissions" comment="Heading for the section of required permissions that the app needs to function, shown in the permissions explanation screen.">Required</string>
-    <string name="heading_optional_permissions" comment="Heading for the section of optional permissions that the app needs to function, shown in the permissions explanation screen.">Optional</string>
-    <string name="manually_grant_permissions" comment="Pop-up message that is shown to the user when they want to grant an app permission that must be granted via the OS settings screen.">This permission must be manually granted from Settings</string>
-    <string name="revoke_permissions" comment="Pop-up message that is shown to the user when they are revoking an app permission.">This permission must be manually revoked from Settings</string>
+    <string name="image_occlusion">Oclusión de imagen</string>
+    <string name="microphone" comment="Title of the microphone permission in the permissions explanation screen.">Micrófono</string>
+    <string name="microphone_permission_explanation" comment="Description explaining why AnkiDroid needs the microphone permission, shown on the permissions explanation screen.">Permite añadir sonidos a las tarjetas y activa la reproducción de voz durante la revisión</string>
+    <string name="notifications_permission_explanation" comment="Description explaining why AnkiDroid needs the notification permission.">Activa la sincronización multimedia en segundo plano y permite crear recordatorios de revisión</string>
+    <string name="heading_required_permissions" comment="Heading for the section of required permissions that the app needs to function, shown in the permissions explanation screen.">Obligatorio</string>
+    <string name="heading_optional_permissions" comment="Heading for the section of optional permissions that the app needs to function, shown in the permissions explanation screen.">Opcional</string>
+    <string name="manually_grant_permissions" comment="Pop-up message that is shown to the user when they want to grant an app permission that must be granted via the OS settings screen.">Este permiso debe activarse manualmente desde Ajustes</string>
+    <string name="revoke_permissions" comment="Pop-up message that is shown to the user when they are revoking an app permission.">Este permiso debe desactivarse manualmente desde Ajustes</string>
     <string name="remove_account" comment="open a website to start the deletion of an AnkiWeb account">Quitar cuenta</string>
     <!-- Instant Note Editor -->
     <string name="instant_card" comment="Used in the Android system context menu/share dialog to quickly create a note. This does not need to be translated literally, translate the concept of quickly adding a Cloze note with a popup. ">Tarjeta instantánea</string>
+    <!-- Internet Permissions -->
+    <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
+    <string name="permission_access_summary">Requerido para que la aplicación funcione</string>
+    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <!-- Multiple profile -->
+    <string name="add_profile">Añadir perfil</string>
 </resources>

@@ -129,9 +129,8 @@
     <string name="empty_cram_label" maxLength="28">𐌻𐌰𐌿𐍃</string>
     <string name="create_subdeck">𐌿𐍆𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳 𐍃𐌺𐌰𐍀𐌾𐌰𐌽</string>
     <string name="empty_filtered_deck">𐌻𐌰𐌿𐍃𐌾𐌰𐌳𐌰 𐍆𐌹𐌻𐌻𐌾𐌹𐌽𐍃 𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳&#8230;</string>
-    <string name="search_deck" comment="Deck search for selecting it">𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳 𐍃𐍉𐌺𐌾𐌰𐌽</string>
+    <string name="search_deck" comment="Deck search for selecting it">Deck search</string>
     <string name="empty_deck">𐌸𐌰𐍄𐌰 𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳 𐌻𐌰𐌿𐍃 𐌹𐍃𐍄</string>
-    <string name="search_for_download_deck" comment="Deck search value for downloading deck" maxLength="28">𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳 𐍃𐍉𐌺𐌾𐌰𐌽</string>
     <string name="invalid_deck_name">𐌽𐌰𐌼𐍉 𐌿𐌽𐍂𐌰𐌹𐌷𐍄 𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳𐌹𐍃</string>
     <string name="studyoptions_congrats_finished">𐍅𐌰𐌹𐌻𐌰 𐍄𐌰𐍅𐌹𐌳𐌴𐍃! 𐌿𐍃𐍄𐌰𐌿𐌷𐍄 𐌷𐌹𐌼𐌼𐌰 𐌳𐌰𐌲𐌰.</string>
     <string name="studyoptions_congrats_next_due_in" comment="The param will be replaced with \'The next card will be ready in X time\'">𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳 𐌽𐌿 𐌿𐍃𐍄𐌰𐌿𐌷! %s</string>
@@ -145,7 +144,6 @@
     <string name="syncing_media">𐌲𐌰𐌻𐌴𐌹𐌺𐍉𐌽𐌳𐍉 𐌼𐌰𐌹𐌳𐌾𐌰</string>
     <string name="export_deck" maxLength="28">𐌿𐍄𐌱𐌰𐌹𐍂 𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳</string>
     <string name="export_collection">𐌿𐍄𐌱𐌰𐌹𐍂 𐌷𐌿𐌶𐌳</string>
-    <string name="nothing">𐌽𐌹 𐍅𐌰𐌹𐌷𐍄𐍃</string>
     <!-- Card template editor -->
     <string name="title_activity_template_editor">𐌺𐌰𐍂𐍄𐌰𐌷𐌰𐌹𐌳𐌾𐌿𐍃</string>
     <string name="card_template_editor_front">𐍆𐍂𐌿𐌼𐌰𐍅𐌻𐌹𐍄𐍃</string>
@@ -170,6 +168,7 @@
     <string name="card_template_browser_appearance_title">𐍅𐌻𐌹𐍄𐍃 𐌱𐍂𐌰𐍅𐍃𐌰𐌹𐍂𐍃</string>
     <!-- card Info -->
     <string name="card_info_title" maxLength="28">𐌺𐌿𐌽𐌸𐌹 𐌺𐌰𐍂𐍄𐍉𐍃</string>
+    <string name="previous_card_info_title" maxLength="28">𐌰𐍆𐍄𐌿𐌼𐌹𐍃𐍄𐌰𐍄𐌰 𐌺𐌿𐌽𐌸𐌹 𐍇𐌰𐍂𐍄𐍉𐍃</string>
     <!-- Permissions -->
     <string name="read_write_permission_label">𐌳𐌿 𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳 𐌳𐌰𐍄𐌰𐌱𐌿𐍃𐌰 𐌰𐌽𐌰𐌺𐌿𐌽𐌽𐌰𐌽 𐌾𐌰𐌷 𐌼𐌴𐌻𐌾𐌰𐌽</string>
     <string name="read_write_permission_description">𐌰𐍄𐌲𐌰𐌲𐌲 𐌹𐌽 𐍅𐌹𐍃𐌰𐌽𐌳𐌴𐌹𐌽𐍃 𐌼𐌴𐌻𐌴𐌹𐌽𐌹𐌽𐍃, 𐌺𐌰𐍂𐍄𐍉𐍃, 𐌷𐌰𐌹𐌳𐌿𐌽𐍃 𐌼𐌴𐌻𐌴𐌹𐌽𐍉, 𐌾𐌰𐌷 𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳𐌰, 𐌾𐌰𐌷 𐌽𐌹𐌿𐌾𐌰 𐍃𐌺𐌰𐍀𐌾𐌰𐌽</string>
@@ -197,19 +196,25 @@
     <string name="new_unsafe_collection">𐌸𐌰𐌼𐌼𐌰 𐌷𐌿𐌶𐌳𐌰 𐌽𐌹𐌿𐌾𐌰𐌼𐌼𐌰 𐌿𐍃𐌵𐌹𐍃𐍄𐌾𐌰𐌳𐌰 𐍆𐍂𐌰𐌼 𐍆𐌰𐌹𐍂𐍂𐌰𐍃𐍄𐌹𐌱𐌽𐌰𐌹 𐌸𐌴𐌹𐌽𐌰𐌹 𐌾𐌰𐌱𐌰𐌹 𐌿𐍃𐌽𐌹𐌼𐌹𐍃 𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳</string>
     <!-- Permissions screen -->
     <string name="permissions_screen_headline">𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳 𐌸𐌰𐍂𐍆 𐌰𐌽𐌳𐌻𐌴𐍄𐌴 𐌳𐌿 𐍅𐌰𐌿𐍂𐌺𐌾𐌰𐌽</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid works best with these permissions</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳 𐍅𐌰𐌿𐍂𐌺𐌴𐌹𐌸 𐍅𐌰𐌹𐌻𐌰 𐌼𐌹𐌸 𐌸𐌰𐌹𐌼 𐌰𐌽𐌳𐌻𐌴𐍄𐌰𐌼</string>
     <string name="storage_access_title">𐌰𐍄𐌲𐌰𐌲𐌲 𐌷𐌿𐌶𐌳𐌹𐍃</string>
     <string name="storage_access_summary">𐌲𐌰𐍆𐌰𐍃𐍄𐌰𐌹𐌸 𐌷𐌿𐌶𐌳 𐌸𐌴𐌹𐌽 𐌹𐌽 𐍃𐍄𐌰𐌳𐌰 𐌰𐍂𐌽𐌹𐌱𐌰 𐌸𐌰𐌼𐌼𐌴𐌹 𐌽𐌹 𐌿𐍃𐌵𐌹𐍃𐍄𐌾𐌰𐌳𐌰 𐌾𐌰𐌱𐌰𐌹 𐌸𐌰𐍄𐌰 𐌰𐍀𐍀 𐌿𐍃𐌽𐌹𐌼𐌰𐌳𐌰</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">𐌰𐌽𐌳𐌻𐌴𐍄 𐌰𐌻𐌻𐌰𐌹𐌼 𐍆𐌰𐌾𐌻𐌰𐌼</string>
     <string name="image_occlusion">𐌻𐌿𐌺 𐍆𐍂𐌹𐍃𐌰𐌷𐍄𐌰𐌹𐍃</string>
-    <string name="microphone" comment="Title of the microphone permission in the permissions explanation screen.">Microphone</string>
+    <string name="microphone" comment="Title of the microphone permission in the permissions explanation screen.">𐌻𐌴𐌹𐍄𐌹𐌻𐌰𐍃𐍄𐌹𐌱𐌽𐌰</string>
     <string name="microphone_permission_explanation" comment="Description explaining why AnkiDroid needs the microphone permission, shown on the permissions explanation screen.">Allows you to add sounds to cards and enables voice playback while reviewing</string>
     <string name="notifications_permission_explanation" comment="Description explaining why AnkiDroid needs the notification permission.">Enables background media syncing and allows you to create review reminders</string>
-    <string name="heading_required_permissions" comment="Heading for the section of required permissions that the app needs to function, shown in the permissions explanation screen.">Required</string>
-    <string name="heading_optional_permissions" comment="Heading for the section of optional permissions that the app needs to function, shown in the permissions explanation screen.">Optional</string>
+    <string name="heading_required_permissions" comment="Heading for the section of required permissions that the app needs to function, shown in the permissions explanation screen.">𐌸𐌰𐌿𐍂𐍆𐍄</string>
+    <string name="heading_optional_permissions" comment="Heading for the section of optional permissions that the app needs to function, shown in the permissions explanation screen.">𐌼𐌰𐌷𐍄𐌴𐌹𐌲</string>
     <string name="manually_grant_permissions" comment="Pop-up message that is shown to the user when they want to grant an app permission that must be granted via the OS settings screen.">This permission must be manually granted from Settings</string>
     <string name="revoke_permissions" comment="Pop-up message that is shown to the user when they are revoking an app permission.">This permission must be manually revoked from Settings</string>
     <string name="remove_account" comment="open a website to start the deletion of an AnkiWeb account">𐍂𐌰𐌷𐌽𐌴𐌹𐌽 𐌿𐍃𐌽𐌹𐌼𐌰𐌽</string>
     <!-- Instant Note Editor -->
     <string name="instant_card" comment="Used in the Android system context menu/share dialog to quickly create a note. This does not need to be translated literally, translate the concept of quickly adding a Cloze note with a popup. ">𐌰𐌽𐌰𐌺𐍃 𐌺𐌰𐍂𐍄𐌰</string>
+    <!-- Internet Permissions -->
+    <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
+    <string name="permission_access_summary">Required for the app to work</string>
+    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <!-- Multiple profile -->
+    <string name="add_profile">Add profile</string>
 </resources>

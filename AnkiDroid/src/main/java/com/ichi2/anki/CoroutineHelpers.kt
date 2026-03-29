@@ -1,18 +1,18 @@
-/***************************************************************************************
- * Copyright (c) 2022 Ankitects Pty Ltd <https://apps.ankiweb.net>                       *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2022 Ankitects Pty Ltd <https://apps.ankiweb.net>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.ichi2.anki
 
@@ -20,6 +20,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.database.sqlite.SQLiteDatabaseCorruptException
 import android.net.Uri
 import android.view.WindowManager
 import android.view.WindowManager.BadTokenException
@@ -33,25 +34,22 @@ import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.viewModelScope
 import anki.collection.Progress
 import com.ichi2.anki.CollectionManager.TR
-import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.CrashReportData.Companion.throwIfDialogUnusable
 import com.ichi2.anki.CrashReportData.Companion.toCrashReportData
 import com.ichi2.anki.CrashReportData.HelpAction
 import com.ichi2.anki.CrashReportData.HelpAction.AnkiBackendLink
 import com.ichi2.anki.CrashReportData.HelpAction.OpenDeckOptions
 import com.ichi2.anki.common.annotations.UseContextParameter
+import com.ichi2.anki.dialogs.DatabaseErrorDialog
 import com.ichi2.anki.exception.StorageAccessException
-import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.pages.DeckOptionsDestination
 import com.ichi2.anki.snackbar.showSnackbar
 import com.ichi2.anki.utils.openUrl
 import com.ichi2.utils.create
 import com.ichi2.utils.message
-import com.ichi2.utils.negativeButton
 import com.ichi2.utils.neutralButton
 import com.ichi2.utils.positiveButton
 import com.ichi2.utils.setupEnterKeyHandler
-import com.ichi2.utils.show
 import com.ichi2.utils.title
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CancellationException
@@ -70,15 +68,15 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import net.ankiweb.rsdroid.Backend
 import net.ankiweb.rsdroid.BackendException
+import net.ankiweb.rsdroid.BackendException.BackendCardTypeException
 import net.ankiweb.rsdroid.exceptions.BackendInterruptedException
+import net.ankiweb.rsdroid.exceptions.BackendInvalidInputException
 import net.ankiweb.rsdroid.exceptions.BackendNetworkException
 import net.ankiweb.rsdroid.exceptions.BackendSyncException
 import org.jetbrains.annotations.VisibleForTesting
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 
 /** Overridable reference to [Dispatchers.IO]. Useful if tests can't use it */
@@ -94,6 +92,11 @@ var throwOnShowError = false
  * Runs a suspend function that catches any uncaught errors and reports them to the user.
  * Errors from the backend contain localized text that is often suitable to show to the user as-is.
  * Other errors should ideally be handled in the block.
+ *
+ * @param context Coroutine context passed to [launch]
+ * @param errorMessageHandler Called after an exception is caught and logged, input is either
+ * `Exception.localizedMessage` or `Exception.toString()`
+ * @param block code to execute inside [launch]
  */
 fun CoroutineScope.launchCatching(
     context: CoroutineContext = EmptyCoroutineContext,
@@ -123,7 +126,10 @@ interface OnErrorListener {
 fun <T, U> T.launchCatchingIO(block: suspend T.() -> U): Job where T : ViewModel, T : OnErrorListener =
     viewModelScope.launchCatching(
         ioDispatcher,
-        { onError.emit(it) },
+        {
+            onError.emit(it)
+            if (throwOnShowError) throw IllegalStateException("throwOnShowError: $it")
+        },
         { block() },
     )
 
@@ -187,7 +193,7 @@ suspend fun <T> FragmentActivity.runCatching(
                 Timber.w(exc, errorMessage)
                 exc.localizedMessage?.let { showSnackbar(it) }
             }
-            is BackendNetworkException, is BackendSyncException, is StorageAccessException -> {
+            is BackendNetworkException, is BackendSyncException, is StorageAccessException, is BackendCardTypeException -> {
                 // these exceptions do not generate worthwhile crash reports
                 Timber.i("Showing error dialog but not sending a crash report.")
                 showError(exc.localizedMessage!!, exc.toCrashReportData(this, reportException = false))
@@ -196,6 +202,12 @@ suspend fun <T> FragmentActivity.runCatching(
                 Timber.e(exc, errorMessage)
                 if (callerTrace != null) Timber.e(callerTrace)
                 showError(exc.localizedMessage!!, exc.toCrashReportData(this))
+            }
+            is SQLiteDatabaseCorruptException -> {
+                Timber.e(exc, errorMessage)
+                DatabaseErrorDialog.databaseCorruptFlag = true
+                if (callerTrace != null) Timber.e(callerTrace)
+                DatabaseErrorDialog.ShowDatabaseErrorDialog.fromMessage(CollectionLoadingErrorDialog().toMessage())
             }
             else -> {
                 Timber.e(exc, errorMessage)
@@ -424,6 +436,7 @@ suspend fun <T> withProgressDialog(
                 setCancelable(onCancel != null)
                 if (manualCancelButton != null) {
                     setCancelable(false)
+                    setCanceledOnTouchOutside(false)
                     setButton(DialogInterface.BUTTON_NEGATIVE, context.getString(manualCancelButton)) { _, _ ->
                         Timber.i("Progress dialog cancelled via cancel button")
                         onCancel?.let { it() }
@@ -438,7 +451,9 @@ suspend fun <T> withProgressDialog(
                 }
             }
         // disable taps immediately
-        context.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        context.runOnUiThread {
+            context.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
         // reveal the dialog after 600ms
         var dialogIsOurs = false
         val dialogJob =
@@ -470,7 +485,7 @@ suspend fun <T> withProgressDialog(
         } finally {
             dialogJob.cancel()
             dismissDialogIfShowing(dialog)
-            context.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            context.runOnUiThread { context.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE) }
             if (dialogIsOurs) {
                 AnkiDroidApp.instance.progressDialogShown = false
             }
@@ -538,53 +553,6 @@ private fun ProgressContext.updateDialog(dialog: android.app.ProgressDialog) {
 }
 
 /**
- * If a one-way sync is not already required, confirm the user wishes to proceed.
- * If the user agrees, the schema is bumped and the routine will return true.
- * On false, calling routine should abort.
- */
-suspend fun AnkiActivity.userAcceptsSchemaChange(col: Collection): Boolean {
-    if (col.schemaChanged()) {
-        return true
-    }
-    return suspendCoroutine { coroutine ->
-        AlertDialog.Builder(this).show {
-            message(text = col.tr.deckConfigWillRequireFullSync()) // generic message
-            positiveButton(R.string.dialog_ok) {
-                col.modSchemaNoCheck()
-                coroutine.resume(true)
-            }
-            negativeButton(R.string.dialog_cancel) { coroutine.resume(false) }
-            setOnCancelListener { coroutine.resume(false) }
-        }
-    }
-}
-
-/**
- * Returns whether we are allowed to change the schema.
- *
- * If changing the schema would require the next sync to be a full sync, and it's not already required, ask
- * the user whether or not they still allow the schema change.
- */
-suspend fun AnkiActivity.userAcceptsSchemaChange(): Boolean {
-    if (withCol { schemaChanged() }) {
-        return true
-    }
-    val hasAcceptedSchemaChange =
-        suspendCoroutine { coroutine ->
-            AlertDialog.Builder(this).show {
-                message(text = TR.deckConfigWillRequireFullSync().replace("\\s+".toRegex(), " "))
-                positiveButton(R.string.dialog_ok) { coroutine.resume(true) }
-                negativeButton(R.string.dialog_cancel) { coroutine.resume(false) }
-                setOnCancelListener { coroutine.resume(false) }
-            }
-        }
-    if (hasAcceptedSchemaChange) {
-        withCol { modSchemaNoCheck() }
-    }
-    return hasAcceptedSchemaChange
-}
-
-/**
  * Ensures that current continuation is not [cancelled][CancellableContinuation.isCancelled].
  *
  * @throws [CancellationException] if canceled. This does not contain the original cancellation cause
@@ -643,6 +611,7 @@ data class CrashReportData(
     fun shouldReportException(): Boolean {
         if (!reportableException) return false
         if (exception.isInvalidFsrsParametersException()) return false
+        if (exception is BackendInvalidInputException && exception.message == "missing template") return false
         return true
     }
 

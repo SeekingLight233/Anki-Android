@@ -83,11 +83,14 @@
     <string name="restore_backup_choose_another">Başka seç</string>
     <string name="dialog_cancel">İptal</string>
     <string name="dialog_ok">Tamam</string>
+    <string name="dialog_add" comment="Positive dialog action button label to add \'something\'">Add</string>
+    <string name="restore">Restore</string>
     <string name="dialog_confirm" tools:ignore="UnusedResources">Onayla</string>
     <string name="dialog_no">Hayır</string>
     <string name="dialog_yes">Evet</string>
     <string name="dialog_keep">Bırak</string>
     <string name="dialog_remove">Kaldır</string>
+    <string name="dialog_exit" comment="Label for a button which will exit/finish the current screen">Çık</string>
     <string name="dialog_continue">Devam Et</string>
     <string name="dialog_processing">İşlem yapılıyor&#8230;</string>
     <string name="dialog_positive_create" comment="Create a new collection, probably erasing the previous one, may be necessary in case of error.">Oluştur</string>
@@ -213,8 +216,6 @@
     <string name="dismiss_backup_warning_title">Veri kaybı uyarısı</string>
     <string name="dismiss_backup_warning_new_user">Android gizlilik değişikliklerinden dolayı, uygulama kaldırılırsa veriniz ve otomatik yedekleriniz telefonunuzdan silinecek</string>
     <string name="dismiss_backup_warning_upgrade">Android gizlilik değişikliklerinden dolayı, uygulama kaldırılırsa veriniz ve otomatik yedekleriniz erişilemez hâle gelecek</string>
-    <string name="deck_already_exists">Deste hâlihazırda var</string>
-    <string name="empty_deck_name">Deste adı boş olamaz</string>
     <string name="create_deck_numeric_hint">Deste sıralamanızda sorun olursa (örn. \"10\"un \"2\"den önce gelmesi), \"2\" yerine \"02\" yazın</string>
     <!-- Set Due Date -->
     <string name="set_due_date_match_interval" comment="when setting a card\'s due date, this checkbox also changes the interval of the card">Aralığı aynı değere ayarla</string>
@@ -254,4 +255,32 @@
     <string name="tts_error_dialog_reason_text"><b>%1$s</b> metin okuma motoru şu dili desteklemiyor: <b>%2$s</b></string>
     <string name="tts_error_dialog_change_button_text">Motor değiştir</string>
     <string name="tts_error_dialog_supported_voices_button_text">Ses seçenekleri</string>
+    <!-- import_cache_error_resolutions -->
+    <string name="import_error_resolution_try_again">Dosyayı tekrar içeri aktarın</string>
+    <string name="import_error_resolution_free_up_space">Cihazınızda yeterince boş alan olduğuna emin olun</string>
+    <string name="import_error_resolution_check_internet">İnternete bağlı olduğunuzdan emin olun</string>
+    <string name="import_error_resolution_copy_to_device">Dosyayı cihazınıza kopyalayıp yerel dosyayla yeniden deneyin</string>
+    <string name="import_error_resolution_select_file">Dosyayı cihazınızın dosya gezgini uygulamasıyla açın</string>
+    <!-- Post-login dialog -->
+    <string name="login_successful">Giriş başarılı</string>
+    <string name="sync_now">Şimdi senkronize edilsin mi?</string>
+    <!--Change Note Type Dialog Fragment-->
+    <string name="card_numbers_unchanged">Kart numaraları sabit kalacak</string>
+    <!-- Subset of TR.changeNotetypeToFromCloze -->
+    <string name="extra_cloze_deletions_removed">If changing to a regular note type, and there are more cloze deletions than available card templates, any extra cards will be removed.</string>
+    <string name="different_note_types_selected">Lütfen sadece bir tür not seçin</string>
+    <string name="error_no_changes_to_save">Kaydedilecek değişiklik yok</string>
+    <string name="choose_color">Renk seç</string>
+    <!-- Special Fields -->
+    <string name="standard_fields_tab_header" comment="Tab header for inserting non-special fields: {{Front}}">Fields</string>
+    <string name="special_fields_tab_header" comment="Tab header for inserting special fields: {{Deck}}">Special</string>
+    <string name="special_field_example_suffix"><![CDATA[: ‘<b>%1$s</b>’]]></string>
+    <string name="special_field_front_side_help">The front template content. Audio is not automatically played</string>
+    <string name="special_field_deck_help" comment="%s: either blank or \' %s\'">The full deck of the card, including parent decks%s</string>
+    <string name="special_field_subdeck_help" comment="%s: either blank or \' %s\'">The current deck of the card, excluding parent decks%s</string>
+    <string name="special_field_flag_help">Outputs ‘%1$s’, where %2$s is the flag code (%3$s\–%4$s\)</string>
+    <string name="special_field_tags_help" comment="%s: either blank or \' %s\'">The tags of the note%s</string>
+    <string name="special_field_card_id_help" comment="%s: either blank or \' %s\'">The ID of the card%s</string>
+    <string name="special_field_card_help" comment="%s: either blank or \' %s\'">The name of the card template%s</string>
+    <string name="special_field_type_help" comment="%s: either blank or \' %s\'">The name of the note type%s</string>
 </resources>

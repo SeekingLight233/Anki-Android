@@ -1,18 +1,18 @@
-/****************************************************************************************
- * Copyright (c) 2013 Houssam Salem <houssam.salem.au@gmail.com>                        *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 3 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+ * Copyright (c) 2013 Houssam Salem <houssam.salem.au@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.ichi2.preferences
 
 import android.content.Context
@@ -20,7 +20,8 @@ import android.text.InputFilter.LengthFilter
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.View
-import com.ichi2.anki.AnkiDroidApp
+import com.ichi2.anki.R
+import com.ichi2.anki.utils.ext.usingStyledAttributes
 import timber.log.Timber
 
 @Suppress(
@@ -115,7 +116,9 @@ open class NumberRangePreference :
      * This method should only be called once from the constructor.
      */
     private fun getMinFromAttributes(attrs: AttributeSet?): Int =
-        attrs?.getAttributeIntValue(AnkiDroidApp.XML_CUSTOM_NAMESPACE, "min", 0) ?: 0
+        context.usingStyledAttributes(attrs, R.styleable.NumberRangePreference) {
+            getInt(R.styleable.NumberRangePreference_min, 0)
+        }
 
     /**
      * Returns the value of the max attribute, or its default value if not specified
@@ -124,8 +127,9 @@ open class NumberRangePreference :
      * This method should only be called once from the constructor.
      */
     private fun getMaxFromAttributes(attrs: AttributeSet?): Int =
-        attrs?.getAttributeIntValue(AnkiDroidApp.XML_CUSTOM_NAMESPACE, "max", Int.MAX_VALUE)
-            ?: Int.MAX_VALUE
+        context.usingStyledAttributes(attrs, R.styleable.NumberRangePreference) {
+            getInt(R.styleable.NumberRangePreference_max, Int.MAX_VALUE)
+        }
 
     /**
      * Update settings to only allow integer input and set the maximum number of digits allowed in the text field based
@@ -142,19 +146,13 @@ open class NumberRangePreference :
         editText.filters += LengthFilter(max.toString().length)
     }
 
+    /**
+     * This preference's value. The value is validated and persisted as an Integer.
+     *
+     * @param value to set.
+     */
     var value: Int
-        /**
-         * Get the persisted value held by this preference.
-         *
-         * @return the persisted value.
-         */
         get() = getPersistedInt(min)
-
-        /**
-         * Set this preference's value. The value is validated and persisted as an Integer.
-         *
-         * @param value to set.
-         */
         set(value) {
             val validated = getValidatedRangeFromInt(value)
             text = validated.toString()

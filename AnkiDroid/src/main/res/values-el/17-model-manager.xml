@@ -45,7 +45,6 @@
     </plurals>
     <!--Browser-->
     <string name="model_browser_delete">Διαγραφή τύπου σημείωσης</string>
-    <string name="model_browser_rename" comment="Rename a note type">Μετονομασία</string>
     <string name="model_browser_template">Επεξεργασία καρτών</string>
     <!--Rename-->
     <string name="rename_model">Μετονομασία τύπου σημείωσης</string>
@@ -53,7 +52,6 @@
     <!--Language Hint-->
     <string name="model_field_editor_language_hint_dialog_success_result">Ορισμός γλώσσας υποδείξεων σε %s</string>
     <!--Field Editing-->
-    <string name="model_field_editor_title">Επεξεργασία πεδίων</string>
     <string name="model_field_editor_add" maxLength="28">Προσθήκη πεδίου</string>
     <string name="model_field_editor_delete">Διαγραφή πεδίου</string>
     <string name="model_field_editor_rename">Μετονομασία πεδίου</string>
@@ -63,6 +61,12 @@
     <string name="model_field_editor_sort_field">Ταξινόμηση κατά αυτό το πεδίο</string>
     <!--Warnings-->
     <string name="model_delete_warning">Θέλετε σίγουρα να διαγράψετε αυτό τον τύπο σημείωσης;</string>
+    <!--
+        Example output:
+        Delete the note types below?
+        Basic, Basic (and reversed card), Cloze
+     -->
+    <string name="model_delete_multiple_warning">Delete the note types below?\n %s</string>
     <string name="field_delete_warning">Θέλετε σίγουρα να διαγράψετε αυτό το πεδίο;</string>
     <!--Model Add Suffixes-->
     <string name="model_browser_add_add">Προσθήκη: %1$s</string>
@@ -70,9 +74,9 @@
     <string name="model_browser_add_clone">Κλώνος: %1$s</string>
     <!--Browser Appearance-->
     <string name="card_template_browser_appearance_summary">Εισάγετε το πρότυπο που θα χρησιμοποιήσει ο περιηγητής της κάρτας για την εμφάνιση των καρτών σας. Χρησιμοποιήστε αυτό για να εμφανίσετε μια πιο συνοπτική απάντηση.\n\nΈνα μπροστινό πρότυπο του\n“Η πρωτεύουσα του {{Country}} είναι:”\nθα μπορούσε να συμπιεστεί στον περιηγητή της κάρτας σε\n“Capital: {{Country}}”</string>
-    <string name="card_template_browser_appearance_question_format">Μορφή ερώτησης</string>
-    <string name="card_template_browser_appearance_answer_format">Μορφή απάντησης</string>
-    <string name="card_template_browser_appearance_restore_default_dialog">Επαναφορά Προκαθορισμένων Τιμών;</string>
+    <string name="card_template_browser_appearance_question_format">Question format</string>
+    <string name="card_template_browser_appearance_answer_format">Answer format</string>
+    <string name="card_template_browser_appearance_restore_default_dialog">Are you sure you want to restore the browser appearance to default?</string>
     <string name="card_template_browser_appearance_saving_note">Αυτές οι αλλαγές εφαρμόζονται όταν το πρότυπο της κάρτας αποθηκεύεται</string>
     <!-- Deck Override -->
     <string name="card_template_editor_deck_override_on">Αντικατάσταση τράπουλας (ενεργή)</string>

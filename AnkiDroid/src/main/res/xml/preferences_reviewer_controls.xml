@@ -10,26 +10,31 @@
             android:key="@string/show_answer_command_key"
             android:title="@string/show_answer"
             android:icon="@drawable/ic_card_answer"
+            app:cardSide="question"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/answer_again_command_key"
             android:title="@string/answer_again"
             android:icon="@drawable/ic_ease_again"
+            app:cardSide="answer"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/answer_hard_command_key"
             android:title="@string/answer_hard"
             android:icon="@drawable/ic_ease_hard"
+            app:cardSide="answer"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/answer_good_command_key"
             android:title="@string/answer_good"
             android:icon="@drawable/ic_ease_good"
+            app:cardSide="answer"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/answer_easy_command_key"
             android:title="@string/answer_easy"
             android:icon="@drawable/ic_ease_easy"
+            app:cardSide="answer"
             />
     </PreferenceCategory>
 
@@ -95,6 +100,11 @@
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/card_info_command_key"
             android:title="@string/card_info_title"
+            android:icon="@drawable/ic_dialog_info"
+            />
+        <com.ichi2.preferences.ReviewerControlPreference
+            android:key="@string/previous_card_info_command_key"
+            android:title="@string/previous_card_info_title"
             android:icon="@drawable/ic_outline_info_24"
             />
     </PreferenceCategory>
@@ -195,6 +205,28 @@
             android:title="@string/gesture_toggle_whiteboard"
             android:icon="@drawable/ic_enable_whiteboard"
             />
+        <!-- New study screen -->
+        <com.ichi2.preferences.WhiteboardControlPreference
+            android:key="@string/pref_key_whiteboard_toggle_eraser"
+            android:title="@string/gesture_toggle_eraser"
+            android:icon="@drawable/ic_eraser"
+            />
+        <com.ichi2.preferences.WhiteboardControlPreference
+            android:key="@string/pref_key_whiteboard_undo"
+            android:title="@string/undo"
+            android:icon="@drawable/ic_undo_white"
+            />
+        <com.ichi2.preferences.WhiteboardControlPreference
+            android:key="@string/pref_key_whiteboard_redo"
+            android:title="@string/redo"
+            android:icon="@drawable/ic_redo"
+            />
+        <com.ichi2.preferences.WhiteboardControlPreference
+            android:key="@string/pref_key_whiteboard_clear"
+            android:title="@string/clear_whiteboard"
+            android:icon="@drawable/ic_clear_white"
+            />
+        <!-- Legacy study screen -->
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/toggle_eraser_command_key"
             android:title="@string/gesture_toggle_eraser"

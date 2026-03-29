@@ -131,9 +131,8 @@
     <string name="empty_filtered_deck">Malplenigado de filtrita kartaro&#8230;</string>
     <string name="search_deck" comment="Deck search for selecting it">Serĉi kartaron</string>
     <string name="empty_deck">Tiu ĉi kartaro estas malplena</string>
-    <string name="search_for_download_deck" comment="Deck search value for downloading deck" maxLength="28">Serĉi kartaron</string>
     <string name="invalid_deck_name">Malĝusta nomo por kartaro</string>
-    <string name="studyoptions_congrats_finished">Gratulon! Vi finis la hodiaŭan.</string>
+    <string name="studyoptions_congrats_finished">Gratulon! Vi finis la hodiaŭan lernadon.</string>
     <string name="studyoptions_congrats_next_due_in" comment="The param will be replaced with \'The next card will be ready in X time\'">La kartaro estas ripetita! %s</string>
     <string name="studyoptions_no_cards_due">Neniu karto por ripeti</string>
     <string name="sd_card_not_mounted">Aparata konservejo ne muntita</string>
@@ -145,7 +144,6 @@
     <string name="syncing_media">Samhavigado de la vidaŭdaĵoj</string>
     <string name="export_deck" maxLength="28">Elporti kartaron</string>
     <string name="export_collection">Elporti kolekton</string>
-    <string name="nothing">Nenio</string>
     <!-- Card template editor -->
     <string name="title_activity_template_editor">Kartotipoj</string>
     <string name="card_template_editor_front">Ŝablono fronta</string>
@@ -153,8 +151,8 @@
     <string name="card_template_editor_styling" maxLength="28">Stilo</string>
     <string name="card_template_editor_menu_card_browser_appearance" maxLength="28">Aspekto de kart-foliumilo</string>
     <string name="card_template_editor_deck_override" maxLength="28">Superskribi kartaron</string>
-    <string name="card_template_editor_insert_field" maxLength="28">Eniga kampo</string>
-    <string name="card_template_editor_select_field">Elekta kampo</string>
+    <string name="card_template_editor_insert_field" maxLength="28">Enmeti kampon</string>
+    <string name="card_template_editor_select_field">Elekti kampon</string>
     <string name="card_template_editor_cant_delete">Almenaŭ unu kartotipo estas postulata</string>
     <plurals name="card_template_editor_confirm_add">
         <item quantity="one">%1$d karto estos kreita. Ĉu pluigi?</item>
@@ -170,6 +168,7 @@
     <string name="card_template_browser_appearance_title">Aspekto de la foliumilo</string>
     <!-- card Info -->
     <string name="card_info_title" maxLength="28">Informoj pri la karto</string>
+    <string name="previous_card_info_title" maxLength="28">Informoj pri antaŭa karto</string>
     <!-- Permissions -->
     <string name="read_write_permission_label">Legi kaj skribi al la datumbazo de AnkiDroid</string>
     <string name="read_write_permission_description">aliri ekzistajn notojn, kartojn, nototipojn kaj kartarojn, kaj krei novajn</string>
@@ -212,4 +211,10 @@
     <string name="remove_account" comment="open a website to start the deletion of an AnkiWeb account">Forigi konton</string>
     <!-- Instant Note Editor -->
     <string name="instant_card" comment="Used in the Android system context menu/share dialog to quickly create a note. This does not need to be translated literally, translate the concept of quickly adding a Cloze note with a popup. ">Tuja karto</string>
+    <!-- Internet Permissions -->
+    <string name="internet_access_title" comment="used for notifying user to unable internet access">Interreto</string>
+    <string name="permission_access_summary">Postulata de la aplikaĵo por funkcii</string>
+    <string name="permission_required_message">Donu al AnkiDroid la permeson “%s” por pluigi</string>
+    <!-- Multiple profile -->
+    <string name="add_profile">Aldoni profilon</string>
 </resources>

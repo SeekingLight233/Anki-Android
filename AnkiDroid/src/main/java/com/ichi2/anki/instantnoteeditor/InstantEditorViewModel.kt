@@ -17,6 +17,7 @@
 
 package com.ichi2.anki.instantnoteeditor
 
+import androidx.annotation.CheckResult
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,12 +27,13 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.NoteFieldsCheckResult
 import com.ichi2.anki.OnErrorListener
 import com.ichi2.anki.checkNoteFieldsResponse
+import com.ichi2.anki.common.utils.ext.replaceWith
 import com.ichi2.anki.instantnoteeditor.InstantNoteEditorActivity.DialogType
 import com.ichi2.anki.libanki.DeckId
-import com.ichi2.anki.libanki.Decks
 import com.ichi2.anki.libanki.Note
 import com.ichi2.anki.libanki.NotetypeJson
 import com.ichi2.anki.observability.undoableOp
+import com.ichi2.anki.selectedDeckIfNotFiltered
 import com.ichi2.anki.utils.ext.getAllClozeTextFields
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,9 +106,8 @@ class InstantEditorViewModel :
     init {
         viewModelScope.launch {
             // setup the deck Id
-            withCol { config.get<Long?>(Decks.CURRENT_DECK) ?: 1L }.let { did ->
-                deckId = did
-            }
+            val selectedDeck = withCol { selectedDeckIfNotFiltered() }
+            deckId = selectedDeck.id
 
             // setup the note type
             // TODO: Use did here
@@ -117,7 +118,7 @@ class InstantEditorViewModel :
             }
 
             @Suppress("RedundantRequireNotNullCall") // postValue lint requires this
-            val clozeNoteType = requireNotNull(noteType)
+            val clozeNoteType = requireNotNull(noteType) { "noteType" }
             Timber.d("Changing to cloze type note")
             _currentlySelectedNotetype.postValue(clozeNoteType)
             Timber.i("Using note type '%d", clozeNoteType.id)
@@ -155,8 +156,6 @@ class InstantEditorViewModel :
      */
     private suspend fun saveNote(): SaveNoteResult {
         return try {
-            editorNote.notetype.did = deckId!!
-
             val note = editorNote
             val deckId = deckId ?: return SaveNoteResult.Failure()
 
@@ -184,6 +183,18 @@ class InstantEditorViewModel :
     }
 
     /**
+     * Extracts the cloze ordinals from text (if any).
+     *
+     * `"{{c2::text}} {{c1::more}}"` => `[2, 1]`
+     */
+    @CheckResult
+    private fun getClozeOrdinals(text: String): List<Int> =
+        clozePattern
+            .findAll(text)
+            .mapNotNull { it.groups[2]?.value?.toIntOrNull() }
+            .toList()
+
+    /**
      * Retrieves all cloze text fields from the current editor note's note type.
      *
      * This method accesses the `editorNote` property to fetch its associated note type
@@ -209,6 +220,8 @@ class InstantEditorViewModel :
 
     fun setClozeFieldText(text: String?) {
         _actualClozeFieldText.value = text
+        intClozeList.replaceWith(getClozeOrdinals(text ?: ""))
+        _currentClozeNumber.value = (intClozeList.maxOrNull() ?: 0) + 1
     }
 
     /**

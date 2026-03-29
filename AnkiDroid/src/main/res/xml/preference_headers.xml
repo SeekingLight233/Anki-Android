@@ -89,6 +89,13 @@
         app:summaryEntries="@array/appearance_summary_entries">
     </com.ichi2.preferences.HeaderPreference>
 
+    <!-- Switch Profile Preferences  -->
+    <com.ichi2.preferences.HeaderPreference
+        android:key="@string/pref_switch_profile_screen_key"
+        android:title="Switch Profile"
+        android:icon="@drawable/ic_switch_profile"
+        android:fragment="com.ichi2.anki.preferences.profiles.SwitchProfilesFragment" />
+
     <!-- Keybinding preferences -->
     <com.ichi2.preferences.HeaderPreference
         android:fragment="com.ichi2.anki.preferences.ControlsSettingsFragment"
@@ -125,10 +132,10 @@
     </com.ichi2.preferences.HeaderPreference>
 
     <com.ichi2.preferences.HeaderPreference
-        android:key="@string/pref_dev_options_screen_key"
+        android:key="@string/pref_developer_options_screen_key"
         android:title="@string/pref_cat_dev_options"
         android:icon="@drawable/ic_code"
-        android:fragment="com.ichi2.anki.preferences.DevOptionsFragment"
+        android:fragment="com.ichi2.anki.preferences.DeveloperOptionsFragment"
         app:isPreferenceVisible="false">
     </com.ichi2.preferences.HeaderPreference>
     <!-- About -->

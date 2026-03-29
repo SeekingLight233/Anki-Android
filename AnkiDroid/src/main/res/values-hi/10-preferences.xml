@@ -232,20 +232,14 @@
     <string name="misc" maxLength="41">विविध</string>
     <!-- Review reminders -->
     <string name="add_reminder" comment="Label for the add reminder button in the screen for adding and editing review reminders">Add reminder</string>
+    <string name="add_review_reminder" comment="Title of the screen for creating a new review reminder">Add review reminder</string>
+    <string name="edit_review_reminder" comment="Title of the screen for editing an existing review reminder">Edit review reminder</string>
+    <string name="you_have_no_review_reminders" comment="Text that appears in the review reminder editing screen when there are no reminders set">You have no review reminders</string>
     <!-- studyoptions -->
     <string name="studyoptions_limit_select_tags">टैग का चयन करें</string>
     <!-- Deck configurations -->
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">सामान्य</string>
-    <string name="deck_conf_cram_filter" maxLength="41">फ़िल्टर</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">खोज</string>
-    <string name="deck_conf_cram_limit" maxLength="41">करने के लिए सीमा</string>
-    <string name="deck_conf_cram_order" maxLength="41">Cards selected by</string>
-    <string name="deck_conf_cram_reschedule" maxLength="41" comment="Title of the box labelled by deck_conf_cram_reschedule_summ">पुनः शेड्यूल करें</string>
-    <string name="deck_conf_cram_reschedule_summ">इस डेक में मेरे जवाब के आधार पर कार्ड पुनर्निर्धारित</string>
-    <string name="deck_conf_cram_filter_2_check">दूसरा फ़िल्टर सक्षम करें</string>
-    <string name="deck_conf_cram_steps_summ" maxLength="41">कस्टम चरणों को परिभाषित करें</string>
-    <string name="deck_conf_cram_preview_delays" maxLength="41">पूर्वावलोकन में देरी</string>
-    <string name="deck_conf_cram_preview_delays_summ">देरी सेकंडों में होती है. 0 कार्ड को मूल डेक पर लौटाता है।</string>
     <!-- analytics options -->
     <string name="analytics_dialog_title">AnkiDroid को बेहतर बनाने में मदद करें!</string>
     <string name="analytics_title" maxLength="41">सुविधा उपयोग साझा करें</string>
@@ -377,6 +371,8 @@
     <string name="new_study_screen_summ"><![CDATA[Improved study screen that will succeed the current one. Some features of the old screen have been changed or removed. Please report any <a href="%1$s">feedback</a> or <a href="%2$s">bugs</a>.]]></string>
     <string name="show_answer_feedback" maxLength="41">Show answer feedback</string>
     <string name="screen" maxLength="41">Screen</string>
+    <string name="only_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to only answer the card">Only answer</string>
+    <string name="flip_and_answer" maxLength="41" comment="Configuration of the \'Answer\' commands to answer the card if on the answer side, and flip it if on the question side">Flip and answer</string>
     <!--Keyboard shortcuts dialog-->
     <string name="open_settings" comment="Description of the shortcut that opens the app settings">Open settings</string>
 </resources>

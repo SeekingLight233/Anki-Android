@@ -74,6 +74,11 @@
             <data android:scheme="https" />
         </intent>
         <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" />
+        </intent>
+        <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain" />
         </intent>
@@ -111,11 +116,6 @@
         <activity
             android:name="com.ichi2.anki.ui.windows.managespace.ManageSpaceActivity"
             android:exported="true"/>
-        <activity android:name=".DrawingActivity"
-            android:label="@string/drawing"
-            android:exported="false"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            />
         <activity
             android:name="com.ichi2.anki.IntentHandler"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -330,7 +330,6 @@
             android:label="@string/card_browser"
             android:theme="@style/Theme_Dark.Launcher"
             android:exported="true"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".DeckPicker"
             >
             <intent-filter android:label="@string/card_browser">
@@ -384,7 +383,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ichi2.anki.MyAccount"
+            android:name="com.ichi2.anki.account.AccountActivity"
             android:label="@string/menu_my_account"
             android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -402,13 +401,6 @@
                 <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".FilteredDeckOptions"
-            android:label="@string/deckpreferences_title"
-            android:exported="false"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme_Light"
-            />
         <activity
             android:name="com.ichi2.anki.Info"
             android:label="@string/pref_cat_about_title"
@@ -472,6 +464,10 @@
             android:configChanges="orientation|screenSize"
             />
         <activity
+            android:name="com.ichi2.anki.utils.ConfigAwareSingleFragmentActivity"
+            android:exported="false"
+            />
+        <activity
             android:name="com.ichi2.anki.NoteEditorActivity"
             android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -501,12 +497,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/download_deck"
             android:theme="@style/Theme.MaterialComponents.NoActionBar" />
-        <activity
-            android:name="com.ichi2.anki.LoginActivity"
-            android:label="@string/menu_my_account"
-            android:exported="false"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            />
 
         <activity android:name=".IntroductionActivity"
             android:exported="false"
@@ -640,6 +630,11 @@
         </receiver>
 
         <receiver android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="false"
+            />
+        <receiver
+            android:name=".services.AlarmManagerService"
             android:enabled="true"
             android:exported="false"
             />
